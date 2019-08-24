@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
+<form method="POST" class="form-inline">
+    {% csrf_token %}
+    {% bootstrap_form form layout='inline' %}
+    <button type="submit" class="btn btn-primary">検索</button>
+</form>
+
+<div class="row">
+    {% for book in book_list %}
+    <div class="col-4">
+        <div class="card" style="width: 18rem;">
+            <img src="{{ book.largeImageUrl }}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text">{{ book.author }}</p>
+                <form action="{% url 'book:add' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="book_isbn" value="{{ book.isbn }}">
+                    <input type="hidden" name="book_title" value="{{ book.title }}">
+                    <input type="hidden" name="book_author" value="{{ book.author }}">
+                    <input type="hidden" name="book_image_url" value="{{ book.largeImageUrl }}">
+                    <input type="hidden" name="book_description" value="{{ book.itemCaption }}">
+                    <input type="hidden" name="book_price" value="{{ book.itemPrice }}">
+                    <input type="hidden" name="book_publisher" value="{{ book.publisherName }}">
+                    <input type="hidden" name="book_published_date" value="{{ book.salesDate }}">
+                    <input type="hidden" name="book_affiliate_url" value="{{ book.affiliateUrl }}">
+                    <button type="submit" class="btn btn-primary">口コミを書く</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
