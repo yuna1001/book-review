@@ -10,11 +10,11 @@ class Book(models.Model):
     title = models.CharField(verbose_name='タイトル', max_length=255)
     author = models.CharField(verbose_name='著者', max_length=100)
     image_url = models.URLField(verbose_name='画像URL', blank=True, null=True)
-    description = models.CharField(verbose_name='説明', max_length=255)
+    description = models.TextField(verbose_name='説明')
     price = models.IntegerField(verbose_name='価格')
     publisher = models.CharField(verbose_name='出版社', max_length=100)
-    published_date = models.DateField(verbose_name='発売日')
-    affiliate_url = models.URLField(verbose_name='楽天ブックスURL')
+    published_date = models.CharField(verbose_name='発売日', max_length=50)
+    affiliate_url = models.URLField(verbose_name='楽天ブックスURL', max_length=2000)
 
     def __str__(self):
         return self.title
