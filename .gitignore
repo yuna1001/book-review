@@ -1,5 +1,6 @@
 .env
 .venv
 .vscode/*
+accounts/migrations/*
 config/settings/production.py
-book/migrations
+book/migrations/*

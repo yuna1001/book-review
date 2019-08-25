@@ -25,12 +25,19 @@ ALLOWED_HOSTS = []
 
 
 INSTALLED_APPS = [
+    'accounts.apps.AccountsConfig',
     'book.apps.BookConfig',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.twitter',
+    'allauth.socialaccount.providers.github',
     'bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
@@ -100,6 +107,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+SITE_ID = 1
+
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIR = [os.path.join(BASE_DIR, 'static')]
@@ -109,3 +118,38 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# allauth setting
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+# Accountモデル ログアウト設定
+AUTH_USER_MODEL = 'accounts.CustomUser'
+ACCOUNT_USER_MODEL_EMAIL_FIELD = 'email'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True  # ユーザ登録時の必須項目とする
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_USERNAME_REQUIRED = True  # ユーザ登録時の必須項目とする
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+
+# SocialAccountモデル
+SOCIALACCOUNT_EMAIL_VERIFICATION = ACCOUNT_EMAIL_VERIFICATION
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+LOGIN_ON_EMAIL_CONFIRMATION = True
+SOCIALACCOUNT_QUERY_EMAIL = False
+
+# ログイン・ログアウト
+LOGIN_REDIRECT_URL = 'home'
+ACCOUNT_LOGOUT_REDIRECT_URL = ' /accounts/login/'
+
+# Email
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = True
+
+
+# フラッシュメッセージ設定
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
