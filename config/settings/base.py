@@ -57,7 +57,8 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'templates', 'allauth')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,15 +142,15 @@ LOGIN_ON_EMAIL_CONFIRMATION = True
 SOCIALACCOUNT_QUERY_EMAIL = False
 
 # ログイン・ログアウト
-LOGIN_REDIRECT_URL = 'home'
-ACCOUNT_LOGOUT_REDIRECT_URL = ' /accounts/login/'
+LOGIN_REDIRECT_URL = 'book:search'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Email
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = True
-
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # フラッシュメッセージ設定
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
