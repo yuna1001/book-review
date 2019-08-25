@@ -89,7 +89,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('CusomUser')
         verbose_name_plural = _('CusomUsers')
         db_table = 'custom_user'
-        abstract = True
+        #abstract = True
 
     def get_username(self):
         """
