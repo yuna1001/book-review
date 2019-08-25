@@ -1,10 +1,14 @@
+from datetime import datetime
 import uuid
 
 from django.db import models
-from django.urls import reverse
+from accounts.models import CustomUser
 
 
 class Book(models.Model):
+    class Meta:
+        db_table = 'book'
+
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
     isbn = models.CharField(verbose_name='ISBN', max_length=255)
     title = models.CharField(verbose_name='タイトル', max_length=255)
@@ -20,4 +24,34 @@ class Book(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('book:detail', kwargs={'pk': self.uuid})
+        return
+
+
+class Comment(models.Model):
+    class Meta:
+        db_table = 'comment'
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    title = models.CharField(verbose_name='タイトル', max_length=50)
+    score = models.IntegerField(verbose_name='評価')
+    content = models.TextField(verbose_name='本文')
+    created_date = models.DateTimeField(verbose_name='作成日', default=datetime.now)
+
+
+class Favorite(models.Model):
+    class Meta:
+        db_table = 'favorite'
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(verbose_name='作成日', default=datetime.now)
+
+
+class Wanted(models.Model):
+    class Meta:
+        db_table = 'wanted'
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(verbose_name='作成日', default=datetime.now)
