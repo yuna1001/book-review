@@ -38,5 +38,15 @@
             </tr>
         </table>
     </div>
+    <form action="{% url 'book:add_favorite' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+        <button type="submit" class="btn btn-primary">お気に入りに追加</button>
+    </form>
+    <form action="{% url 'book:add_wanted' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+        <button type="submit" class="btn btn-primary">読みたいに追加</button>
+    </form>
 </div>
 {% endblock %}

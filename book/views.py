@@ -3,11 +3,14 @@ import json
 import os
 import requests
 
+from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, reverse
 from django.views import generic
-from django.conf import settings
+
 from book.forms import BookSearchForm
-from book.models import Book
+from book.models import Book, Favorite, Wanted
 
 env = environ.Env()
 env.read_env(os.path.join(settings.BASE_DIR, '.env'))
@@ -55,7 +58,7 @@ class BookSearchView(generic.View):
         return render(self.request, self.template_name, {'form': form})
 
 
-class BookAddView(generic.View):
+class BookAddView(LoginRequiredMixin, generic.View):
 
     def post(self, request, *args, **kwargs):
         book_isbn = request.POST.get('book_isbn')
@@ -86,3 +89,31 @@ class BookAddView(generic.View):
 
 class BookDetailView(generic.DetailView):
     model = Book
+
+
+class FavoriteAddView(LoginRequiredMixin, generic.View):
+
+    def post(self, request, *args, **kwargs):
+        book_uuid = request.POST.get('book_uuid')
+        book = get_object_or_404(Book, uuid=book_uuid)
+        print(request.user)
+        user = request.user
+
+        favorite = Favorite(user=user, book=book)
+        favorite.save()
+
+        return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
+
+
+class WantedAddView(LoginRequiredMixin, generic.View):
+
+    def post(self, request, *args, **kwargs):
+        book_uuid = request.POST.get('book_uuid')
+        book = get_object_or_404(Book, uuid=book_uuid)
+        print(request.user)
+        user = request.user
+
+        wanted = Wanted(user=user, book=book)
+        wanted.save()
+
+        return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
