@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block head_title %}サインアップ{% endblock %}
+
+{% block content %}
+{% block extrahead %}
+{% endblock %}
+<div class="main">
+  <div class="main-text">
+    <h1>サインアップ</h1>
+  </div>
+  <div class="main-content">
+    <p>{{account.get_provider.name}}アカウントで{{site.name}}にログインします。</p>
+
+    <form class="signup" id="signup_form" method="post" enctype="multipart/form-data"
+      action="{% url 'socialaccount_signup' %}">
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      {% buttons %}
+      <button type="submit" class="btn btn-primary btn-block">サインアップ</button>
+      {% endbuttons %}
+    </form>
+  </div>
+</div>
+{% endblock %}

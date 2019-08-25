@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load bootstrap4 %}
+
+{% block head_title %}サインアップ{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center" style="padding-top:56px;">
+  <div class="col-lg-6">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">新規登録</h4>
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate enctype="multipart/form-data">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          {% buttons %}
+          <button type="submit" class="btn btn-primary btn-block">登録</button>
+          {% endbuttons %}
+        </form>
+      </div>
+      <div class="card-footer text-muted text-center">
+        ログインは <a href="{% url 'account_login' %}">こちら</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
