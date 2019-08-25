@@ -1,6 +1,7 @@
 from datetime import datetime
 import uuid
 
+from django.urls import reverse
 from django.db import models
 from accounts.models import CustomUser
 
@@ -24,7 +25,7 @@ class Book(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return
+        return reverse('book:detail', kwargs={'pk': self.uuid})
 
 
 class Comment(models.Model):
