@@ -6,8 +6,8 @@ services:
     build: . # docker-compose.ymlと同じディレクトリのDockerfileを指定
     volumes: # ホスト：コンテナの順
       - .:/usr/src/app # docker-compose.ymlと同階層のファイルをコンテナにマウント
-      - static_volume:/usr/src/app/static # 名前付きボリュームを指定したコンテナのディレクトリにマウント
-      - media_volume:/usr/src/app/media
+      #- static_volume:/usr/src/app/static # 名前付きボリュームを指定したコンテナのディレクトリにマウント
+      #- media_volume:/usr/src/app/media
     working_dir: /usr/src/app/
     #command: python3 manage.py runserver 0.0.0.0:8000 --settings=config.settings.local
     # command: gunicorn --workers 3 --bind=:8000 --env DJANGO_SETTINGS_MODULE=config.settings.local config.wsgi:application
