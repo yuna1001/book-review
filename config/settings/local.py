@@ -49,18 +49,18 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 
 # staticファイル・mediaファイル共通
-AWS_STORAGE_BUCKET_NAME = 'my-portfolio-3'
 AWS_DEFAULT_ACL = None
 AWS_S3_CUSTOM_DOMAIN = 'd1dh5gex9go1bi.cloudfront.net'
 
 # staticファイル設定
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# 静的ファイル配信用ディレクトリで、URLの一部になる
+STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATIC_URLがSTATIC_ROOTを兼ねる
-STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+AWS_STORAGE_BUCKET_NAME = 'kyne-book-review.cf-static'
 
 # mediaファイル設定
-DEFAULT_FILE_STORAGE = 'config.storage_backends.S3MediaStorage'
-# bucket内のimagesフォルダを指定
-MEDIAFILES_LOCATION = 'images/'
 MEDIA_URL = '/media/'
+# MEDIA_ROOTの代わりとなり、メディアファイルはここにアップロードされる
+DEFAULT_FILE_STORAGE = 'config.storage_backends.S3MediaStorage'
+MEDIA_AWS_STORAGE_BUCKET_NAME = 'kyne-book-review.cf-media'
