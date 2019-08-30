@@ -9,10 +9,12 @@ services:
       #- static_volume:/usr/src/app/static # 名前付きボリュームを指定したコンテナのディレクトリにマウント
       #- media_volume:/usr/src/app/media
     working_dir: /usr/src/app/
-    #command: python3 manage.py runserver 0.0.0.0:8000 --settings=config.settings.local
+    #command: python3 manage.py runserver 0:8000 --settings=config.settings.local
     # command: gunicorn --workers 3 --bind=:8000 --env DJANGO_SETTINGS_MODULE=config.settings.local config.wsgi:application
     stdin_open: true
     tty: true
+    #ports:
+    #  - "8000:8000"
     expose:
       - "8000"
     depends_on:
@@ -32,8 +34,8 @@ services:
         - "8000:80"
       volumes:
         - ./nginx/conf.d:/etc/nginx/conf.d
-        - static_volume:/usr/src/app/static  # <-- bind the static volume
-        - media_volume:/usr/src/app/media
+        - ./static:/opt/apps/static  # <-- bind the static volume
+        - ./media:/opt/apps/media
       restart: always
       depends_on:
         - djangoapp

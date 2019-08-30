@@ -52,7 +52,7 @@ AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 AWS_DEFAULT_ACL = None
 AWS_S3_CUSTOM_DOMAIN = 'd1dh5gex9go1bi.cloudfront.net'
 
-# staticファイル設定
+''' # staticファイル設定
 # 静的ファイル配信用ディレクトリで、URLの一部になる
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -63,4 +63,13 @@ AWS_STORAGE_BUCKET_NAME = 'kyne-book-review.cf-static'
 MEDIA_URL = '/media/'
 # MEDIA_ROOTの代わりとなり、メディアファイルはここにアップロードされる
 DEFAULT_FILE_STORAGE = 'config.storage_backends.S3MediaStorage'
-MEDIA_AWS_STORAGE_BUCKET_NAME = 'kyne-book-review.cf-media'
+MEDIA_AWS_STORAGE_BUCKET_NAME = 'kyne-book-review.cf-media' '''
+
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

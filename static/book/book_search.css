@@ -1,3 +1,7 @@
 div.search-result {
     margin: 20px;
 }
+
+img.card-img-top {
+    object-fit: cover;
+}
