@@ -22,12 +22,12 @@
 
 <div class="row search-result">
     {% for book in book_list %}
-    <div class="col-4">
-        <div class="card" style="width: 18rem;">
+    <div class="col-3">
+        <div class="card" style="margin:10px;">
             <img src="{{ book.largeImageUrl }}" class="card-img-top" alt="...">
             <div class="card-body">
-                <h5 class="card-title">{{ book.title }}</h5>
-                <p class="card-text">{{ book.author }}</p>
+                <h5 class="card-title text-truncate">{{ book.title }}</h5>
+                <p class="card-text text-truncate">{{ book.author }}</p>
                 <form action="{% url 'book:add' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="book_isbn" value="{{ book.isbn }}">
