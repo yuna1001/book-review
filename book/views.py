@@ -117,3 +117,7 @@ class WantedAddView(LoginRequiredMixin, generic.View):
         wanted.save()
 
         return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
+
+
+class BookListView(generic.ListView):
+    model = Book

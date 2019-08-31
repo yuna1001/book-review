@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block extra_css %}
+<link href="{% static 'book/book_list.css' %}" rel="stylesheet" type="text/css">
+
+{% endblock %}
+
+{% block content %}
+<div class="row search-result">
+    {% for book in book_list %}
+    <div class="col-3">
+        <div class="card" style="margin:10px;">
+            <img src="{{ book.image_url }}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-truncate">{{ book.title }}</h5>
+                <p class="card-text text-truncate">{{ book.author }}</p>
+                <form action="{% url 'book:detail' book.uuid %}" method="GET">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">詳細を見る</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
