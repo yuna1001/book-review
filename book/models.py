@@ -11,7 +11,7 @@ class Book(models.Model):
         db_table = 'book'
 
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
-    isbn = models.CharField(verbose_name='ISBN', max_length=255)
+    isbn = models.CharField(verbose_name='ISBN', max_length=255, unique=True)
     title = models.CharField(verbose_name='タイトル', max_length=255)
     author = models.CharField(verbose_name='著者', max_length=100)
     image_url = models.URLField(verbose_name='画像URL', blank=True, null=True)
