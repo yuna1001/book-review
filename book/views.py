@@ -9,8 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, reverse
 from django.views import generic
 
-from book.forms import BookSearchForm
-from book.models import Book, Favorite, Wanted
+from book.forms import BookSearchForm, CommentCreateForm
+from book.models import Book, Favorite, Wanted, Comment
 
 env = environ.Env()
 env.read_env(os.path.join(settings.BASE_DIR, '.env'))
@@ -90,13 +90,34 @@ class BookAddView(LoginRequiredMixin, generic.View):
 class BookDetailView(generic.DetailView):
     model = Book
 
+    def get_context_data(self, **kwargs):
+        context = super(BookDetailView, self).get_context_data(**kwargs)
+        book_uuid = self.kwargs.get('pk')
+        context['comment_list'] = Comment.objects.filter(book=book_uuid)
+
+        context['form'] = CommentCreateForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = CommentCreateForm(request.POST)
+        comment = form.save(commit=False)
+        user = self.request.user
+        book = get_object_or_404(Book, uuid=self.kwargs['pk'])
+
+        comment.user = user
+        comment.book = book
+        comment.save()
+        return self.get_success_url()
+
+    def get_success_url(self):
+        return redirect(reverse('book:detail', kwargs={'pk': self.kwargs['pk']}))
+
 
 class FavoriteAddView(LoginRequiredMixin, generic.View):
 
     def post(self, request, *args, **kwargs):
         book_uuid = request.POST.get('book_uuid')
         book = get_object_or_404(Book, uuid=book_uuid)
-        print(request.user)
         user = request.user
 
         favorite = Favorite(user=user, book=book)
@@ -110,7 +131,6 @@ class WantedAddView(LoginRequiredMixin, generic.View):
     def post(self, request, *args, **kwargs):
         book_uuid = request.POST.get('book_uuid')
         book = get_object_or_404(Book, uuid=book_uuid)
-        print(request.user)
         user = request.user
 
         wanted = Wanted(user=user, book=book)
@@ -121,3 +141,22 @@ class WantedAddView(LoginRequiredMixin, generic.View):
 
 class BookListView(generic.ListView):
     model = Book
+
+
+class CommentCreateView(generic.CreateView):
+    model = Comment
+    form_class = CommentCreateForm
+
+    def form_valid(self, form):
+        form = CommentCreateForm(self.request.POST)
+        comment = form.save(commit=False)
+        user = self.request.user
+        book = get_object_or_404(Book, uuid=self.kwargs['pk'])
+
+        comment.user = user
+        comment.book = book
+        comment.save()
+        return self.get_success_url()
+
+    def get_success_url(self):
+        return redirect(reverse('book:detail', kwargs={'pk': self.kwargs['pk']}))
