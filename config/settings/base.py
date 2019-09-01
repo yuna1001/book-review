@@ -40,6 +40,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# HTTP→HTTPSにリダイレクト
+#SECURE_SSL_REDIRECT = True
+
+# フラッシュメッセージ設定
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -130,6 +136,3 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# フラッシュメッセージ設定
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
