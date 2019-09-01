@@ -7,46 +7,85 @@
 {% block content %}
 <h1>書籍詳細</h1>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <img src="{{ book.image_url }}" class="card-img" alt="...">
+        <div style="display:inline-flex; margin-top: 10px;">
+            <form action="{% url 'book:add_favorite' %}" method="POST" style="margin-right: 20px;">
+                {% csrf_token %}
+                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                <button type="submit" class="btn btn-primary">お気に入り</button>
+            </form>
+            <form action="{% url 'book:add_wanted' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                <button type="submit" class="btn btn-primary">読みたい</button>
+            </form>
+        </div>
     </div>
-    <div class="col-md-8">
-        <table class="table table-hover">
-            <tr>
-                <th scope="row">タイトル</th>
-                <td>{{ book.title }}</td>
-            </tr>
-            <tr>
-                <th scope="row">著者</th>
-                <td>{{ book.author }}</td>
-            </tr>
-            <tr>
-                <th scope="row">説明</th>
-                <td>{{ book.description }}</td>
-            </tr>
-            <tr>
-                <th scope="row">価格</th>
-                <td>{{ book.price }}</td>
-            </tr>
-            <tr>
-                <th scope="row">出版社</th>
-                <td>{{ book.publisher }}</td>
-            </tr>
-            <tr>
-                <th scope="row">販売日</th>
-                <td>{{ book.published_date }}</td>
-            </tr>
+    <div class="col-md-9">
+        <table class="table table-hover table-responsive">
+            <tbody>
+                <tr>
+                    <th style="width:25%">タイトル</th>
+                    <td style="width:75%">{{ book.title }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">著者</th>
+                    <td>{{ book.author }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">説明</th>
+                    <td>{{ book.description }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">価格</th>
+                    <td>￥{{ book.price }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">出版社</th>
+                    <td>{{ book.publisher }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">販売日</th>
+                    <td>{{ book.published_date }}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
-    <form action="{% url 'book:add_favorite' %}" method="POST">
+</div>
+<div class="comment-post">
+    <div class="container">
+        <div class="row">
+            {% for comment in comment_list %}
+            <div class="col-md-3" style="margin-top: 30px;">
+                {{ comment.user.username }}
+            </div>
+            <div class="col-md-9" style="margin-top: 30px;">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>評価 ： {{ comment.score }} ｜ {{ comment.title }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ comment.created_date }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ comment.content }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="comment-form" style="margin-top: 30px;">
+    <h2>口コミを投稿する</h2>
+    <form action="" method="POST">
         {% csrf_token %}
-        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-        <button type="submit" class="btn btn-primary">お気に入りに追加</button>
+        {% bootstrap_form form layout='inline' %}
+        <button type="submit" class="btn btn-primary">コメントする</button>
     </form>
-    <form action="{% url 'book:add_wanted' %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-        <button type="submit" class="btn btn-primary">読みたいに追加</button>
-    </form>
+</div>
 </div>
 {% endblock %}

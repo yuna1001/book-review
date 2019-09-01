@@ -35,7 +35,7 @@ class Comment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     title = models.CharField(verbose_name='タイトル', max_length=50)
-    score = models.IntegerField(verbose_name='評価')
+    score = models.FloatField(verbose_name='評価')
     content = models.TextField(verbose_name='本文')
     created_date = models.DateTimeField(verbose_name='作成日', default=datetime.now)
 
