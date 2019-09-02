@@ -7,6 +7,9 @@ from accounts.models import CustomUser
 
 
 class Book(models.Model):
+    """
+    書籍モデル
+    """
     class Meta:
         db_table = 'book'
 
@@ -29,6 +32,9 @@ class Book(models.Model):
 
 
 class Comment(models.Model):
+    """
+    コメントモデル
+    """
     class Meta:
         db_table = 'comment'
 
@@ -41,6 +47,9 @@ class Comment(models.Model):
 
 
 class Favorite(models.Model):
+    """
+    お気に入りモデル
+    """
     class Meta:
         db_table = 'favorite'
 
@@ -50,6 +59,9 @@ class Favorite(models.Model):
 
 
 class Wanted(models.Model):
+    """
+    読みたいモデル
+    """
     class Meta:
         db_table = 'wanted'
 

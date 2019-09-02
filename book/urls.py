@@ -1,6 +1,8 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from book.views import BookSearchView, BookAddView, BookDetailView, FavoriteAddView, WantedAddView, BookListView, CommentCreateView
+
+from book.views import (
+    BookSearchView, BookAddView, BookDetailView, FavoriteAddView, WantedAddView, BookListView)
 
 app_name = 'book'
 
@@ -12,5 +14,4 @@ urlpatterns = [
     path('favorite/', FavoriteAddView.as_view(), name='add_favorite'),
     path('wanted/', WantedAddView.as_view(), name='add_wanted'),
     path('list/', BookListView.as_view(), name='list'),
-    path('comment/<uuid:pk>/', CommentCreateView.as_view(), name='comment'),
 ]
