@@ -17,6 +17,9 @@ env.read_env(os.path.join(settings.BASE_DIR, '.env'))
 
 
 class BookSearchView(generic.View):
+    """
+    書籍検索を行うビュークラス
+    """
 
     endpoint_url = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?'
 
@@ -35,6 +38,9 @@ class BookSearchView(generic.View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        """
+        入力された検索ワードを元にAPIコールを実行する
+        """
 
         form = BookSearchForm(request.POST)
 
@@ -48,6 +54,9 @@ class BookSearchView(generic.View):
         response_json = json.loads(response.text)
         items_list = response_json.get('Items')
 
+        """
+        検索結果に書籍データがあれば、レンダリング用のbook_listに追加する
+        """
         if items_list:
             book_list = []
             for book in items_list:
@@ -59,8 +68,16 @@ class BookSearchView(generic.View):
 
 
 class BookAddView(LoginRequiredMixin, generic.View):
+    """
+    書籍の登録を行うビュークラス
+    """
 
     def post(self, request, *args, **kwargs):
+        """
+        POSTされた書籍情報を元にDBに登録する
+        """
+
+        # <input type=hidden>の要素の値を取得
         book_isbn = request.POST.get('book_isbn')
         book_title = request.POST.get('book_title')
         book_author = request.POST.get('book_author')
@@ -83,14 +100,22 @@ class BookAddView(LoginRequiredMixin, generic.View):
             affiliate_url=book_affiliate_url
         )
         book.save()
+
         # Bookのget_absolute_url()で指定しているurlにリダイレクト
         return redirect(book)
 
 
 class BookDetailView(generic.DetailView):
+    """
+    書籍の詳細表示を行うビュークラス
+    """
+
     model = Book
 
     def get_context_data(self, **kwargs):
+        """
+        書籍に紐づくコメントとコメント用のフォームを渡す
+        """
         context = super(BookDetailView, self).get_context_data(**kwargs)
         book_uuid = self.kwargs.get('pk')
         context['comment_list'] = Comment.objects.filter(book=book_uuid)
@@ -98,7 +123,11 @@ class BookDetailView(generic.DetailView):
         context['form'] = CommentCreateForm()
         return context
 
+    # TODO 非ログインユーザにはコメントできないようにする。
     def post(self, request, *args, **kwargs):
+        """
+        コメントをDBに保存する
+        """
         form = CommentCreateForm(request.POST)
         comment = form.save(commit=False)
         user = self.request.user
@@ -107,15 +136,25 @@ class BookDetailView(generic.DetailView):
         comment.user = user
         comment.book = book
         comment.save()
+
         return self.get_success_url()
 
     def get_success_url(self):
+        """
+        書籍の詳細ページに遷移する
+        """
         return redirect(reverse('book:detail', kwargs={'pk': self.kwargs['pk']}))
 
 
 class FavoriteAddView(LoginRequiredMixin, generic.View):
+    """
+    お気に入りの追加を行うビュークラス
+    """
 
     def post(self, request, *args, **kwargs):
+        """
+        お気に入りをDBに追加する
+        """
         book_uuid = request.POST.get('book_uuid')
         book = get_object_or_404(Book, uuid=book_uuid)
         user = request.user
@@ -127,8 +166,14 @@ class FavoriteAddView(LoginRequiredMixin, generic.View):
 
 
 class WantedAddView(LoginRequiredMixin, generic.View):
+    """
+    読みたいの追加を行うビュークラス
+    """
 
     def post(self, request, *args, **kwargs):
+        """
+        読みたいをDBに追加する
+        """
         book_uuid = request.POST.get('book_uuid')
         book = get_object_or_404(Book, uuid=book_uuid)
         user = request.user
@@ -140,23 +185,7 @@ class WantedAddView(LoginRequiredMixin, generic.View):
 
 
 class BookListView(generic.ListView):
+    """
+    書籍の一覧表示を行うビュークラス
+    """
     model = Book
-
-
-class CommentCreateView(generic.CreateView):
-    model = Comment
-    form_class = CommentCreateForm
-
-    def form_valid(self, form):
-        form = CommentCreateForm(self.request.POST)
-        comment = form.save(commit=False)
-        user = self.request.user
-        book = get_object_or_404(Book, uuid=self.kwargs['pk'])
-
-        comment.user = user
-        comment.book = book
-        comment.save()
-        return self.get_success_url()
-
-    def get_success_url(self):
-        return redirect(reverse('book:detail', kwargs={'pk': self.kwargs['pk']}))
