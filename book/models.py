@@ -45,6 +45,9 @@ class Comment(models.Model):
     content = models.TextField(verbose_name='本文')
     created_date = models.DateTimeField(verbose_name='作成日', default=datetime.now)
 
+    def __str__(self):
+        return self.title
+
 
 class Favorite(models.Model):
     """
