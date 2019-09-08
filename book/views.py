@@ -64,11 +64,13 @@ class BookSearchView(generic.View):
             for book in items_list:
                 book = book.get('Item')
                 book_list.append(book)
+
         if saved_book_list:
             for saved_book in saved_book_list:
                 for i, book in enumerate(book_list):
                     if book.get('isbn') == saved_book.isbn:
                         book_list.pop(i)
+
         return render(self.request, self.template_name, {'form': form, 'book_list': book_list})
 
 
@@ -160,12 +162,20 @@ class FavoriteAddView(LoginRequiredMixin, generic.View):
         """
         お気に入りをDBに追加する
         """
+
         book_uuid = request.POST.get('book_uuid')
         book = get_object_or_404(Book, uuid=book_uuid)
         user = request.user
 
         favorite = Favorite(user=user, book=book)
         favorite.save()
+
+        """
+        処理成功後はお気に入り追加を行ったページに遷移させる
+        """
+        template_name = request.POST.get('template_name')
+        if template_name == 'book_list':
+            return redirect(reverse('book:list'))
 
         return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
 
@@ -186,6 +196,13 @@ class WantedAddView(LoginRequiredMixin, generic.View):
         wanted = Wanted(user=user, book=book)
         wanted.save()
 
+        """
+        処理成功後はお気に入り追加を行ったページに遷移させる
+        """
+        template_name = request.POST.get('template_name')
+        if template_name == 'book_list':
+            return redirect(reverse('book:list'))
+
         return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
 
 
@@ -194,3 +211,37 @@ class BookListView(generic.ListView):
     書籍の一覧表示を行うビュークラス
     """
     model = Book
+
+    def get_context_data(self, **kwargs):
+        """
+        ログインユーザのお気に入り・読みたいのデータをcontextに追加
+        """
+        context = super(BookListView, self).get_context_data(**kwargs)
+
+        favorite_list = Favorite.objects.filter(user=self.request.user)
+        context['favorite_list'] = favorite_list
+
+        wanted_list = Wanted.objects.filter(user=self.request.user)
+        context['wanted_list'] = wanted_list
+
+        return context
+
+
+class FavoriteDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """
+    お気に入りの削除を行うビュークラス
+    """
+    model = Favorite
+
+    def get_success_url(self):
+        return reverse('book:list')
+
+
+class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """
+    読みたいの削除を行うビュークラス
+    """
+    model = Wanted
+
+    def get_success_url(self):
+        return reverse('book:list')
