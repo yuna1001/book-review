@@ -11,14 +11,18 @@
     {% for book in book_list %}
     <div class="col-3">
         <div class="card" style="margin:10px;">
-            <img src="{{ book.image_url }}" class="card-img-top" alt="...">
+            <div class="card-image">
+                <img src="{{ book.image_url }}" class="card-img-top" alt="...">
+            </div>
             <div class="card-body">
                 <h5 class="card-title text-truncate">{{ book.title }}</h5>
                 <p class="card-text text-truncate">{{ book.author }}</p>
-                <form action="{% url 'book:detail' book.uuid %}" method="GET">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">詳細を見る</button>
-                </form>
+                <div class="forms text-center">
+                    <form action="{% url 'book:detail' book.uuid %}" method="GET">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">詳細を見る</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -4,6 +4,14 @@ div.search-result {
     flex-wrap: wrap;
 }
 
+div.card-image {
+    padding: 10px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-color: darkgray;
+}
+
 img.card-img-top {
     max-width: 100%;
     height: 15vw;
