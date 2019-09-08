@@ -3,7 +3,6 @@
 {% load static %}
 {% block extra_css %}
 <link href="{% static 'book/book_list.css' %}" rel="stylesheet" type="text/css">
-
 {% endblock %}
 
 {% block content %}
@@ -12,17 +11,76 @@
     <div class="col-3">
         <div class="card" style="margin:10px;">
             <div class="card-image">
-                <img src="{{ book.image_url }}" class="card-img-top" alt="...">
+                <a href="{% url 'book:detail' book.uuid %}">
+                    <img src="{{ book.image_url }}" class="card-img-top" alt="...">
+                </a>
             </div>
             <div class="card-body">
-                <h5 class="card-title text-truncate">{{ book.title }}</h5>
+                <a href="{% url 'book:detail' book.uuid %}">
+                    <h5 class="card-title text-truncate">{{ book.title }}</h5>
+                </a>
                 <p class="card-text text-truncate">{{ book.author }}</p>
-                <div class="forms text-center">
-                    <form action="{% url 'book:detail' book.uuid %}" method="GET">
+
+                <!-- お気に入り -->
+                <div class="form-favorite text-center" style="padding: 5px;">
+                    {% if wanted_list %}
+                    {% for wanted in wanted_list %}
+                    {% if book == wanted.book %}
+                    <form action="{% url 'book:delete_wanted' wanted.uuid %}" method="POST">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">詳細を見る</button>
+                        <input type="hidden" name="template_name" value="book_list">
+                        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                        <button type="submit" class="btn btn-primary">読みたい追加済み</button>
                     </form>
+                    {% else %}
+                    <form action="{% url 'book:add_wanted' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="template_name" value="book_list">
+                        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                        <button type="submit" class="btn btn-primary">読みたいに追加</button>
+                    </form>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    <form action="{% url 'book:add_wanted' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="template_name" value="book_list">
+                        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                        <button type="submit" class="btn btn-primary">読みたいに追加</button>
+                    </form>
+                    {% endif %}
                 </div>
+
+                <!-- 読みたい -->
+                <div class="form-favorite text-center" style="padding: 5px;">
+                    {% if favorite_list %}
+                    {% for favorite in favorite_list %}
+                    {% if book == favorite.book %}
+                    <form action="{% url 'book:delete_favorite' favorite.uuid %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="template_name" value="book_list">
+                        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                        <button type="submit" class="btn btn-primary">お気に入り追加済み</button>
+                    </form>
+                    {% else %}
+                    <form action="{% url 'book:add_favorite' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="template_name" value="book_list">
+                        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                        <button type="submit" class="btn btn-primary">お気に入りに追加</button>
+                    </form>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    <form action="{% url 'book:add_favorite' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="template_name" value="book_list">
+                        <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                        <button type="submit" class="btn btn-primary">お気に入りに追加</button>
+                    </form>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
     </div>
