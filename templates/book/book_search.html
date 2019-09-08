@@ -18,29 +18,31 @@
         </div>
     </form>
 </div>
-</div>
-
 <div class="row search-result">
     {% for book in book_list %}
     <div class="col-3">
         <div class="card" style="margin:10px;">
-            <img src="{{ book.largeImageUrl }}" class="card-img-top" alt="...">
+            <div class="card-image">
+                <img src="{{ book.largeImageUrl }}" class="card-img-top" alt="...">
+            </div>
             <div class="card-body">
                 <h5 class="card-title text-truncate">{{ book.title }}</h5>
                 <p class="card-text text-truncate">{{ book.author }}</p>
-                <form action="{% url 'book:add' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="book_isbn" value="{{ book.isbn }}">
-                    <input type="hidden" name="book_title" value="{{ book.title }}">
-                    <input type="hidden" name="book_author" value="{{ book.author }}">
-                    <input type="hidden" name="book_image_url" value="{{ book.largeImageUrl }}">
-                    <input type="hidden" name="book_description" value="{{ book.itemCaption }}">
-                    <input type="hidden" name="book_price" value="{{ book.itemPrice }}">
-                    <input type="hidden" name="book_publisher" value="{{ book.publisherName }}">
-                    <input type="hidden" name="book_published_date" value="{{ book.salesDate }}">
-                    <input type="hidden" name="book_affiliate_url" value="{{ book.affiliateUrl }}">
-                    <button type="submit" class="btn btn-primary">詳細を見る</button>
-                </form>
+                <div class="forms text-center">
+                    <form action="{% url 'book:add' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="book_isbn" value="{{ book.isbn }}">
+                        <input type="hidden" name="book_title" value="{{ book.title }}">
+                        <input type="hidden" name="book_author" value="{{ book.author }}">
+                        <input type="hidden" name="book_image_url" value="{{ book.largeImageUrl }}">
+                        <input type="hidden" name="book_description" value="{{ book.itemCaption }}">
+                        <input type="hidden" name="book_price" value="{{ book.itemPrice }}">
+                        <input type="hidden" name="book_publisher" value="{{ book.publisherName }}">
+                        <input type="hidden" name="book_published_date" value="{{ book.salesDate }}">
+                        <input type="hidden" name="book_affiliate_url" value="{{ book.affiliateUrl }}">
+                        <button type="submit" class="btn btn-primary">登録する</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

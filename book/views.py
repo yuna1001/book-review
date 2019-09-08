@@ -39,7 +39,7 @@ class BookSearchView(generic.View):
 
     def post(self, request, *args, **kwargs):
         """
-        入力された検索ワードを元にAPIコールを実行する
+        入力された検索ワードを元にAPIをコールする
         """
 
         form = BookSearchForm(request.POST)
@@ -56,15 +56,20 @@ class BookSearchView(generic.View):
 
         """
         検索結果に書籍データがあれば、レンダリング用のbook_listに追加する
+        DBに登録済みの書籍は表示しないようbook_listに入れない
         """
+        saved_book_list = Book.objects.all()
+        book_list = []
         if items_list:
-            book_list = []
             for book in items_list:
                 book = book.get('Item')
                 book_list.append(book)
-
-            return render(self.request, self.template_name, {'form': form, 'book_list': book_list})
-        return render(self.request, self.template_name, {'form': form})
+        if saved_book_list:
+            for saved_book in saved_book_list:
+                for i, book in enumerate(book_list):
+                    if book.get('isbn') == saved_book.isbn:
+                        book_list.pop(i)
+        return render(self.request, self.template_name, {'form': form, 'book_list': book_list})
 
 
 class BookAddView(LoginRequiredMixin, generic.View):
