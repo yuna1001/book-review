@@ -110,6 +110,9 @@ class BookAddView(LoginRequiredMixin, generic.View):
         )
         book.save()
 
+        message = book_title + 'を登録しました。'
+        messages.info(request, message)
+
         # Bookのget_absolute_url()で指定しているurlにリダイレクト
         return redirect(book)
 
@@ -147,7 +150,6 @@ class BookDetailView(generic.DetailView):
 
         return context
 
-    # TODO 非ログインユーザにはコメントできないようにする。
     def post(self, request, *args, **kwargs):
         """
         コメントをDBに保存する
@@ -165,6 +167,9 @@ class BookDetailView(generic.DetailView):
         comment.user = user
         comment.book = book
         comment.save()
+
+        message = 'コメントを投稿しました。'
+        messages.info(request, message)
 
         return self.get_success_url()
 
@@ -192,6 +197,9 @@ class FavoriteAddView(LoginRequiredMixin, generic.View):
         favorite = Favorite(user=user, book=book)
         favorite.save()
 
+        message = book.title + 'をお気に入りに追加しました。'
+        messages.info(request, message)
+
         """
         処理成功後はお気に入りの追加を行ったページに遷移させる
         """
@@ -218,6 +226,9 @@ class WantedAddView(LoginRequiredMixin, generic.View):
 
         wanted = Wanted(user=user, book=book)
         wanted.save()
+
+        message = book.title + 'を読みたいに追加しました。'
+        messages.info(request, message)
 
         """
         処理成功後は読みたいの追加を行ったページに遷移させる
@@ -269,6 +280,9 @@ class FavoriteDeleteView(LoginRequiredMixin, generic.DeleteView):
         favorite = Favorite.objects.get(uuid=favorite_uuid)
         favorite.delete()
 
+        message = favorite.book.title + 'をお気に入りから削除しました。'
+        messages.info(request, message)
+
         success_url = self.get_success_url()
 
         return HttpResponseRedirect(success_url)
@@ -297,6 +311,9 @@ class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
         wanted_uuid = request.POST.get('wanted_uuid')
         wanted = Wanted.objects.get(uuid=wanted_uuid)
         wanted.delete()
+
+        message = wanted.book.title + 'を読みたいから削除しました。'
+        messages.info(request, message)
 
         success_url = self.get_success_url()
 
