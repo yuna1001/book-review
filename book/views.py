@@ -5,6 +5,7 @@ import requests
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, reverse
@@ -151,6 +152,11 @@ class BookDetailView(generic.DetailView):
         """
         コメントをDBに保存する
         """
+        if not self.request.user.is_authenticated:
+            message = 'ログインしてください。'
+            messages.info(request, message)
+            return redirect(reverse('book:detail', kwargs={'pk': self.kwargs['pk']}))
+
         form = CommentCreateForm(request.POST)
         comment = form.save(commit=False)
         user = self.request.user
