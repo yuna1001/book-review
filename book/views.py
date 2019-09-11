@@ -5,6 +5,7 @@ import requests
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, reverse
 from django.views import generic
@@ -121,13 +122,28 @@ class BookDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         """
-        書籍に紐づくコメントとコメント用のフォームを渡す
+        次の内容をcontextに含める
+        書籍に紐づくコメント・コメント用フォーム
+        ログインユーザが書籍をお気に入り・読みたいに追加しているか(bool)
         """
         context = super(BookDetailView, self).get_context_data(**kwargs)
-        book_uuid = self.kwargs.get('pk')
-        context['comment_list'] = Comment.objects.filter(book=book_uuid)
+
+        book = context.get("object")
+        context['comment_list'] = Comment.objects.filter(book=book)
 
         context['form'] = CommentCreateForm()
+
+        if self.request.user.is_authenticated:
+            added_favorite = Favorite.objects.filter(user=self.request.user, book=book).exists()
+            if added_favorite:
+                favorite = Favorite.objects.get(user=self.request.user, book=book)
+                context['favorite'] = favorite
+
+            added_wanted = Wanted.objects.filter(user=self.request.user, book=book).exists()
+            if added_wanted:
+                wanted = Wanted.objects.get(user=self.request.user, book=book)
+                context['wanted'] = wanted
+
         return context
 
     # TODO 非ログインユーザにはコメントできないようにする。
@@ -163,15 +179,15 @@ class FavoriteAddView(LoginRequiredMixin, generic.View):
         お気に入りをDBに追加する
         """
 
+        user = request.user
         book_uuid = request.POST.get('book_uuid')
         book = get_object_or_404(Book, uuid=book_uuid)
-        user = request.user
 
         favorite = Favorite(user=user, book=book)
         favorite.save()
 
         """
-        処理成功後はお気に入り追加を行ったページに遷移させる
+        処理成功後はお気に入りの追加を行ったページに遷移させる
         """
         template_name = request.POST.get('template_name')
         if template_name == 'book_list':
@@ -189,15 +205,16 @@ class WantedAddView(LoginRequiredMixin, generic.View):
         """
         読みたいをDBに追加する
         """
+
+        user = request.user
         book_uuid = request.POST.get('book_uuid')
         book = get_object_or_404(Book, uuid=book_uuid)
-        user = request.user
 
         wanted = Wanted(user=user, book=book)
         wanted.save()
 
         """
-        処理成功後はお気に入り追加を行ったページに遷移させる
+        処理成功後は読みたいの追加を行ったページに遷移させる
         """
         template_name = request.POST.get('template_name')
         if template_name == 'book_list':
@@ -214,15 +231,20 @@ class BookListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         """
-        ログインユーザのお気に入り・読みたいのデータをcontextに追加
+        ユーザのお気に入り・読みたいのデータをcontextに追加
         """
         context = super(BookListView, self).get_context_data(**kwargs)
 
-        favorite_list = Favorite.objects.filter(user=self.request.user)
-        context['favorite_list'] = favorite_list
+        # ログインユーザの場合は、
+        # お気に入り登録済み書籍・読みたい登録済み書籍の変数をcontextに追加
+        if self.request.user.is_authenticated:
+            favorite_list = Favorite.objects.filter(user=self.request.user)
+            fav_book_list = [fav.book for fav in favorite_list]
+            context['fav_book_list'] = fav_book_list
 
-        wanted_list = Wanted.objects.filter(user=self.request.user)
-        context['wanted_list'] = wanted_list
+            wanted_list = Wanted.objects.filter(user=self.request.user)
+            wanted_book_list = [wanted.book for wanted in wanted_list]
+            context['wanted_book_list'] = wanted_book_list
 
         return context
 
@@ -233,8 +255,27 @@ class FavoriteDeleteView(LoginRequiredMixin, generic.DeleteView):
     """
     model = Favorite
 
+    def delete(self, request, *args, **kwargs):
+        """
+        対象のFavoriteを削除する
+        """
+        favorite_uuid = request.POST.get('favorite_uuid')
+        favorite = Favorite.objects.get(uuid=favorite_uuid)
+        favorite.delete()
+
+        success_url = self.get_success_url()
+
+        return HttpResponseRedirect(success_url)
+
     def get_success_url(self):
-        return reverse('book:list')
+        """
+        処理成功後はお気に入りの削除を行ったページに遷移させる
+        """
+        template_name = self.request.POST.get('template_name')
+        if template_name == 'book_list':
+            return reverse('book:list')
+
+        return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
 
 class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -243,5 +284,24 @@ class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
     """
     model = Wanted
 
+    def delete(self, request, *args, **kwargs):
+        """
+        対象のWantedを削除する
+        """
+        wanted_uuid = request.POST.get('wanted_uuid')
+        wanted = Wanted.objects.get(uuid=wanted_uuid)
+        wanted.delete()
+
+        success_url = self.get_success_url()
+
+        return HttpResponseRedirect(success_url)
+
     def get_success_url(self):
-        return reverse('book:list')
+        """
+        処理成功後は読みたいの削除を行ったページに遷移させる
+        """
+        template_name = self.request.POST.get('template_name')
+        if template_name == 'book_list':
+            return reverse('book:list')
+
+        return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
