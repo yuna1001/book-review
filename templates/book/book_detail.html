@@ -58,6 +58,8 @@
                             <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
                             <button type="submit" class="btn btn-primary">お気に入り追加</button>
                         </form>
+                    </li>
+                    <li class="list-group-item">
                         <form action="{% url 'book:add_wanted' %}" method="POST" style="margin-top: 15px;">
                             {% csrf_token %}
                             <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
@@ -126,6 +128,7 @@
         </div>
     </div>
 </div>
+{% if user.is_authenticated %}
 <div class="comment-form" style="margin-top: 30px;">
     <h2>口コミを投稿する</h2>
     <form action="" method="POST">
@@ -134,5 +137,6 @@
         <button type="submit" class="btn btn-primary">コメントする</button>
     </form>
 </div>
+{% endif %}
 </div>
 {% endblock %}
