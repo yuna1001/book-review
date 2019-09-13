@@ -328,3 +328,45 @@ class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
             return reverse('book:list')
 
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
+
+
+class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """
+    コメントの編集を行うビュークラス
+    """
+    model = Comment
+    form_class = CommentCreateForm
+    template_name = 'book/comment_form.html'
+
+    def get_object(self, queryset=None):
+        """
+        編集対象のコメントを習得する
+        """
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        comment_uuid = self.kwargs['comment_pk']
+        queryset = queryset.filter(uuid=comment_uuid)
+
+        return queryset.get()
+
+    def form_valid(self, form):
+        """
+        フォームの入力内容を元にコメントを更新する
+        """
+        comment = form.save(commit=False)
+        user = self.request.user
+        book = Book.objects.get(uuid=self.kwargs['book_pk'])
+
+        comment.user = user
+        comment.book = book
+
+        comment.save()
+
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        """
+        処理成功後はコメントが紐づく書籍のページに遷移させる
+        """
+        return reverse('book:detail', kwargs={'pk': self.kwargs['book_pk']})
