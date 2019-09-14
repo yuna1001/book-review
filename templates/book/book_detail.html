@@ -123,6 +123,7 @@
                         </tr>
                     </tbody>
                 </table>
+                {% if user == comment.user %}
                 <div class="buttons" style="text-align:right;">
                     <button type="button" onclick="location.href='{% url 'book:update_comment' book.pk comment.pk %}'"
                         class="btn btn-primary" style="display: inline-block;"><i class="far fa-edit"> 編集</i></button>
@@ -154,6 +155,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
 
             {% endfor %}

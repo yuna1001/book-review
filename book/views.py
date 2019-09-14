@@ -2,12 +2,13 @@ import json
 import os
 
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, reverse
 from django.views import generic
+
 
 import environ
 import requests
@@ -17,6 +18,22 @@ from .models import (Book, Favorite, Wanted, Comment)
 
 env = environ.Env()
 env.read_env(os.path.join(settings.BASE_DIR, '.env'))
+
+
+class OnlyOwnerMixin(UserPassesTestMixin):
+    """
+    レコード所有者にのみ権限を付与するパーミッション定義クラス
+    """
+    raise_exception = True  # 他ユーザの投稿を編集・削除しようとすると403ページに遷移
+
+    def test_func(self):
+        """
+        レコードのuserのpkとリクエストuserのpkを比較
+        """
+        user = self.request.user
+        obj = self.get_object()
+
+        return user.pk == obj.user.pk
 
 
 class BookSearchView(generic.View):
@@ -331,7 +348,7 @@ class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
 
-class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
+class CommentUpdateView(OnlyOwnerMixin, LoginRequiredMixin, generic.UpdateView):
     """
     コメントの編集を行うビュークラス
     """
@@ -373,7 +390,7 @@ class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
         return reverse('book:detail', kwargs={'pk': self.kwargs['book_pk']})
 
 
-class CommentDeleteView(LoginRequiredMixin, generic.DeleteView):
+class CommentDeleteView(OnlyOwnerMixin, LoginRequiredMixin, generic.DeleteView):
     """
     コメントの削除を行うビュークラス
     """
