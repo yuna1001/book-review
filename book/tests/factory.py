@@ -4,7 +4,7 @@ from factory.fuzzy import FuzzyText
 
 from django.utils import timezone
 
-from book.models import Book
+from ..models import Book
 
 
 class BookFactory(DjangoModelFactory):

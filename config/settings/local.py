@@ -1,8 +1,11 @@
-import environ
 import os
 
-from config.settings.base import *
 from django.conf import settings
+
+import environ
+
+from .base import *
+
 
 env = environ.Env()
 env.read_env(os.path.join(settings.BASE_DIR, '.env'))

@@ -1,6 +1,6 @@
 from django import template
 
-from book.models import Favorite, Wanted
+from ..models import Favorite, Wanted
 
 register = template.Library()
 

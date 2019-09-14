@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from book.views import (
+from .views import (
     BookSearchView, BookAddView, BookDetailView, FavoriteAddView, WantedAddView, BookListView, FavoriteDeleteView, WantedDeleteView, CommentUpdateView, CommentDeleteView)
 
 app_name = 'book'
