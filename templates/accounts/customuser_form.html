@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
+<div class="row mt-4 justify-content-center mx-auto">
+    <div class="com-md-8">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form form layout='inline' %}
+            <button type="submit" class="btn btn-primary">更新</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
