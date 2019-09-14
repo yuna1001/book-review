@@ -62,7 +62,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True, blank=True)
 
     profile_pic = models.ImageField(
-        _('プロフィール画像'), blank=True, null=True)
+        _('プロフィール画像'), blank=True, null=True, default='noimage.jpg')
 
     is_staff = models.BooleanField(
         _('staff status'),

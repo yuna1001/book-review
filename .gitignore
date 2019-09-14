@@ -4,3 +4,4 @@
 accounts/migrations/*
 config/settings/production.py
 book/migrations/*
+media/*

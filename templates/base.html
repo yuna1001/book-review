@@ -53,18 +53,18 @@
                                     {{ user.username }}
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="#">プロフィール</a>
+                                    <a class="dropdown-item" href="{% url 'accounts:detail' user.uuid  %}">プロフィール</a>
                                     <a class="dropdown-item" href="{% url 'account_logout' %}">ログアウト</a>
                                 </div>
                             </li>
+                            {% else %}
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'account_login' %}">ログイン</a>
+                                </li>
+                            </ul>
+                            {% endif %}
                         </ul>
-                        {% else %}
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'account_login' %}">ログイン</a>
-                            </li>
-                        </ul>
-                        {% endif %}
                     </div>
             </nav>
         </header>
