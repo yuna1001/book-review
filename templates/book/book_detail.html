@@ -106,10 +106,19 @@
     <div class="container">
         <div class="row">
             {% for comment in comment_list %}
-            <div class="col-md-3" style="margin-top: 30px;">
-                {{ comment.user.username }}
+            <div class="col-md-2" style="margin-top: 30px;">
+                <div class="card user-profile-img-thumbnail">
+                    <div class="card-image">
+                        {% if user.profile_pic.url %}
+                        <img src="{{ user.profile_pic.url }}" class="profile-card-img-top" alt="...">
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        {{ comment.user.username }}
+                    </div>
+                </div>
             </div>
-            <div class="col-md-9" style="margin-top: 30px;">
+            <div class="col-md-10" style="margin-top: 30px;">
                 <table class="table">
                     <tbody>
                         <tr>
@@ -126,8 +135,9 @@
                 {% if user == comment.user %}
                 <div class="buttons" style="text-align:right;">
                     <button type="button" onclick="location.href='{% url 'book:update_comment' book.pk comment.pk %}'"
-                        class="btn btn-primary" style="display: inline-block;"><i class="far fa-edit"> 編集</i></button>
-                    <button type="button" class="btn btn-primary float-right" data-toggle="modal"
+                        class="btn btn-outline-primary" style="display: inline-block;"><i class="far fa-edit">
+                            編集</i></button>
+                    <button type="button" class="btn btn-outline-danger float-right" data-toggle="modal"
                         data-target="#exampleModal" style="display: inline-block; margin-left: 10px;">
                         <i class="far fa-trash-alt"> 削除</i>
                     </button>
