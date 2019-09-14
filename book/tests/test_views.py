@@ -1,14 +1,14 @@
+from http import HTTPStatus
 import random
 import string
-from http import HTTPStatus
 
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.shortcuts import get_object_or_404
+from django.test import TestCase
+from django.urls import reverse
 
-from book.models import Book, Favorite, Wanted
-from book.tests.factory import BookFactory
+from ..models import Book, Favorite, Wanted
+from .factory import BookFactory
 
 
 class TestBookSearchView(TestCase):

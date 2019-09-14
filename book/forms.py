@@ -1,5 +1,6 @@
 from django import forms
-from book.models import Comment
+
+from .models import Comment
 
 
 class BookSearchForm(forms.Form):
