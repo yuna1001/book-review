@@ -370,3 +370,28 @@ class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
         処理成功後はコメントが紐づく書籍のページに遷移させる
         """
         return reverse('book:detail', kwargs={'pk': self.kwargs['book_pk']})
+
+
+class CommentDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """
+    コメントの削除を行うビュークラス
+    """
+    model = Comment
+
+    def get_object(self, queryset=None):
+        """
+        削除対象のコメントを習得する
+        """
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        comment_uuid = self.kwargs['comment_pk']
+        queryset = queryset.filter(uuid=comment_uuid)
+
+        return queryset.get()
+
+    def get_success_url(self):
+        """
+        処理成功後はコメントが紐づく書籍のページに遷移させる
+        """
+        return reverse('book:detail', kwargs={'pk': self.kwargs['book_pk']})
