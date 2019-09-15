@@ -1,14 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import CustomUser
+from .models import CustomUser, Relation
 
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         ('User Infomation', {
             'fields': (
-                'username', 'email', 'profile_pic'
+                'username', 'email', 'profile_pic', 'relation'
             ),
         },),
         ('Authorization', {
@@ -25,4 +25,11 @@ class CustomUserAdmin(UserAdmin):
     list_editable = ('username', 'email', 'is_staff')
 
 
+class RelationAdmin(admin.ModelAdmin):
+    list_display = ('pk',)
+    list_display_links = ('pk',)
+    list_filter = ('user', 'followed')
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Relation, RelationAdmin)

@@ -4,7 +4,8 @@ import uuid
 from django.db import models
 from django.urls import reverse
 
-from accounts.models import CustomUser
+#from accounts.models import CustomUser
+#from django.conf import settings
 
 
 class TimeStampedModel(models.Model):
@@ -48,6 +49,8 @@ class Comment(TimeStampedModel):
     """
     コメントモデル
     """
+    from accounts.models import CustomUser
+
     class Meta:
         db_table = 'comment'
 
@@ -66,6 +69,8 @@ class Favorite(TimeStampedModel):
     """
     お気に入りモデル
     """
+    from accounts.models import CustomUser
+
     class Meta:
         db_table = 'favorite'
 
@@ -81,6 +86,9 @@ class Wanted(TimeStampedModel):
     """
     読みたいモデル
     """
+
+    from accounts.models import CustomUser
+
     class Meta:
         db_table = 'wanted'
 
