@@ -1,0 +1,26 @@
+h1.page-top-title {
+    text-align: center;
+    margin: 20px 20px;
+}
+
+div.card-image {
+    padding: 0%;
+    width: 100%;
+}
+
+img.img-thumbnail {
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    object-fit: cover;
+    padding: 0%;
+}
+
+div.button-wrapper {
+    text-align: center;
+    margin-top: 40px;
+}
+
+button {
+    width: 15%;
+}
