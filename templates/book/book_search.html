@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<h2 style="text-align: center; margin:20px">書籍検索</h2>
+<h1 class="page-top-title">書籍検索</h1>
 <div class="row justify-content-center">
     <form method="POST" class="form-inline">
         <div class="col-auto">
@@ -20,14 +20,16 @@
 </div>
 <div class="row search-result">
     {% for book in book_list %}
-    <div class="col-3">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
         <div class="card" style="margin:10px;">
             <div class="card-image">
-                <img src="{{ book.largeImageUrl }}" class="card-img-top" alt="...">
+                <img src="{{ book.largeImageUrl }}" class="img-thumbnail" alt="...">
             </div>
             <div class="card-body">
                 <h5 class="card-title text-truncate">{{ book.title }}</h5>
                 <p class="card-text text-truncate">{{ book.author }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-secondary">
                 <div class="forms text-center">
                     <form action="{% url 'book:add' %}" method="POST">
                         {% csrf_token %}

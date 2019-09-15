@@ -1,3 +1,8 @@
+h1.page-top-title {
+    text-align: center;
+    margin: 20px 20px;
+}
+
 div.card-image {
     padding: 10px;
     border-bottom: 1px solid transparent;
@@ -6,16 +11,16 @@ div.card-image {
     border-color: darkgray;
 }
 
-img.card-img-top {
+img.img-thumbnail {
     max-width: 100%;
-    height: 18vw;
+    height: auto;
     width: 100%;
     object-fit: cover;
 }
 
 div.user-profile-img-thumbnail img.profile-card-img-top {
     max-width: 100%;
-    height: 5vw;
+    height: auto;
     width: 100%;
     object-fit: cover;
 }
@@ -23,4 +28,31 @@ div.user-profile-img-thumbnail img.profile-card-img-top {
 div.user-profile-img-thumbnail div.card-body {
     padding: 0.25rem;
     text-align: center;
+}
+
+div.card-body {
+    padding: 0%;
+}
+
+li.list-group-item {
+    margin: 0%;
+    padding: 0.5em
+}
+
+li.list-group-item form button {
+    font-size: 0.75em;
+}
+
+h3.comment-post-list {
+    text-align: center;
+    margin: 30px 20px;
+}
+
+div.comment-post {
+    margin-top: 30px;
+}
+
+h3.comment-post-form {
+    text-align: center;
+    margin-top: 40px;
 }

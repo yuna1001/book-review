@@ -1,3 +1,8 @@
+h1.page-top-title {
+    text-align: center;
+    margin: 20px 20px;
+}
+
 div.search-result {
     margin: 20px;
     display: flex;
@@ -10,11 +15,11 @@ div.card-image {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     border-color: darkgray;
+    text-align: center;
 }
 
-img.card-img-top {
-    max-width: 100%;
-    height: 15vw;
-    width: 100%;
+img.img-thumbnail {
+    width: 180px;
+    height: 250px;
     object-fit: cover;
 }
