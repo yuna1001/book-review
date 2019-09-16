@@ -4,7 +4,7 @@ import uuid
 from django.db import models
 from django.urls import reverse
 
-from accounts.models import CustomUser
+from django.conf import settings
 
 
 class TimeStampedModel(models.Model):
@@ -48,11 +48,12 @@ class Comment(TimeStampedModel):
     """
     コメントモデル
     """
+
     class Meta:
         db_table = 'comment'
 
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     title = models.CharField(verbose_name='タイトル', max_length=50)
     score = models.FloatField(verbose_name='評価')
@@ -66,11 +67,12 @@ class Favorite(TimeStampedModel):
     """
     お気に入りモデル
     """
+
     class Meta:
         db_table = 'favorite'
 
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -81,11 +83,12 @@ class Wanted(TimeStampedModel):
     """
     読みたいモデル
     """
+
     class Meta:
         db_table = 'wanted'
 
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
     def __str__(self):
