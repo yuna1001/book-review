@@ -21,6 +21,10 @@ div.button-wrapper {
     margin-top: 40px;
 }
 
-button {
+div.button-wrapper button {
     width: 15%;
+}
+
+div.user-info-tabs {
+    margin-top: 45px;
 }
