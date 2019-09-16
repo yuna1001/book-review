@@ -41,25 +41,47 @@
     <div class="col-xs-12 com-sm-12 col-md-8 col-lg-8 mx-auto">
         <nav>
             <div class="nav nav-tabs w-100 nav-justified" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-                    aria-controls="nav-comment" aria-selected="true">コメント</a>
-                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-                    aria-controls="nav-favorite" aria-selected="false">お気に入り</a>
-                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+                <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-favorite"
+                    role="tab" aria-controls="nav-favorite" aria-selected="false">お気に入り</a>
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-wanted" role="tab"
                     aria-controls="nav-wanted" aria-selected="false">読みたい</a>
-                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+                <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-comment" role="tab"
+                    aria-controls="nav-comment" aria-selected="false">コメント</a>
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-follow" role="tab"
                     aria-controls="nav-follow" aria-selected="false">フォロー</a>
-                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-follower" role="tab"
                     aria-controls="nav-follower" aria-selected="false">フォロワー</a>
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-comment" role="tabpanel" aria-labelledby="nav-home-tab">...
+            <div class="tab-pane active" id="nav-favorite" role="tabpanel" aria-labelledby="nav-profile-tab">
+                お気に入り
+                {% for favorite in favorite_list %}
+                {{ favorite.book }}
+                {% endfor %}
             </div>
-            <div class="tab-pane fade" id="nav-favorite" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-            <div class="tab-pane fade" id="nav-wanted" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-            <div class="tab-pane fade" id="nav-follow" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-            <div class="tab-pane fade" id="nav-follower" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+            <div class="tab-pane fade" id="nav-wanted" role="tabpanel" aria-labelledby="nav-contact-tab">
+                読みたい
+                {% for wanted in wanted_list %}
+                {{ wanted.book }}
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="nav-comment" role="tabpanel" aria-labelledby="nav-home-tab">
+                コメント
+                {% for comment in comment_list %}
+                {{ comment }}
+                {{ comment.book }}
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="nav-follow" role="tabpanel" aria-labelledby="nav-contact-tab">
+                フォロー
+                {% for follow in following_list %}
+                {{ follow.followed }}
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="nav-follower" role="tabpanel" aria-labelledby="nav-contact-tab">フォロワー
+
+            </div>
         </div>
     </div>
 </div>
