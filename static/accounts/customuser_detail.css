@@ -8,7 +8,7 @@ div.card-image {
     width: 100%;
 }
 
-img.img-thumbnail {
+img.user-profile-img-thumbnail {
     max-width: 100%;
     height: auto;
     width: 100%;
@@ -27,4 +27,89 @@ div.button-wrapper button {
 
 div.user-info-tabs {
     margin-top: 45px;
+}
+
+div.book-card-image {
+    padding: 10px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-color: darkgray;
+    text-align: center;
+}
+
+div.card-fav-wanted {
+    width: 200px;
+    margin: 10px;
+    text-align: center;
+}
+
+img.book-img-thumbnail {
+    width: 120px;
+    height: 150px;
+    object-fit: cover;
+}
+
+div.book-card-body {
+    padding-bottom: 0%;
+}
+
+li.list-group-item {
+    margin: 0%;
+    padding: 0.5em
+}
+
+div.empty-block {
+    margin-top: 80px;
+    text-align: center;
+}
+
+li.list-group-item form button {
+    font-size: 0.75em;
+}
+
+div.user-profile-img-thumbnail img.profile-card-img-top {
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    object-fit: cover;
+}
+
+div.user-profile-img-thumbnail div.card-body {
+    padding: 0.25rem;
+    text-align: center;
+}
+
+div.comment-card {
+    width: 150px;
+    height: 160px;
+    text-align: center;
+}
+
+img.comment-book-img-thumbnail {
+    width: 80px;
+    height: 100px;
+}
+
+div.comment-book-card-body {
+    width: 100px;
+    height: 20px;
+    text-align: center;
+}
+
+p.comment-book-card-title {
+    text-align: center;
+}
+
+p.comment-book-card-text {
+    text-align: center;
+}
+
+div.follow-profile {}
+
+
+img.rounded-circle {
+    width: 180px;
+    height: 150px;
+    object-fit: cover;
 }

@@ -15,12 +15,12 @@ class CustomUserDetailView(generic.DetailView):
     template_name = 'accounts/customuser_detail.html'
 
     def get_context_data(self, **kwargs):
+        """
+        ユーザに紐づく情報を全て取得する
+        """
         context = super(CustomUserDetailView, self).get_context_data(**kwargs)
 
         user = self.get_object()
-
-        comment_list = Comment.objects.filter(user=user)
-        context['comment_list'] = comment_list
 
         favorite_list = Favorite.objects.filter(user=user)
         context['favorite_list'] = favorite_list
@@ -28,8 +28,14 @@ class CustomUserDetailView(generic.DetailView):
         wanted_list = Wanted.objects.filter(user=user)
         context['wanted_list'] = wanted_list
 
+        comment_list = Comment.objects.filter(user=user)
+        context['comment_list'] = comment_list
+
         following_list = Relation.objects.filter(user=user)
         context['following_list'] = following_list
+
+        followed_list = Relation.objects.filter(followed__in=[user])
+        context['followed_list'] = followed_list
 
         return context
 
