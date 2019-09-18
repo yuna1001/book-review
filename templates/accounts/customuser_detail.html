@@ -78,7 +78,8 @@
                                             <form action="{% url 'book:delete_favorite' %}" method="POST">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="favorite_uuid" value="{{ favorite.uuid }}">
-                                                <input type="hidden" name="template_name" value="book_list">
+                                                <input type="hidden" name="user_uuid" value="{{ user.uuid }}">
+                                                <input type="hidden" name="template_name" value="customuser_detail">
                                                 <button type="submit" class="btn btn-secondary">お気に入り追加済み</button>
                                             </form>
                                         </div>
@@ -120,7 +121,8 @@
                                         <form action="{% url 'book:delete_wanted' %}" method="POST">
                                             {% csrf_token %}
                                             <input type="hidden" name="wanted_uuid" value="{{ wanted.uuid }}">
-                                            <input type="hidden" name="template_name" value="book_list">
+                                            <input type="hidden" name="user_uuid" value="{{ user.uuid }}">
+                                            <input type="hidden" name="template_name" value="customuser_detail">
                                             <button type="submit" class="btn btn-secondary">読みたいに追加済み</button>
                                         </form>
                                     </div>
@@ -213,6 +215,8 @@
                                         <form action="{% url 'book:delete_comment' comment.book.uuid comment.uuid %}"
                                             method="POST">
                                             {% csrf_token %}
+                                            <input type="hidden" name="user_uuid" value="{{ user.uuid }}">
+                                            <input type="hidden" name="template_name" value="customuser_detail">
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">No</button>

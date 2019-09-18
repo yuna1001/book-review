@@ -312,6 +312,8 @@ class FavoriteDeleteView(LoginRequiredMixin, generic.DeleteView):
         template_name = self.request.POST.get('template_name')
         if template_name == 'book_list':
             return reverse('book:list')
+        if template_name == 'customuser_detail':
+            return reverse('accounts:detail', kwargs={'pk': str(self.request.POST['user_uuid'])})
 
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
@@ -344,6 +346,8 @@ class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
         template_name = self.request.POST.get('template_name')
         if template_name == 'book_list':
             return reverse('book:list')
+        if template_name == 'customuser_detail':
+            return reverse('accounts:detail', kwargs={'pk': str(self.request.POST['user_uuid'])})
 
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
@@ -408,8 +412,24 @@ class CommentDeleteView(OnlyOwnerMixin, LoginRequiredMixin, generic.DeleteView):
 
         return queryset.get()
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+
+        message = 'コメントを削除しました。'
+        messages.info(request, message)
+
+        return HttpResponseRedirect(success_url)
+
     def get_success_url(self):
         """
         処理成功後はコメントが紐づく書籍のページに遷移させる
         """
+
+        template_name = self.request.POST.get('template_name')
+
+        if template_name == 'customuser_detail':
+            return reverse('accounts:detail', kwargs={'pk': str(self.request.POST['user_uuid'])})
+
         return reverse('book:detail', kwargs={'pk': self.kwargs['book_pk']})
