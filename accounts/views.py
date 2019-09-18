@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.views import generic
 
 from .forms import CustomUserUpdateForm
+from book.models import Comment, Favorite, Wanted
+from .models import Relation
 
 
 class CustomUserDetailView(generic.DetailView):
@@ -11,6 +13,31 @@ class CustomUserDetailView(generic.DetailView):
     """
     model = get_user_model()
     template_name = 'accounts/customuser_detail.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        ユーザに紐づく情報を全て取得する
+        """
+        context = super(CustomUserDetailView, self).get_context_data(**kwargs)
+
+        user = self.get_object()
+
+        favorite_list = Favorite.objects.filter(user=user)
+        context['favorite_list'] = favorite_list
+
+        wanted_list = Wanted.objects.filter(user=user)
+        context['wanted_list'] = wanted_list
+
+        comment_list = Comment.objects.filter(user=user)
+        context['comment_list'] = comment_list
+
+        following_list = Relation.objects.filter(user=user)
+        context['following_list'] = following_list
+
+        followed_list = Relation.objects.filter(followed__in=[user])
+        context['followed_list'] = followed_list
+
+        return context
 
 
 class CustomUserUpdateView(generic.UpdateView):
