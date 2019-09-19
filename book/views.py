@@ -36,6 +36,19 @@ class OnlyOwnerMixin(UserPassesTestMixin):
         return user.pk == obj.user.pk
 
 
+class CustomLoginRequiredMixin(LoginRequiredMixin):
+
+    def dispatch(self, request, *args, **kwargs):
+        '''LoginRequiredMixinの関数を上書き
+            ログインしてない場合はフラッシュメッセージを表示させる
+        '''
+        if not request.user.is_authenticated:
+            message = 'ログインしてください。'
+            messages.info(request, message)
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+
 class BookSearchView(generic.View):
     """
     書籍検索を行うビュークラス
@@ -94,7 +107,7 @@ class BookSearchView(generic.View):
         return render(self.request, self.template_name, {'form': form, 'book_list': book_list})
 
 
-class BookAddView(LoginRequiredMixin, generic.View):
+class BookAddView(CustomLoginRequiredMixin, generic.View):
     """
     書籍の登録を行うビュークラス
     """
@@ -198,7 +211,7 @@ class BookDetailView(generic.DetailView):
         return redirect(reverse('book:detail', kwargs={'pk': self.kwargs['pk']}))
 
 
-class FavoriteAddView(LoginRequiredMixin, generic.View):
+class FavoriteAddView(CustomLoginRequiredMixin, generic.View):
     """
     お気に入りの追加を行うビュークラス
     """
@@ -228,7 +241,7 @@ class FavoriteAddView(LoginRequiredMixin, generic.View):
         return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
 
 
-class WantedAddView(LoginRequiredMixin, generic.View):
+class WantedAddView(CustomLoginRequiredMixin, generic.View):
     """
     読みたいの追加を行うビュークラス
     """
@@ -284,7 +297,7 @@ class BookListView(generic.ListView):
         return context
 
 
-class FavoriteDeleteView(LoginRequiredMixin, generic.DeleteView):
+class FavoriteDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteView):
     """
     お気に入りの削除を行うビュークラス
     """
@@ -318,7 +331,7 @@ class FavoriteDeleteView(LoginRequiredMixin, generic.DeleteView):
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
 
-class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
+class WantedDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteView):
     """
     読みたいの削除を行うビュークラス
     """
@@ -352,7 +365,7 @@ class WantedDeleteView(LoginRequiredMixin, generic.DeleteView):
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
 
-class CommentUpdateView(OnlyOwnerMixin, LoginRequiredMixin, generic.UpdateView):
+class CommentUpdateView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.UpdateView):
     """
     コメントの編集を行うビュークラス
     """
@@ -394,7 +407,7 @@ class CommentUpdateView(OnlyOwnerMixin, LoginRequiredMixin, generic.UpdateView):
         return reverse('book:detail', kwargs={'pk': self.kwargs['book_pk']})
 
 
-class CommentDeleteView(OnlyOwnerMixin, LoginRequiredMixin, generic.DeleteView):
+class CommentDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteView):
     """
     コメントの削除を行うビュークラス
     """
@@ -413,6 +426,9 @@ class CommentDeleteView(OnlyOwnerMixin, LoginRequiredMixin, generic.DeleteView):
         return queryset.get()
 
     def delete(self, request, *args, **kwargs):
+        """
+        コメントの削除とフラッシュメッセージを表示する
+        """
         self.object = self.get_object()
         success_url = self.get_success_url()
         self.object.delete()
@@ -424,7 +440,7 @@ class CommentDeleteView(OnlyOwnerMixin, LoginRequiredMixin, generic.DeleteView):
 
     def get_success_url(self):
         """
-        処理成功後はコメントが紐づく書籍のページに遷移させる
+        処理成功後はコメント削除を行ったページに遷移させる
         """
 
         template_name = self.request.POST.get('template_name')
