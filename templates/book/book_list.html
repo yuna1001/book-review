@@ -24,8 +24,8 @@
                 <p class="card-text text-truncate">{{ book.author }}</p>
 
                 {% if user.is_authenticated %}
-                <!-- お気に入り -->
                 <ul class="list-group list-group-flush text-center">
+                    <!-- お気に入り -->
                     <li class="list-group-item">
                         <div class="form-favorite text-center">
                             {% if book in fav_book_list %}
@@ -66,8 +66,11 @@
                             {% endif %}
                         </div>
                     </li>
+                </ul>
 
-                    {% else %}
+                {% else %}
+                <ul class="list-group list-group-flush text-center">
+                    <!-- お気に入り -->
                     <li class="list-group-item">
                         <div class="form-favorite text-center">
                             <form action="{% url 'book:add_favorite' %}" method="POST">
@@ -77,6 +80,9 @@
                                 <button type="submit" class="btn btn-primary">お気に入り追加</button>
                             </form>
                         </div>
+                    </li>
+                    <!-- 読みたい -->
+                    <li class="list-group-item">
                         <div class="form-favorite text-center">
                             <form action="{% url 'book:add_wanted' %}" method="POST">
                                 {% csrf_token %}
@@ -86,8 +92,8 @@
                             </form>
                         </div>
                     </li>
-                    {% endif %}
                 </ul>
+                {% endif %}
             </div>
         </div>
     </div>
