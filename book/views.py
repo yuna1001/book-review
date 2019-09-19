@@ -303,6 +303,11 @@ class FavoriteDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delet
     """
     model = Favorite
 
+    def get_object(self):
+        favorite_uuid = self.request.POST.get('favorite_uuid')
+        favorite = Favorite.objects.get(uuid=favorite_uuid)
+        return favorite
+
     def delete(self, request, *args, **kwargs):
         """
         対象のFavoriteを削除する
@@ -404,6 +409,7 @@ class CommentUpdateView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Update
         """
         処理成功後はコメントが紐づく書籍のページに遷移させる
         """
+
         return reverse('book:detail', kwargs={'pk': self.kwargs['book_pk']})
 
 
