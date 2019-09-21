@@ -32,12 +32,33 @@
         </table>
     </div>
 </div>
+<!-- ユーザ情報変更ボタン -->
 {% if user == customuser %}
 <div class="button-wrapper">
     <button class="btn btn-primary" type="button"
         onclick="location.href='{% url 'accounts:update' user.uuid %}'">変更する</button>
 </div>
 {% endif %}
+
+<!-- フォローボタン -->
+{% if customuser != user %}
+{% if customuser not in request_user_following_user_list %}
+<div class="button-wrapper">
+    <form action="{% url 'accounts:follow' customuser.uuid %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">フォローする</button>
+    </form>
+</div>
+{% else %}
+<div class="button-wrapper">
+    <form action="{% url 'accounts:unfollow' customuser.uuid %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">フォロー解除</button>
+    </form>
+</div>
+{% endif %}
+{% endif %}
+
 <!-- ユーザ情報タブ -->
 <div class="user-info-tabs">
     <div class="col-xs-12 com-sm-12 col-md-10 col-lg-10 mx-auto">
@@ -262,7 +283,7 @@
                     {% empty %}
                     <div class="col-12">
                         <div class="empty-block mx-auto">
-                            <h4>フォローしているユーザはいません。</h4>
+                            <h4>あなたがフォローしているユーザはいません。</h4>
                         </div>
                     </div>
                     {% endfor %}
@@ -290,7 +311,7 @@
                     {% empty %}
                     <div class="col-12">
                         <div class="empty-block mx-auto">
-                            <h4>フォローされているユーザはいません。</h4>
+                            <h4>あなたをフォローしているユーザはいません。</h4>
                         </div>
                     </div>
                     {% endfor %}

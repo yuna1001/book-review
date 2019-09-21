@@ -116,9 +116,14 @@ class Relation(models.Model):
     フォロー・フォロワーのモデル
     """
 
+    uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='ユーザ', null=True,
                              on_delete=models.SET_NULL, related_name='follow_user')
 
     # ユーザがフォローしている人
     followed = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='フォロー', null=True,
                                  on_delete=models.SET_NULL, related_name='followed_user')
+
+    class Meta:
+        unique_together = ('user', 'followed')
