@@ -132,6 +132,10 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 # SocialAccountモデル
 SOCIALACCOUNT_EMAIL_VERIFICATION = ACCOUNT_EMAIL_VERIFICATION
 SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_FORMS = {
+    'signup': 'accounts.forms.CustomSocialSignupForm',
+}
+SOCIALACCOUNT_ADAPTER = 'accounts.adapter.CustomSocialAccountAdapter'
 LOGIN_ON_EMAIL_CONFIRMATION = True
 SOCIALACCOUNT_QUERY_EMAIL = False
 
@@ -144,4 +148,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_FORMS = {
+    'signup': 'accounts.forms.CustomSignupForm',
+}
+ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
