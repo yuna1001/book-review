@@ -1,10 +1,26 @@
 from django.contrib.auth import get_user_model
-from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.shortcuts import redirect, reverse
 from django.views import generic
+
 
 from .forms import CustomUserUpdateForm
 from book.models import Comment, Favorite, Wanted
-from .models import Relation
+from .models import CustomUser, Relation
+
+
+class CustomLoginRequiredMixin(LoginRequiredMixin):
+
+    def dispatch(self, request, *args, **kwargs):
+        '''LoginRequiredMixinの関数を上書き
+            ログインしてない場合はフラッシュメッセージを表示させる
+        '''
+        if not request.user.is_authenticated:
+            message = 'ログインしてください。'
+            messages.info(request, message)
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CustomUserDetailView(generic.DetailView):
@@ -16,7 +32,7 @@ class CustomUserDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         """
-        ユーザに紐づく情報を全て取得する
+        ユーザ詳細ページに表示する情報をcontextに追加する
         """
         context = super(CustomUserDetailView, self).get_context_data(**kwargs)
 
@@ -37,7 +53,22 @@ class CustomUserDetailView(generic.DetailView):
         followed_list = Relation.objects.filter(followed__in=[user])
         context['followed_list'] = followed_list
 
+        request_user_following_user_list = self.get_request_user_following_list()
+        context['request_user_following_user_list'] = request_user_following_user_list
+
         return context
+
+    def create_request_user_following_user_list(self):
+        """
+        ログインユーザの場合のみcontext用のフォローリストを作成する
+        """
+        if not self.request.user.is_authenticated:
+            return []
+
+        following_list = Relation.objects.filter(user=self.request.user)
+        request_user_following_user_list = [relation.followed for relation in following_list]
+
+        return request_user_following_user_list
 
 
 class CustomUserUpdateView(generic.UpdateView):
@@ -53,3 +84,47 @@ class CustomUserUpdateView(generic.UpdateView):
         処理成功後は対象のユーザ詳細ページに遷移させる
         """
         return reverse('accounts:detail', kwargs={'pk': self.request.user.uuid})
+
+
+class CustomUserFollowView(CustomLoginRequiredMixin, generic.View):
+    """
+    ユーザのフォローを行うビュークラス
+    """
+
+    def post(self, request, *args, **kwargs):
+        """
+        pkを元に対象のユーザをフォローする
+        """
+
+        user = self.request.user
+        followed_user = CustomUser.objects.get(uuid=self.kwargs['pk'])
+
+        relation = Relation(user=user, followed=followed_user)
+        relation.save()
+
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('accounts:detail', kwargs={'pk': self.kwargs['pk']})
+
+
+class CustomUserUnfollowView(CustomLoginRequiredMixin, generic.View):
+    """
+    ユーザのフォロー解除を行うビュークラス
+    """
+
+    def post(self, request, *args, **kwargs):
+        """
+        pkを元に対象のユーザのフォローを解除する
+        """
+
+        user = self.request.user
+        unfollowd_user = CustomUser.objects.get(uuid=self.kwargs['pk'])
+
+        relation = Relation.objects.get(user=user, followed=unfollowd_user)
+        relation.delete()
+
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('accounts:detail', kwargs={'pk': self.kwargs['pk']})
