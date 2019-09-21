@@ -10,7 +10,7 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
 class CustomAccountAdapter(DefaultAccountAdapter):
     """
-    非ソーシャルアカウントユーザ用のAdapter定義
+    非ソーシャルアカウントユーザ用のアダプタクラス
     """
 
     def save_user(self, request, user, form, commit=True):
@@ -30,15 +30,14 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         user_email(user, email)
 
         """
-        プロフィール画像があれば登録
-        無ければ登録しない
+        プロフィール画像が選択・送信されていれば登録する
         """
         try:
-            profile_pic_file = request.FILES['profile_pic']  # アップロードされたファイルの取得
+            profile_pic_file = request.FILES['profile_pic']
             profile_pic_name = username + '_' + profile_pic_file.name
 
             user.profile_pic.save(profile_pic_name, profile_pic_file)
-        except KeyError:  # ファイル取得でエラーになった際は登録しない。
+        except KeyError:  # ファイル取得でキーエラーになった際は登録しない
             pass
 
         if 'password1' in data:
@@ -46,6 +45,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         else:
             user.set_unusable_password()
         self.populate_username(request, user)
+
         if commit:
             user.save()
         return user
@@ -53,17 +53,15 @@ class CustomAccountAdapter(DefaultAccountAdapter):
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     """
-    ソーシャルアカウントユーザ用のAdapter定義
+    ソーシャルアカウントユーザ用のアダプタクラス
     """
 
     def save_user(self, request, sociallogin, form=None):
-        """
-        Twitterのユーザ名をCustomUserのfull_nameに設定
-        """
+
         user = sociallogin.user
 
         data = form.cleaned_data
-        username = data['username']
+        username = data['username']  # ソーシャルアカウントのユーザ名を自動で入れてくれる
         email = data['email']
 
         """

@@ -8,10 +8,8 @@ from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 
 class CustomSignupForm(SignupForm):
     """
-    allauthの非ソーシャルログイン用のフォーム定義
+    allauthの非ソーシャルログイン用のフォームクラス
     """
-    #username = forms.CharField(label=('ユーザ名'), max_length=25, required=True)
-    #email = forms.EmailField(label=('Eメール'), required=True)
     profile_pic = forms.FileField(label=('プロフィール画像'), required=False)
 
     def save(self, request):
@@ -25,7 +23,7 @@ class CustomSignupForm(SignupForm):
 
 class CustomSocialSignupForm(SocialSignupForm):
     """
-    ソーシャルログイン用のフォーム定義
+    ソーシャルログイン用のフォームクラス
     """
 
     profile_pic = forms.FileField(label=('プロフィール画像'), required=False)
