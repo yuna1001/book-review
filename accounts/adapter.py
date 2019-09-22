@@ -1,6 +1,6 @@
 import requests
 
-from django.core.files.images import ImageFile
+from django.core.files.base import ContentFile
 
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.adapter import get_adapter as get_account_adapter
@@ -33,7 +33,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         プロフィール画像が選択・送信されていれば登録する
         """
         try:
-            profile_pic_file = request.FILES['profile_pic']
+            profile_pic_file = request.FILES.get('profile_pic')
             profile_pic_name = username + '_' + profile_pic_file.name
 
             user.profile_pic.save(profile_pic_name, profile_pic_file)
@@ -41,7 +41,8 @@ class CustomAccountAdapter(DefaultAccountAdapter):
             pass
 
         if 'password1' in data:
-            user.set_password(data["password1"])
+            # user.set_password(data["password1"])
+            user.set_password(data.get('password1'))
         else:
             user.set_unusable_password()
         self.populate_username(request, user)
@@ -61,8 +62,8 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user = sociallogin.user
 
         data = form.cleaned_data
-        username = data['username']  # ソーシャルアカウントのユーザ名を自動で入れてくれる
-        email = data['email']
+        username = data.get('username')  # ソーシャルアカウントのユーザ名を自動で入れてくれる
+        email = data.get('email')
 
         """
         django-allauth/allauth/account/utils.pyのuser_fieldを使用
@@ -72,17 +73,18 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user_email(user, email)
 
         try:
-            profile_pic_file = request.FILES['profile_pic']  # アップロードされたファイルの取得
+            profile_pic_file = request.FILES.get('profile_pic')  # アップロードされたファイルの取得
             profile_pic_name = username + '_' + profile_pic_file.name
 
             user.profile_pic.save(profile_pic_name, profile_pic_file)
-
         except KeyError:  # プロフィール画像が選択されていない・アップロードファイルの取得に失敗した場合
             profile_pic_url = sociallogin.account.extra_data.get(
                 'profile_image_url_https', None)
             response = requests.get(profile_pic_url)
 
-            user.profile_pic.save('hoge.png', ImageFile(response.content), save=True)
+            profile_pic_name = username + '.jpg'
+
+            user.profile_pic.save(profile_pic_name, ContentFile(response.content), save=True)
 
         user.set_unusable_password()
         get_account_adapter().populate_username(request, user)

@@ -53,7 +53,7 @@ class CustomUserDetailView(generic.DetailView):
         followed_list = Relation.objects.filter(followed__in=[user])
         context['followed_list'] = followed_list
 
-        request_user_following_user_list = self.get_request_user_following_list()
+        request_user_following_user_list = self.create_request_user_following_user_list()
         context['request_user_following_user_list'] = request_user_following_user_list
 
         return context
