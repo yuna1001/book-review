@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.urls import reverse
 
-from ..models import Book, Favorite, Wanted
+from ..models import Book, Comment, Favorite, Wanted
 from .factory import BookFactory
 
 
@@ -30,8 +30,8 @@ class TestBookSearchView(TestCase):
         })
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(response.context['book_list'])
-        self.assertFalse(response.context['form'].errors)
+        self.assertTrue(response.context.get('book_list'))
+        self.assertFalse(response.context.get('form').errors)
         self.assertTemplateUsed(response, 'book/book_search.html')
 
     def test_invalid_search_word(self):
@@ -40,19 +40,19 @@ class TestBookSearchView(TestCase):
         """
         invalid_search_word_length = 51
 
-        invalid_search_word = self.randomname(invalid_search_word_length)
+        invalid_search_word = self.create_random_name(invalid_search_word_length)
 
         response = self.client.post(reverse('book:search'), {
             'book_name': invalid_search_word,
         })
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(response.context['form'].errors)
+        self.assertTrue(response.context.get('form').errors)
 
         expected_message = 'この値は 50 文字以下でなければなりません( ' + str(invalid_search_word_length) + ' 文字になっています)。'
-        self.assertEqual(response.context['form'].errors['book_name'][0], expected_message)
+        self.assertEqual(response.context.get('form').errors['book_name'][0], expected_message)
 
-    def randomname(self, n):
+    def create_random_name(self, n):
         randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
         return ''.join(randlst)
 
@@ -117,24 +117,46 @@ class TestBookDetailView(TestCase):
         """
         書籍の詳細ページを表示する機能のテスト
         """
-        expected_book_title = 'book_title'
+        expected_book_title = 'テストタイトル'
         book = BookFactory(title=expected_book_title)
 
         response = self.client.get(reverse('book:detail', args=[book.uuid]))
 
         self.assertTemplateUsed(response, 'book/book_detail.html')
-        self.assertEqual(expected_book_title, response.context['book'].title)
+        self.assertEqual(expected_book_title, response.context.get('book').title)
 
     def test_add_comment(self):
         """
-        書籍のコメント機能のテスト
+        書籍へのコメント機能のテスト
         """
         book_title = 'Django'
         book = BookFactory(title=book_title)
         self.comment_info['book'] = book
 
-        response = self.client.post(reverse('book:detail', kwargs={'pk': book.uuid}), self.comment_info, follow=True)
+        response = self.client.post(reverse('book:detail', kwargs={'pk': book.uuid}),
+                                    self.comment_info, follow=True)
+
         self.assertEqual(self.comment_title, response.context.get('comment_list')[0].title)
+        self.assertRedirects(response, reverse('book:detail', kwargs={'pk': book.uuid}))
+
+    def test_delete_comment(self):
+        """
+        書籍に紐付いたコメント削除のテスト
+        """
+
+        book_title = 'Django'
+        book = BookFactory(title=book_title)
+        self.comment_info['book'] = book
+        self.client.post(reverse('book:detail', kwargs={'pk': book.uuid}),
+                         self.comment_info, follow=True)
+
+        comment = get_object_or_404(Comment, title=self.comment_title)
+
+        response = self.client.post(reverse('book:delete_comment', kwargs={
+            'book_pk': book.uuid,
+            'comment_pk': comment.uuid, },), follow=True)
+
+        self.assertRedirects(response, reverse('book:detail', kwargs={'pk': book.uuid}))
 
 
 class TestFavoriteAddView(TestCase):
