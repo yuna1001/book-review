@@ -1,0 +1,95 @@
+version: 2.1
+
+executors:
+  test_default:
+    working_directory: ~/book-review
+    docker:
+    - image: circleci/python:3.7
+      environment:
+        PYTHONDONTWRITEBYTECODE: 1
+        PYTHONUNBUFFERED: 1
+        TZ: Asia/Tokyo
+    - image: circleci/postgres:11.2
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_DB: postgres
+        TZ: Asia/Tokyo
+  deploy_default:
+    working_directory: ~/book-review
+    docker:
+    - image: circleci/python:3.7
+      environment:
+        PYTHONDONTWRITEBYTECODE: 1
+        PYTHONUNBUFFERED: 1
+        TZ: Asia/Tokyo
+
+commands:
+  save_python_package:
+    description: "pip install したpackageをキャッシュする"
+    steps:
+      - save_cache:
+          name: Save Python Package
+          key: book-review-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+          - /usr/local/bin
+          - /usr/local/lib/python3.7/site-packages
+  restore_python_package:
+    description: "pip install したpackageのキャッシュを読み込む"
+    steps:
+      - restore_cache:
+          name: Restore Python Package
+          keys:
+          - book-review-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          - book-review
+  chown_python_package:
+    description: "pip install したpackage群の権限をcircleciユーザに変更する"
+    steps:
+      - run:
+          name: Change Owner Python Package Directory
+          command: |
+            sudo chown -R circleci:circleci /usr/local/bin
+            sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+
+jobs:
+  build:
+    executor: test_default
+    steps:
+      - checkout
+      - chown_python_package
+      - restore_python_package
+      - run:
+          name: pip install
+          command: pip3 install -r requirements.txt --user
+      - save_python_package
+      - run: python3 manage.py test --settings=config.settings.circleci_test
+      - run:
+          name: test
+          command: python3 manage.py test --settings=config.settings.circleci_test
+  deploy:
+    executor: deploy_default
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+          - db:d2:34:41:76:66:de:51:0a:de:40:b9:de:b9:c0:35
+      - run:
+          name: Start ssh-key-scan
+          command: ssh-keyscan ${HOST_NAME} >> ~/.ssh/known_hosts
+      - run:
+          name: Start install rsync
+          command: sudo apt install -y rsync
+      - run:
+          name: Start rsync
+          command: rsync -av --exclude='Dockerfile-djangoapp' --exclude='circleci-config.yml'
+            --exclude='Dockerfile-nginx' --exclude='ecs-params.yml' --exclude='.ssh'
+            --exclude='.git' --exclude='.circleci' . ${USER_NAME}@${HOST_NAME}:/home/webapp/mysite
+      - run:
+          name: Restart service
+          command: ssh ${USER_NAME}@${HOST_NAME} "sudo systemctl stop mysite.socket;
+            sudo systemctl stop mysite; sudo systemctl restart mysite.socket; sudo systemctl
+            restart mysite"
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+    - build
