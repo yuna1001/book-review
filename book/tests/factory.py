@@ -1,9 +1,22 @@
+import factory
 from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyText
 
 from django.utils import timezone
 
-from ..models import Book
+from accounts.models import CustomUser
+from ..models import Book, Comment, Favorite, Wanted
+
+
+class CustomUserFactory(DjangoModelFactory):
+    class Meta:
+        model = CustomUser
+
+    username = FuzzyText()
+    email = 'test@example.com'
+
+    # passwordとして'defaultpassword'を設定
+    password = factory.PostGenerationMethodCall('set_password', 'defaultpassword')
 
 
 class BookFactory(DjangoModelFactory):
@@ -19,3 +32,30 @@ class BookFactory(DjangoModelFactory):
     publisher = FuzzyText()
     published_date = timezone.now()
     affiliate_url = 'http://example.com'
+
+
+class CommentFactory(DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    user = factory.SubFactory(CustomUserFactory)
+    book = factory.SubFactory(BookFactory)
+    title = factory.Sequence(lambda n: "Agent %03d" % n)
+    score = '1'
+    content = FuzzyText()
+
+
+class FavoriteFactory(DjangoModelFactory):
+    class Meta:
+        model = Favorite
+
+    user = factory.SubFactory(CustomUserFactory)
+    book = factory.SubFactory(BookFactory)
+
+
+class WantedFactory(DjangoModelFactory):
+    class Meta:
+        model = Wanted
+
+    user = factory.SubFactory(CustomUserFactory)
+    book = factory.SubFactory(BookFactory)

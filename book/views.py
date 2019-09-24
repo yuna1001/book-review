@@ -312,8 +312,7 @@ class FavoriteDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delet
         """
         対象のFavoriteを削除する
         """
-        favorite_uuid = request.POST.get('favorite_uuid')
-        favorite = Favorite.objects.get(uuid=favorite_uuid)
+        favorite = self.get_object()
         favorite.delete()
 
         message = favorite.book.title + 'をお気に入りから削除しました。'
@@ -342,12 +341,16 @@ class WantedDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteV
     """
     model = Wanted
 
+    def get_object(self):
+        wanted_uuid = self.request.POST.get('wanted_uuid')
+        wanted = Wanted.objects.get(uuid=wanted_uuid)
+        return wanted
+
     def delete(self, request, *args, **kwargs):
         """
         対象のWantedを削除する
         """
-        wanted_uuid = request.POST.get('wanted_uuid')
-        wanted = Wanted.objects.get(uuid=wanted_uuid)
+        wanted = self.get_object()
         wanted.delete()
 
         message = wanted.book.title + 'を読みたいから削除しました。'
@@ -370,6 +373,7 @@ class WantedDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteV
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
 
+# TODO コメント編集後のフラッシュメッセージを追加
 class CommentUpdateView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.UpdateView):
     """
     コメントの編集を行うビュークラス
