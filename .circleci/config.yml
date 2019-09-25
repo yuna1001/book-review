@@ -49,6 +49,28 @@ commands:
           command: |
             sudo chown -R circleci:circleci /usr/local/bin
             sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+  run_pip_install:
+    description: "requirements.txtを元にpip installを実行する"
+    steps:
+      - run:
+          name: Start pip install
+          command: |
+            pip install -r requirements.txt --user
+  db_migrations:
+    description: "テスト実行用DBのマイグレーションを行う"
+    steps:
+      - run:
+          name: Start db migrations
+          command: |
+            python3 manage.py makemigrations --settings=config.settings.circleci_test
+            python3 manage.py migrate --settings=config.settings.circleci_test
+  run_test:
+    description: "テストを実行する"
+    steps:
+      - run:
+          name: Start running test
+          command: python3 manage.py test --settings=config.settings.circleci_test
+
 
 jobs:
   build:
@@ -57,16 +79,10 @@ jobs:
       - checkout
       - chown_python_package
       - restore_python_package
-      - run:
-          name: pip install
-          command: pip3 install -r requirements.txt --user
+      - run_pip_install
       - save_python_package
-      - run: python3 manage.py makemigrations --settings=config.settings.circleci_test
-      - run: python3 manage.py migrate --settings=config.settings.circleci_test
-      - run: python3 manage.py test --settings=config.settings.circleci_test
-      - run:
-          name: test
-          command: python3 manage.py test --settings=config.settings.circleci_test
+      - db_migrations
+      - run_test
   deploy:
     executor: deploy_default
     steps:
