@@ -11,3 +11,7 @@ div.button-wrapper {
 button {
     width: 18%;
 }
+
+div.change-password {
+    text-align: right;
+}
