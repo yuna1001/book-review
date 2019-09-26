@@ -342,6 +342,10 @@ class TestBookListView(TestCase):
 
 
 class TestFavoriteDeleteView(TestCase):
+    """
+    お気に入り削除を行うビュークラスのテスト
+    """
+
     def setUp(self):
         """
         テストセットアップ
@@ -434,6 +438,10 @@ class TestFavoriteDeleteView(TestCase):
 
 
 class TestWantedDeleteView(TestCase):
+    """
+    読みたい削除を行うビュークラスのテスト
+    """
+
     def setUp(self):
         """
         テストセットアップ
@@ -531,6 +539,10 @@ class TestCommentUpdateView(TestCase):
     """
 
     def setUp(self):
+        """
+        テストセットアップ
+        """
+
         self.user = CustomUserFactory(username='テストユーザ')
         self.client.login(username=self.user.username, password='defaultpassword')
         self.expected_book_title = 'テストタイトル'
@@ -585,8 +597,15 @@ class TestCommentUpdateView(TestCase):
 
 
 class TestCommentDeleteView(TestCase):
+    """
+    コメントの削除を行うビュークラスのテスト
+    """
 
     def setUp(self):
+        """
+        テストセットアップ
+        """
+
         self.user = CustomUserFactory(username='テストユーザ')
         self.client.login(username=self.user.username, password='defaultpassword')
         self.expected_book_title = 'テストタイトル'
@@ -641,3 +660,63 @@ class TestCommentDeleteView(TestCase):
         self.assertEqual(str(messages[0]), expected_message)
 
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': book.uuid}))
+
+
+class TestFavoriteLankingListView(TestCase):
+    """
+    お気に入り数の降順で一覧表示を行うビュークラスのテスト
+    """
+
+    def setUp(self):
+        """
+        テストセットアップ
+        """
+
+        self.user = CustomUserFactory(username='テストユーザ')
+        self.client.login(username=self.user.username, password='defaultpassword')
+        self.book = BookFactory()
+
+    def test_book_order(self):
+        """
+        お気に入り追加数順にbook_listが生成されるかテスト
+        """
+
+        FavoriteFactory(user=self.user, book=self.book)
+        book2 = BookFactory()
+
+        response = self.client.get(reverse('book:favorite_lanking'))
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context.get('book_list')[0], self.book)
+        self.assertEqual(response.context.get('book_list')[1], book2)
+        self.assertTemplateUsed(response, 'book/book_fav_lanking.html')
+
+
+class TestWantedLankingListView(TestCase):
+    """
+    読みたい数の降順で一覧表示を行うビュークラスのテスト
+    """
+
+    def setUp(self):
+        """
+        テストセットアップ
+        """
+
+        self.user = CustomUserFactory(username='テストユーザ')
+        self.client.login(username=self.user.username, password='defaultpassword')
+        self.book = BookFactory()
+
+    def test_book_order(self):
+        """
+        読みたい追加数順にbook_listが生成されるかテスト
+        """
+
+        WantedFactory(user=self.user, book=self.book)
+        book2 = BookFactory()
+
+        response = self.client.get(reverse('book:wanted_lanking'))
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context.get('book_list')[0], self.book)
+        self.assertEqual(response.context.get('book_list')[1], book2)
+        self.assertTemplateUsed(response, 'book/book_wanted_lanking.html')

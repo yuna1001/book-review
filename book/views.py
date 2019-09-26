@@ -228,6 +228,9 @@ class FavoriteAddView(CustomLoginRequiredMixin, generic.View):
         favorite = Favorite(user=user, book=book)
         favorite.save()
 
+        book.fav_count += 1
+        book.save()
+
         message = book.title + 'をお気に入りに追加しました。'
         messages.info(request, message)
 
@@ -257,6 +260,9 @@ class WantedAddView(CustomLoginRequiredMixin, generic.View):
 
         wanted = Wanted(user=user, book=book)
         wanted.save()
+
+        book.wanted_count += 1
+        book.save()
 
         message = book.title + 'を読みたいに追加しました。'
         messages.info(request, message)
@@ -313,6 +319,12 @@ class FavoriteDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delet
         対象のFavoriteを削除する
         """
         favorite = self.get_object()
+        book = favorite.book
+
+        if book.fav_count:
+            book.fav_count -= 1
+            book.save()
+
         favorite.delete()
 
         message = favorite.book.title + 'をお気に入りから削除しました。'
@@ -351,6 +363,12 @@ class WantedDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteV
         対象のWantedを削除する
         """
         wanted = self.get_object()
+        book = wanted.book
+
+        if book.wanted_count:
+            book.wanted_count -= 1
+            book.save()
+
         wanted.delete()
 
         message = wanted.book.title + 'を読みたいから削除しました。'
@@ -459,3 +477,67 @@ class CommentDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delete
             return reverse('accounts:detail', kwargs={'pk': str(self.request.POST['user_uuid'])})
 
         return reverse('book:detail', kwargs={'pk': self.kwargs['book_pk']})
+
+
+class FavoriteLankingListView(generic.ListView):
+    model = Book
+    template_name = 'book/book_fav_lanking.html'
+
+    def get_queryset(self):
+        """
+        お気に入り追加数で書籍を取得
+        """
+
+        queryset = Book.objects.all().order_by('-fav_count')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        """
+        ユーザのお気に入り・読みたいのデータをcontextに追加
+        """
+        context = super(FavoriteLankingListView, self).get_context_data(**kwargs)
+
+        # ログインユーザの場合は、
+        # お気に入り登録済み書籍・読みたい登録済み書籍の変数をcontextに追加
+        if self.request.user.is_authenticated:
+            favorite_list = Favorite.objects.filter(user=self.request.user)
+            fav_book_list = [fav.book for fav in favorite_list]
+            context['fav_book_list'] = fav_book_list
+
+            wanted_list = Wanted.objects.filter(user=self.request.user)
+            wanted_book_list = [wanted.book for wanted in wanted_list]
+            context['wanted_book_list'] = wanted_book_list
+
+        return context
+
+
+class WantedLankingListView(generic.ListView):
+    model = Book
+    template_name = 'book/book_wanted_lanking.html'
+
+    def get_queryset(self):
+        """
+        読みたい追加数で書籍を取得
+        """
+
+        queryset = Book.objects.all().order_by('-wanted_count')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        """
+        ユーザのお気に入り・読みたいのデータをcontextに追加
+        """
+        context = super(WantedLankingListView, self).get_context_data(**kwargs)
+
+        # ログインユーザの場合は、
+        # お気に入り登録済み書籍・読みたい登録済み書籍の変数をcontextに追加
+        if self.request.user.is_authenticated:
+            favorite_list = Favorite.objects.filter(user=self.request.user)
+            fav_book_list = [fav.book for fav in favorite_list]
+            context['fav_book_list'] = fav_book_list
+
+            wanted_list = Wanted.objects.filter(user=self.request.user)
+            wanted_book_list = [wanted.book for wanted in wanted_list]
+            context['wanted_book_list'] = wanted_book_list
+
+        return context
