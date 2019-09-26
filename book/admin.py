@@ -10,7 +10,7 @@ class CommentInline(admin.TabularInline):
 
 class BookAdmin(admin.ModelAdmin):
     inlines = [CommentInline]
-    list_display = ('uuid', 'title', 'price', 'created', 'modified')
+    list_display = ('uuid', 'title', 'price', 'fav_count', 'wanted_count', 'created', 'modified')
     list_display_links = ('uuid',)
     list_filter = ['created']
     search_fields = ['title']

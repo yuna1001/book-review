@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from .views import (
-    BookSearchView, BookAddView, BookDetailView, FavoriteAddView, WantedAddView, BookListView, FavoriteDeleteView, WantedDeleteView, CommentUpdateView, CommentDeleteView)
+    BookSearchView, BookAddView, BookDetailView, FavoriteAddView, WantedAddView, BookListView, FavoriteDeleteView, WantedDeleteView, CommentUpdateView, CommentDeleteView, FavoriteLankingListView, WantedLankingListView)
 
 app_name = 'book'
 
@@ -18,4 +18,6 @@ urlpatterns = [
     path('favorite/delete/', FavoriteDeleteView.as_view(), name='delete_favorite'),
     path('wanted/add', WantedAddView.as_view(), name='add_wanted'),
     path('wanted/delete/', WantedDeleteView.as_view(), name='delete_wanted'),
+    path('lanking/favorite/', FavoriteLankingListView.as_view(), name='favorite_lanking'),
+    path('lanking/wanted/', WantedLankingListView.as_view(), name='wanted_lanking'),
 ]

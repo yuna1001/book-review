@@ -36,6 +36,8 @@ class Book(TimeStampedModel):
     publisher = models.CharField(verbose_name='出版社', max_length=100)
     published_date = models.CharField(verbose_name='発売日', max_length=50)
     affiliate_url = models.URLField(verbose_name='楽天ブックスURL', max_length=2000)
+    fav_count = models.IntegerField(verbose_name='お気に入り数', default=0)
+    wanted_count = models.IntegerField(verbose_name='読みたい数', default=0)
 
     def __str__(self):
         return self.title
