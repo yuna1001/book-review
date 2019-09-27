@@ -30,7 +30,7 @@ class TestBookSearchView(TestCase):
         """
 
         response = self.client.post(reverse('book:search'), {
-            'book_name': 'Python',
+            'search_word': 'Python',
         })
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -48,14 +48,14 @@ class TestBookSearchView(TestCase):
         invalid_search_word = self.create_random_name(invalid_search_word_length)
 
         response = self.client.post(reverse('book:search'), {
-            'book_name': invalid_search_word,
+            'search_word': invalid_search_word,
         })
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(response.context.get('form').errors)
 
         expected_message = 'この値は 50 文字以下でなければなりません( ' + str(invalid_search_word_length) + ' 文字になっています)。'
-        self.assertEqual(response.context.get('form').errors.get('book_name')[0], expected_message)
+        self.assertEqual(response.context.get('form').errors.get('search_word')[0], expected_message)
 
     def create_random_name(self, num):
         """
@@ -157,7 +157,6 @@ class TestBookDetailView(TestCase):
         comment = CommentFactory(user=self.user, book=self.book)
         favorite = FavoriteFactory(user=self.user, book=self.book)
         wanted = WantedFactory(user=self.user, book=self.book)
-        form = CommentCreateForm()
 
         response = self.client.get(reverse('book:detail', args=[self.book.uuid]))
 
@@ -165,7 +164,7 @@ class TestBookDetailView(TestCase):
 
         self.assertEqual(self.book, context_data.get('book'))
         self.assertIn(comment, context_data.get('comment_list'))
-        self.assertTrue(form.fields, context_data.get('form').fields)
+        self.assertTrue(context_data.get('form'))
         self.assertEqual(favorite, context_data.get('favorite'))
         self.assertEqual(wanted, context_data.get('wanted'))
 
@@ -351,17 +350,46 @@ class TestBookListView(TestCase):
 
         self.user = CustomUserFactory()
         self.client.login(username=self.user.username, password='defaultpassword')
+        self.book_count = 5
 
     def test_list_view(self):
         """
         登録した10件の書籍が一覧表示されるかテスト
         """
-        book_count = 10
-        BookFactory.create_batch(book_count)
+
+        BookFactory.create_batch(self.book_count)
 
         response = self.client.get(reverse('book:list'), follow=True)
 
-        self.assertEqual(book_count, len(response.context.get('book_list')))
+        self.assertEqual(self.book_count, len(response.context.get('book_list')))
+
+    def test_search_title(self):
+        """
+        検索キーワードを含む書籍が返されるかテスト
+        書籍のタイトルが検索範囲となっているかテスト
+        """
+
+        BookFactory.create_batch(self.book_count, title='Python')
+
+        response = self.client.get(reverse('book:list'), {
+            'search_word': 'Python'
+        }, follow=True)
+
+        self.assertEqual(self.book_count, len(response.context.get('book_list')))
+
+    def test_search_description(self):
+        """
+        検索キーワードを含む書籍が返されるかテスト
+        書籍の説明が検索範囲となっているかテスト
+        """
+
+        BookFactory.create_batch(self.book_count, description='Python')
+
+        response = self.client.get(reverse('book:list'), {
+            'search_word': 'Python'
+        }, follow=True)
+
+        self.assertEqual(self.book_count, len(response.context.get('book_list')))
 
     def test_context_data(self):
         """
@@ -377,6 +405,7 @@ class TestBookListView(TestCase):
         self.assertIn(book, response.context.get('book_list'))
         self.assertIn(book, response.context.get('fav_book_list'))
         self.assertIn(book, response.context.get('wanted_book_list'))
+        self.assertTrue(response.context.get('form'))
 
 
 class TestFavoriteDeleteView(TestCase):
