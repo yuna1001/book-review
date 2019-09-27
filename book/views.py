@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, reverse
+from django.urls import resolve
 from django.views import generic
 
 
@@ -15,6 +16,7 @@ import requests
 
 from .forms import (BookSearchForm, CommentCreateForm)
 from .models import (Book, Favorite, Wanted, Comment)
+
 
 env = environ.Env()
 env.read_env(os.path.join(settings.BASE_DIR, '.env'))
@@ -237,9 +239,14 @@ class FavoriteAddView(CustomLoginRequiredMixin, generic.View):
         """
         処理成功後はお気に入りの追加を行ったページに遷移させる
         """
+
         template_name = request.POST.get('template_name')
         if template_name == 'book_list':
             return redirect(reverse('book:list'))
+        if template_name == 'book_fav_lanking':
+            return redirect(reverse('book:favorite_lanking'))
+        if template_name == 'book_wanted_lanking':
+            return redirect(reverse('book:wanted_lanking'))
 
         return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
 
@@ -273,6 +280,10 @@ class WantedAddView(CustomLoginRequiredMixin, generic.View):
         template_name = request.POST.get('template_name')
         if template_name == 'book_list':
             return redirect(reverse('book:list'))
+        if template_name == 'book_fav_lanking':
+            return redirect(reverse('book:favorite_lanking'))
+        if template_name == 'book_wanted_lanking':
+            return redirect(reverse('book:wanted_lanking'))
 
         return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
 
@@ -338,11 +349,16 @@ class FavoriteDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delet
         """
         処理成功後はお気に入りの削除を行ったページに遷移させる
         """
+
         template_name = self.request.POST.get('template_name')
         if template_name == 'book_list':
             return reverse('book:list')
         if template_name == 'customuser_detail':
             return reverse('accounts:detail', kwargs={'pk': str(self.request.POST['user_uuid'])})
+        if template_name == 'book_fav_lanking':
+            return reverse('book:favorite_lanking')
+        if template_name == 'book_wanted_lanking':
+            return reverse('book:wanted_lanking')
 
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
@@ -387,6 +403,10 @@ class WantedDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteV
             return reverse('book:list')
         if template_name == 'customuser_detail':
             return reverse('accounts:detail', kwargs={'pk': str(self.request.POST['user_uuid'])})
+        if template_name == 'book_fav_lanking':
+            return reverse('book:favorite_lanking')
+        if template_name == 'book_wanted_lanking':
+            return reverse('book:wanted_lanking')
 
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
@@ -488,7 +508,7 @@ class FavoriteLankingListView(generic.ListView):
         お気に入り追加数で書籍を取得
         """
 
-        queryset = Book.objects.all().order_by('-fav_count')
+        queryset = Book.objects.filter(fav_count__gt=0).order_by('-fav_count')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -520,7 +540,7 @@ class WantedLankingListView(generic.ListView):
         読みたい追加数で書籍を取得
         """
 
-        queryset = Book.objects.all().order_by('-wanted_count')
+        queryset = Book.objects.filter(wanted_count__gt=0).order_by('-wanted_count')
         return queryset
 
     def get_context_data(self, **kwargs):

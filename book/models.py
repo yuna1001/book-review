@@ -72,6 +72,7 @@ class Favorite(TimeStampedModel):
 
     class Meta:
         db_table = 'favorite'
+        unique_together = ('user', 'book')
 
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.CASCADE)
@@ -88,6 +89,7 @@ class Wanted(TimeStampedModel):
 
     class Meta:
         db_table = 'wanted'
+        unique_together = ('user', 'book')
 
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.CASCADE)

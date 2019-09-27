@@ -28,22 +28,22 @@
                         <ul class="navbar-nav w-100 nav-justified mr-auto">
                             <li class="nav-item active">
                                 <a class="nav-link" href="{% url 'book:list' %}">
-                                    <i class="fas fa-list-ul">書籍一覧</i>
+                                    <i class="fas fa-list-ul"></i> 書籍一覧
                                 </a>
                             </li>
                             <li class="nav-item active">
                                 <a class="nav-link" href="{% url 'book:search' %}">
-                                    <i class="fas fa-search">書籍検索</i>
+                                    <i class="fas fa-search"></i> 書籍検索
                                 </a>
                             </li>
                             <li class="nav-item active">
                                 <a class="nav-link" href="{% url 'book:favorite_lanking' %}">
-                                    <i class="fas fa-grin-hearts">お気に入りランキング</i>
+                                    <i class="far fa-star"></i> お気に入りランキング
                                 </a>
                             </li>
                             <li class="nav-item active">
                                 <a class="nav-link" href="{% url 'book:wanted_lanking' %}">
-                                    <i class="fas fa-check-square">読みたいランキング</i>
+                                    <i class="far fa-bookmark"></i> 読みたいランキング
                                 </a>
                             </li>
                             {% if user.is_authenticated %}

@@ -248,6 +248,25 @@ class TestFavoriteAddView(TestCase):
         self.assertEqual(str(messages[0]), expected_message)
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
+    def test_add_favorite_on_wanted_lanking(self):
+        """
+        読みたいランキングページからお気に入り追加するテスト
+        """
+
+        response = self.client.post(reverse('book:add_favorite'), {
+            'book_uuid': self.book.uuid,
+            'template_name': 'book_wanted_lanking'
+        }, follow=True)
+
+        favorite = get_object_or_404(Favorite, user=self.user, book=self.book)
+
+        expected_message = self.book.title + 'をお気に入りに追加しました。'
+        messages = get_response_messages(response)
+
+        self.assertTrue(favorite)
+        self.assertEqual(str(messages[0]), expected_message)
+        self.assertRedirects(response, reverse('book:wanted_lanking'))
+
 
 class TestWantedAddView(TestCase):
     """
@@ -299,6 +318,25 @@ class TestWantedAddView(TestCase):
         self.assertTrue(wanted)
         self.assertEqual(str(messages[0]), expected_message)
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
+
+    def test_add_wanted_on_fav_lanking(self):
+        """
+        お気に入りランキングページから読みたいを追加するテスト
+        """
+
+        response = self.client.post(reverse('book:add_wanted'), {
+            'book_uuid': self.book.uuid,
+            'template_name': 'book_fav_lanking'
+        }, follow=True)
+
+        wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
+
+        expected_message = self.book.title + 'を読みたいに追加しました。'
+        messages = get_response_messages(response)
+
+        self.assertTrue(wanted)
+        self.assertEqual(str(messages[0]), expected_message)
+        self.assertRedirects(response, reverse('book:favorite_lanking'))
 
 
 class TestBookListView(TestCase):
@@ -674,21 +712,22 @@ class TestFavoriteLankingListView(TestCase):
 
         self.user = CustomUserFactory(username='テストユーザ')
         self.client.login(username=self.user.username, password='defaultpassword')
-        self.book = BookFactory()
+        self.book = BookFactory(fav_count=5)
 
     def test_book_order(self):
         """
         お気に入り追加数順にbook_listが生成されるかテスト
         """
 
-        FavoriteFactory(user=self.user, book=self.book)
-        book2 = BookFactory()
+        no_fav_book = BookFactory(fav_count=0)
+        one_fav_book = BookFactory(fav_count=1)
 
         response = self.client.get(reverse('book:favorite_lanking'))
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context.get('book_list')[0], self.book)
-        self.assertEqual(response.context.get('book_list')[1], book2)
+        self.assertEqual(response.context.get('book_list')[1], one_fav_book)
+        self.assertNotIn(no_fav_book, response.context.get('book_list'))
         self.assertTemplateUsed(response, 'book/book_fav_lanking.html')
 
 
@@ -704,19 +743,20 @@ class TestWantedLankingListView(TestCase):
 
         self.user = CustomUserFactory(username='テストユーザ')
         self.client.login(username=self.user.username, password='defaultpassword')
-        self.book = BookFactory()
+        self.book = BookFactory(wanted_count=5)
 
     def test_book_order(self):
         """
         読みたい追加数順にbook_listが生成されるかテスト
         """
 
-        WantedFactory(user=self.user, book=self.book)
-        book2 = BookFactory()
+        no_wanted_book = BookFactory(wanted_count=0)
+        one_wanted_book = BookFactory(wanted_count=1)
 
         response = self.client.get(reverse('book:wanted_lanking'))
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context.get('book_list')[0], self.book)
-        self.assertEqual(response.context.get('book_list')[1], book2)
+        self.assertEqual(response.context.get('book_list')[1], one_wanted_book)
+        self.assertNotIn(no_wanted_book, response.context.get('book_list'))
         self.assertTemplateUsed(response, 'book/book_wanted_lanking.html')

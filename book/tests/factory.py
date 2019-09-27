@@ -32,6 +32,8 @@ class BookFactory(DjangoModelFactory):
     publisher = FuzzyText()
     published_date = timezone.now()
     affiliate_url = 'http://example.com'
+    fav_count = 0
+    wanted_count = 0
 
 
 class CommentFactory(DjangoModelFactory):
