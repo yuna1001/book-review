@@ -712,21 +712,22 @@ class TestFavoriteLankingListView(TestCase):
 
         self.user = CustomUserFactory(username='テストユーザ')
         self.client.login(username=self.user.username, password='defaultpassword')
-        self.book = BookFactory()
+        self.book = BookFactory(fav_count=5)
 
     def test_book_order(self):
         """
         お気に入り追加数順にbook_listが生成されるかテスト
         """
 
-        FavoriteFactory(user=self.user, book=self.book)
-        book2 = BookFactory()
+        no_fav_book = BookFactory(fav_count=0)
+        one_fav_book = BookFactory(fav_count=1)
 
         response = self.client.get(reverse('book:favorite_lanking'))
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context.get('book_list')[0], self.book)
-        self.assertEqual(response.context.get('book_list')[1], book2)
+        self.assertEqual(response.context.get('book_list')[1], one_fav_book)
+        self.assertNotIn(no_fav_book, response.context.get('book_list'))
         self.assertTemplateUsed(response, 'book/book_fav_lanking.html')
 
 
@@ -742,19 +743,20 @@ class TestWantedLankingListView(TestCase):
 
         self.user = CustomUserFactory(username='テストユーザ')
         self.client.login(username=self.user.username, password='defaultpassword')
-        self.book = BookFactory()
+        self.book = BookFactory(wanted_count=5)
 
     def test_book_order(self):
         """
         読みたい追加数順にbook_listが生成されるかテスト
         """
 
-        WantedFactory(user=self.user, book=self.book)
-        book2 = BookFactory()
+        no_wanted_book = BookFactory(wanted_count=0)
+        one_wanted_book = BookFactory(wanted_count=1)
 
         response = self.client.get(reverse('book:wanted_lanking'))
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context.get('book_list')[0], self.book)
-        self.assertEqual(response.context.get('book_list')[1], book2)
+        self.assertEqual(response.context.get('book_list')[1], one_wanted_book)
+        self.assertNotIn(no_wanted_book, response.context.get('book_list'))
         self.assertTemplateUsed(response, 'book/book_wanted_lanking.html')
