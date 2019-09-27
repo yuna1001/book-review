@@ -7,7 +7,7 @@ from .views import (
 app_name = 'book'
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', TemplateView.as_view(template_name='about.html'), name='about'),
     path('list/', BookListView.as_view(), name='list'),
     path('search/', BookSearchView.as_view(), name='search'),
     path('add/', BookAddView.as_view(), name='add'),
