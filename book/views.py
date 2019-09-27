@@ -4,10 +4,10 @@ import os
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, reverse
-from django.urls import resolve
 from django.views import generic
 
 
@@ -82,8 +82,8 @@ class BookSearchView(generic.View):
         if not form.is_valid():
             return render(request, self.template_name, {'form': form})
 
-        book_name = form.cleaned_data['book_name']
-        self.param['title'] = book_name
+        search_word = form.cleaned_data['search_word']
+        self.param['title'] = search_word
 
         response = requests.get(self.endpoint_url, self.param)
         response_json = json.loads(response.text)
@@ -294,11 +294,34 @@ class BookListView(generic.ListView):
     """
     model = Book
 
+    def get_queryset(self):
+        """
+        検索キーワードに該当する書籍データを返す
+        """
+
+        queryset = super().get_queryset()
+
+        search_word = self.request.GET.get('search_word')
+
+        if search_word:
+            queryset = queryset.filter(
+                Q(title__icontains=search_word) | Q(description__icontains=search_word)
+            )
+
+        if not queryset:
+            message = '検索結果は０件です。'
+            messages.info(self.request, message)
+
+        return queryset
+
     def get_context_data(self, **kwargs):
         """
         ユーザのお気に入り・読みたいのデータをcontextに追加
         """
         context = super(BookListView, self).get_context_data(**kwargs)
+
+        form = BookSearchForm(self.request.GET)
+        context['form'] = form
 
         # ログインユーザの場合は、
         # お気に入り登録済み書籍・読みたい登録済み書籍の変数をcontextに追加

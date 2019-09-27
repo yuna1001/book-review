@@ -7,7 +7,7 @@ class BookSearchForm(forms.Form):
     """
     書籍の検索を行うフォームクラス
     """
-    book_name = forms.CharField(label='書籍名', required=True, max_length=50)
+    search_word = forms.CharField(label='書籍名', required=True, max_length=50)
 
 
 class CommentCreateForm(forms.ModelForm):

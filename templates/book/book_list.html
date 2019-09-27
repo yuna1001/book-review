@@ -8,6 +8,17 @@
 
 {% block content %}
 <h1 class="page-top-title">書籍一覧</h1>
+<div class="row justify-content-center">
+    <form method="GET" class="form-inline">
+        <div class="col-auto">
+            {% csrf_token %}
+            {% bootstrap_form form layout='inline' size='large' %}
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">検索</button>
+        </div>
+    </form>
+</div>
 <div class="row search-result">
     {% for book in book_list %}
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
