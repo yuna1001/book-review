@@ -32,13 +32,13 @@
                             <form action="{% url 'book:delete_favorite' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="favorite_uuid" value="{{ book|get_favorite_id:user }}">
-                                <input type="hidden" name="template_name" value="book_list">
+                                <input type="hidden" name="template_name" value="book_wanted_lanking">
                                 <button type="submit" class="btn btn-secondary">お気に入り追加済み</button>
                             </form>
                             {% else %}
                             <form action="{% url 'book:add_favorite' %}" method="POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="template_name" value="book_list">
+                                <input type="hidden" name="template_name" value="book_wanted_lanking">
                                 <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
                                 <button type="submit" class="btn btn-primary">お気に入り追加</button>
                             </form>
@@ -53,13 +53,13 @@
                             <form action="{% url 'book:delete_wanted' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="wanted_uuid" value="{{ book|get_wanted_id:user }}">
-                                <input type="hidden" name="template_name" value="book_list">
+                                <input type="hidden" name="template_name" value="book_wanted_lanking">
                                 <button type="submit" class="btn btn-secondary">読みたいに追加済み</button>
                             </form>
                             {% else %}
                             <form action="{% url 'book:add_wanted' %}" method="POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="template_name" value="book_list">
+                                <input type="hidden" name="template_name" value="book_wanted_lanking">
                                 <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
                                 <button type="submit" class="btn btn-primary">読みたいに追加</button>
                             </form>
@@ -75,7 +75,7 @@
                         <div class="form-favorite text-center">
                             <form action="{% url 'book:add_favorite' %}" method="POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="template_name" value="book_list">
+                                <input type="hidden" name="template_name" value="book_wanted_lanking">
                                 <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
                                 <button type="submit" class="btn btn-primary">お気に入り追加</button>
                             </form>
@@ -86,7 +86,7 @@
                         <div class="form-favorite text-center">
                             <form action="{% url 'book:add_wanted' %}" method="POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="template_name" value="book_list">
+                                <input type="hidden" name="template_name" value="book_wanted_lanking">
                                 <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
                                 <button type="submit" class="btn btn-primary">読みたいに追加</button>
                             </form>
@@ -94,6 +94,9 @@
                     </li>
                 </ul>
                 {% endif %}
+            </div>
+            <div class="card-footer" style="text-align: center">
+                <i class="far fa-bookmark"></i> {{ forloop.counter }}位 ： {{ book.wanted_count }}
             </div>
         </div>
     </div>
