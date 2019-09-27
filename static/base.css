@@ -1,4 +1,5 @@
 header {
+    height: 70px;
     background-color: #1C2331;
 }
 
@@ -8,6 +9,7 @@ header a {
 }
 
 footer {
+    height: 120px;
     color: white;
     background-color: #1C2331;
 }

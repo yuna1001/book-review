@@ -17,8 +17,8 @@
     </head>
 
     <body>
-        <header style="padding-top:75px">
-            <nav class="navbar fixed-top navbar-expand-lg">
+        <header class="sticky-top">
+            <nav class="navbar navbar-expand-lg">
                 <div class="container">
                     <a class="navbar-brand" href='#'><i class="fas fa-book-reader"></i>Bookレビュー</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
@@ -69,9 +69,9 @@
                     </div>
             </nav>
         </header>
-        <main class="container">
+        <main class="container" style="padding-bottom: 150px;">
             {% for message in messages %}
-            <div class="alert alert alert-primary alert-dismissible fade show" role="alert">
+            <div class=" alert alert alert-primary alert-dismissible fade show" role="alert">
                 {{ message }}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -115,7 +115,7 @@
                         <!-- Links -->
                         <ul class="list-unstyled">
                             <li>
-                                <a href="{% url 'book:home' %}">トップページ</a>
+                                <a href="{% url 'book:about' %}">トップページ</a>
                             </li>
                             <li>
                                 <a href="{% url 'book:list' %}">書籍一覧</a>
