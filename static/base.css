@@ -1,0 +1,18 @@
+header {
+    background-color: #1C2331;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+footer {
+    color: white;
+    background-color: #1C2331;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}

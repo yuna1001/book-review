@@ -12,12 +12,13 @@
         <title>{% block page_title %}{% endblock %}</title>
         <!-- css -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+        <link href="{% static 'base.css' %}" rel="stylesheet" type="text/css">
         {% block extra_css %}{% endblock %}
     </head>
 
     <body>
         <header style="padding-top:75px">
-            <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar fixed-top navbar-expand-lg">
                 <div class="container">
                     <a class="navbar-brand" href='#'><i class="fas fa-book-reader"></i>Bookレビュー</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
@@ -80,7 +81,7 @@
             {% block content %}{% endblock %}
         </main>
         <!-- Footer -->
-        <footer class="page-footer font-small blue pt-4">
+        <footer class="page-footer font-small pt-4 fixed-bottom">
 
             <!-- Footer Links -->
             <div class="container-fluid text-center text-md-left">
@@ -88,7 +89,7 @@
                 <!-- Grid row -->
                 <div class="row">
                     <div class="col-xs-12 col-sm12 col-md-4 col-lg-4 mb-md-0 mb-3" style="text-align: center">
-                        <h5 class="text-uppercase">Book Review</h5>
+                        <i class="fas fa-book-reader"></i>Bookレビュー</a>
                     </div>
 
                     <!-- Grid column -->
