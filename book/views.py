@@ -305,7 +305,8 @@ class BookListView(generic.ListView):
 
         if search_word:
             queryset = queryset.filter(
-                Q(title__icontains=search_word) | Q(description__icontains=search_word)
+                Q(title__icontains=search_word) |
+                Q(description__icontains=search_word)
             )
 
         if not queryset:
