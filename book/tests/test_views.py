@@ -11,12 +11,16 @@ from ..forms import (BookSearchForm, CommentCreateForm)
 from ..models import Book, Comment, Favorite, Wanted
 
 
-def get_response_messages(response):
+def get_response_message(response):
     """
     Responseのフラッシュメッセージ取得関数
     """
 
-    return list(response.context['messages'])
+    messages = list(response.context.get('messages'))
+
+    return str(messages[0])
+
+    # return list(response.context['messages'])
 
 
 class TestBookSearchView(TestCase):
@@ -104,10 +108,10 @@ class TestBookAddView(TestCase):
         book = get_object_or_404(Book, title=self.book_title)
 
         expected_message = self.book_title + 'を登録しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertTrue(book)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, book.get_absolute_url())
 
     def test_non_login_user_cannot_add_book(self):
@@ -120,9 +124,9 @@ class TestBookAddView(TestCase):
         response = self.client.post(reverse('book:add'), self.book_info, follow=True)
 
         expected_message = 'ログインしてください。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, '/accounts/login/?next=/add/')
 
 
@@ -191,11 +195,11 @@ class TestBookDetailView(TestCase):
 
         comment = get_object_or_404(Comment, title=comment_title)
         expected_message = 'コメントを投稿しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertTrue(comment)
         self.assertEqual(comment_title, response.context.get('comment_list')[0].title)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
 
@@ -228,10 +232,10 @@ class TestFavoriteAddView(TestCase):
         favorite = get_object_or_404(Favorite, user=self.user, book=self.book)
 
         expected_message = self.book.title + 'をお気に入りに追加しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertTrue(favorite)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:list'))
 
     def test_add_favorite_on_book_detail(self):
@@ -248,10 +252,10 @@ class TestFavoriteAddView(TestCase):
         favorite = get_object_or_404(Favorite, user=self.user, book=self.book)
 
         expected_message = self.book.title + 'をお気に入りに追加しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertTrue(favorite)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
     def test_add_favorite_on_wanted_lanking(self):
@@ -269,10 +273,10 @@ class TestFavoriteAddView(TestCase):
         favorite = get_object_or_404(Favorite, user=self.user, book=self.book)
 
         expected_message = self.book.title + 'をお気に入りに追加しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertTrue(favorite)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:wanted_lanking'))
 
 
@@ -305,10 +309,10 @@ class TestWantedAddView(TestCase):
         wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
 
         expected_message = self.book.title + 'を読みたいに追加しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertTrue(wanted)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:list'))
 
     def test_add_wanted_on_book_detail(self):
@@ -325,10 +329,10 @@ class TestWantedAddView(TestCase):
         wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
 
         expected_message = self.book.title + 'を読みたいに追加しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertTrue(wanted)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
     def test_add_wanted_on_fav_lanking(self):
@@ -346,10 +350,10 @@ class TestWantedAddView(TestCase):
         wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
 
         expected_message = self.book.title + 'を読みたいに追加しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertTrue(wanted)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:favorite_lanking'))
 
 
@@ -377,6 +381,20 @@ class TestBookListView(TestCase):
         response = self.client.get(reverse('book:list'), follow=True)
 
         self.assertEqual(self.book_count, len(response.context.get('book_list')))
+
+    def test_list_view_no_data(self):
+        """
+        登録書籍が0件の際にフラッシュメッセージが表示されるか
+        表示される書籍が0件かテスト
+        """
+
+        response = self.client.get(reverse('book:list'), follow=True)
+
+        expected_message = '登録されている書籍は０件です。'
+        message = get_response_message(response)
+
+        self.assertEqual(message, expected_message)
+        self.assertFalse(response.context.get('book_list'))
 
     def test_search_title(self):
         """
@@ -409,6 +427,26 @@ class TestBookListView(TestCase):
         response = self.client.get(reverse('book:list'), data, follow=True)
 
         self.assertEqual(self.book_count, len(response.context.get('book_list')))
+
+    def test_search_result_no_data(self):
+        """
+        検索結果が0件の際にフラッシュメッセージが表示されるか
+        表示される書籍が0件かテスト
+        """
+
+        BookFactory(title='Python')
+
+        data = {
+            'search_word': 'Java'
+        }
+
+        response = self.client.get(reverse('book:list'), data, follow=True)
+
+        expected_message = '検索結果は０件です。'
+        message = get_response_message(response)
+
+        self.assertEqual(message, expected_message)
+        self.assertFalse(response.context.get('book_list'))
 
     def test_context_data(self):
         """
@@ -748,10 +786,10 @@ class TestCommentDeleteView(TestCase):
         is_comment_exist = Comment.objects.filter(book=self.book, user=self.user).exists()
 
         expected_message = 'コメントを削除しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertFalse(is_comment_exist)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('accounts:detail', kwargs={'pk': self.user.uuid}))
 
     def test_delete_comment_on_book_detail(self):
@@ -774,10 +812,10 @@ class TestCommentDeleteView(TestCase):
         is_comment_exist = Comment.objects.filter(book=self.book, user=self.user).exists()
 
         expected_message = 'コメントを削除しました。'
-        messages = get_response_messages(response)
+        message = get_response_message(response)
 
         self.assertFalse(is_comment_exist)
-        self.assertEqual(str(messages[0]), expected_message)
+        self.assertEqual(message, expected_message)
 
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': book.uuid}))
 
