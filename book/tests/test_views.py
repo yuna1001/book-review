@@ -29,9 +29,11 @@ class TestBookSearchView(TestCase):
         APIで書籍の検索を行う機能のテスト
         """
 
-        response = self.client.post(reverse('book:search'), {
-            'search_word': 'Python',
-        })
+        data = {
+            'search_word': 'Python'
+        }
+
+        response = self.client.post(reverse('book:search'), data)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(response.context.get('book_list'))
@@ -44,12 +46,13 @@ class TestBookSearchView(TestCase):
         """
 
         invalid_search_word_length = 51
-
         invalid_search_word = self.create_random_name(invalid_search_word_length)
 
-        response = self.client.post(reverse('book:search'), {
-            'search_word': invalid_search_word,
-        })
+        data = {
+            'search_word': invalid_search_word
+        }
+
+        response = self.client.post(reverse('book:search'), data)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(response.context.get('form').errors)
@@ -99,12 +102,12 @@ class TestBookAddView(TestCase):
         response = self.client.post(reverse('book:add'), self.book_info, follow=True)
 
         book = get_object_or_404(Book, title=self.book_title)
-        self.assertTrue(book)
 
         expected_message = self.book_title + 'を登録しました。'
         messages = get_response_messages(response)
-        self.assertEqual(str(messages[0]), expected_message)
 
+        self.assertTrue(book)
+        self.assertEqual(str(messages[0]), expected_message)
         self.assertRedirects(response, book.get_absolute_url())
 
     def test_non_login_user_cannot_add_book(self):
@@ -118,8 +121,8 @@ class TestBookAddView(TestCase):
 
         expected_message = 'ログインしてください。'
         messages = get_response_messages(response)
-        self.assertEqual(str(messages[0]), expected_message)
 
+        self.assertEqual(str(messages[0]), expected_message)
         self.assertRedirects(response, '/accounts/login/?next=/add/')
 
 
@@ -215,10 +218,12 @@ class TestFavoriteAddView(TestCase):
         書籍一覧画面からお気に入り追加するテスト
         """
 
-        response = self.client.post(reverse('book:add_favorite'), {
+        data = {
             'book_uuid': self.book.uuid,
             'template_name': 'book_list'
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:add_favorite'), data, follow=True)
 
         favorite = get_object_or_404(Favorite, user=self.user, book=self.book)
 
@@ -234,9 +239,11 @@ class TestFavoriteAddView(TestCase):
         書籍詳細画面からお気に入り追加するテスト
         """
 
-        response = self.client.post(reverse('book:add_favorite'), {
-            'book_uuid': self.book.uuid,
-        }, follow=True)
+        data = {
+            'book_uuid': self.book.uuid
+        }
+
+        response = self.client.post(reverse('book:add_favorite'), data, follow=True)
 
         favorite = get_object_or_404(Favorite, user=self.user, book=self.book)
 
@@ -252,10 +259,12 @@ class TestFavoriteAddView(TestCase):
         読みたいランキングページからお気に入り追加するテスト
         """
 
-        response = self.client.post(reverse('book:add_favorite'), {
+        data = {
             'book_uuid': self.book.uuid,
             'template_name': 'book_wanted_lanking'
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:add_favorite'), data, follow=True)
 
         favorite = get_object_or_404(Favorite, user=self.user, book=self.book)
 
@@ -286,10 +295,12 @@ class TestWantedAddView(TestCase):
         書籍一覧画面から読みたいに追加するテスト
         """
 
-        response = self.client.post(reverse('book:add_wanted'), {
+        data = {
             'book_uuid': self.book.uuid,
             'template_name': 'book_list'
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:add_wanted'), data, follow=True)
 
         wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
 
@@ -305,9 +316,11 @@ class TestWantedAddView(TestCase):
         書籍詳細画面から読みたいに追加するテスト
         """
 
-        response = self.client.post(reverse('book:add_wanted'), {
-            'book_uuid': self.book.uuid,
-        }, follow=True)
+        data = {
+            'book_uuid': self.book.uuid
+        }
+
+        response = self.client.post(reverse('book:add_wanted'), data, follow=True)
 
         wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
 
@@ -323,10 +336,12 @@ class TestWantedAddView(TestCase):
         お気に入りランキングページから読みたいを追加するテスト
         """
 
-        response = self.client.post(reverse('book:add_wanted'), {
+        data = {
             'book_uuid': self.book.uuid,
             'template_name': 'book_fav_lanking'
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:add_wanted'), data, follow=True)
 
         wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
 
@@ -371,9 +386,11 @@ class TestBookListView(TestCase):
 
         BookFactory.create_batch(self.book_count, title='Python')
 
-        response = self.client.get(reverse('book:list'), {
+        data = {
             'search_word': 'Python'
-        }, follow=True)
+        }
+
+        response = self.client.get(reverse('book:list'), data, follow=True)
 
         self.assertEqual(self.book_count, len(response.context.get('book_list')))
 
@@ -385,9 +402,11 @@ class TestBookListView(TestCase):
 
         BookFactory.create_batch(self.book_count, description='Python')
 
-        response = self.client.get(reverse('book:list'), {
+        data = {
             'search_word': 'Python'
-        }, follow=True)
+        }
+
+        response = self.client.get(reverse('book:list'), data, follow=True)
 
         self.assertEqual(self.book_count, len(response.context.get('book_list')))
 
@@ -429,10 +448,12 @@ class TestFavoriteDeleteView(TestCase):
 
         favorite = FavoriteFactory(user=self.user, book=self.book)
 
-        response = self.client.post(reverse('book:delete_favorite'), {
+        data = {
             'favorite_uuid': favorite.uuid,
             'template_name': 'book_list'
-        })
+        }
+
+        response = self.client.post(reverse('book:delete_favorite'), data)
 
         is_favorite_exist = Favorite.objects.filter(book=self.book, user=self.user).exists()
 
@@ -451,10 +472,12 @@ class TestFavoriteDeleteView(TestCase):
         non_owner = CustomUserFactory()
         self.client.login(username=non_owner.username, password='defaultpassword')
 
-        response = self.client.post(reverse('book:delete_favorite'), {
+        data = {
             'favorite_uuid': favorite.uuid,
             'template_name': 'book_list'
-        })
+        }
+
+        response = self.client.post(reverse('book:delete_favorite'), data)
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
@@ -467,10 +490,12 @@ class TestFavoriteDeleteView(TestCase):
 
         self.client.logout()
 
-        response = self.client.post(reverse('book:delete_favorite'), {
+        data = {
             'favorite_uuid': favorite.uuid,
             'template_name': 'book_list'
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:delete_favorite'), data, follow=True)
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
@@ -481,11 +506,13 @@ class TestFavoriteDeleteView(TestCase):
 
         favorite = FavoriteFactory(user=self.user, book=self.book)
 
-        response = self.client.post(reverse('book:delete_favorite'), {
+        data = {
             'favorite_uuid': favorite.uuid,
             'template_name': 'customuser_detail',
             'user_uuid': self.user.uuid
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:delete_favorite'), data, follow=True)
 
         self.assertRedirects(response, reverse('accounts:detail', kwargs={'pk': self.user.uuid}))
 
@@ -496,10 +523,12 @@ class TestFavoriteDeleteView(TestCase):
 
         favorite = FavoriteFactory(user=self.user, book=self.book)
 
-        response = self.client.post(reverse('book:delete_favorite'), {
+        data = {
             'favorite_uuid': favorite.uuid,
             'book_uuid': self.book.uuid
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:delete_favorite'), data, follow=True)
 
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
@@ -525,10 +554,12 @@ class TestWantedDeleteView(TestCase):
 
         wanted = WantedFactory(user=self.user, book=self.book)
 
-        response = self.client.post(reverse('book:delete_wanted'), {
+        data = {
             'wanted_uuid': wanted.uuid,
             'template_name': 'book_list'
-        })
+        }
+
+        response = self.client.post(reverse('book:delete_wanted'), data)
 
         is_wanted_exist = Wanted.objects.filter(book=self.book, user=self.user).exists()
 
@@ -547,10 +578,12 @@ class TestWantedDeleteView(TestCase):
         non_owner = CustomUserFactory()
         self.client.login(username=non_owner.username, password='defaultpassword')
 
-        response = self.client.post(reverse('book:delete_wanted'), {
+        data = {
             'wanted_uuid': wanted.uuid,
             'template_name': 'book_list'
-        })
+        }
+
+        response = self.client.post(reverse('book:delete_wanted'), data)
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
@@ -563,10 +596,12 @@ class TestWantedDeleteView(TestCase):
 
         self.client.logout()
 
-        response = self.client.post(reverse('book:delete_wanted'), {
+        data = {
             'wanted_uuid': wanted.uuid,
             'template_name': 'book_list'
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:delete_wanted'), data, follow=True)
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
@@ -577,11 +612,13 @@ class TestWantedDeleteView(TestCase):
 
         wanted = WantedFactory(user=self.user, book=self.book)
 
-        response = self.client.post(reverse('book:delete_wanted'), {
+        data = {
             'wanted_uuid': wanted.uuid,
             'template_name': 'customuser_detail',
             'user_uuid': self.user.uuid
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:delete_wanted'), data, follow=True)
 
         self.assertRedirects(response, reverse('accounts:detail', kwargs={'pk': self.user.uuid}))
 
@@ -592,10 +629,12 @@ class TestWantedDeleteView(TestCase):
 
         wanted = WantedFactory(user=self.user, book=self.book)
 
-        response = self.client.post(reverse('book:delete_wanted'), {
+        data = {
             'wanted_uuid': wanted.uuid,
             'book_uuid': self.book.uuid
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:delete_wanted'), data, follow=True)
 
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
@@ -622,10 +661,12 @@ class TestCommentUpdateView(TestCase):
 
         comment = CommentFactory(user=self.user, book=self.book)
 
-        response = self.client.get(reverse('book:update_comment', kwargs={
+        kwargs = {
             'book_pk': self.book.uuid,
             'comment_pk': comment.uuid
-        }), follow=True)
+        }
+
+        response = self.client.get(reverse('book:update_comment', kwargs=kwargs), follow=True)
 
         self.assertTrue(response.context.get('form'))
         self.assertTemplateUsed('book/comment_form.html')
@@ -643,15 +684,19 @@ class TestCommentUpdateView(TestCase):
         expected_comment_score = 5
         expected_comment_content = 'テストコンテンツ'
 
-        response = self.client.post(reverse('book:update_comment', kwargs={
+        kwargs = {
             'book_pk': book.uuid,
             'comment_pk': comment.uuid
-        }),
-            {
+        }
+
+        data = {
             'title': expected_comment_title,
             'score': expected_comment_score,
             'content': expected_comment_content
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:update_comment', kwargs=kwargs),
+                                    data, follow=True)
 
         comment = get_object_or_404(Comment, uuid=comment.uuid)
 
@@ -687,13 +732,18 @@ class TestCommentDeleteView(TestCase):
 
         comment = get_object_or_404(Comment, uuid=comment.uuid)
 
-        response = self.client.post(reverse('book:delete_comment', kwargs={
+        kwargs = {
             'book_pk': self.book.uuid,
-            'comment_pk': comment.uuid}),
-            {
+            'comment_pk': comment.uuid
+        }
+
+        data = {
             'template_name': 'customuser_detail',
             'user_uuid': self.user.uuid
-        }, follow=True)
+        }
+
+        response = self.client.post(reverse('book:delete_comment', kwargs=kwargs),
+                                    data, follow=True)
 
         is_comment_exist = Comment.objects.filter(book=self.book, user=self.user).exists()
 
@@ -714,9 +764,12 @@ class TestCommentDeleteView(TestCase):
 
         comment = get_object_or_404(Comment, uuid=comment.uuid)
 
-        response = self.client.post(reverse('book:delete_comment', kwargs={
+        kwargs = {
             'book_pk': book.uuid,
-            'comment_pk': comment.uuid}), follow=True)
+            'comment_pk': comment.uuid
+        }
+
+        response = self.client.post(reverse('book:delete_comment', kwargs=kwargs), follow=True)
 
         is_comment_exist = Comment.objects.filter(book=self.book, user=self.user).exists()
 
