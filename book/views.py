@@ -205,6 +205,9 @@ class BookDetailView(generic.DetailView):
 
             message = 'コメントを投稿しました。'
             messages.info(request, message)
+        else:
+            message = 'コメントの投稿に失敗しました。'
+            messages.info(request, message)
 
         return self.get_success_url()
 
