@@ -7,7 +7,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .factory import BookFactory, CommentFactory, CustomUserFactory, FavoriteFactory, WantedFactory
-from ..forms import (BookSearchForm, CommentCreateForm)
 from ..models import Book, Comment, Favorite, Wanted
 
 
@@ -21,6 +20,57 @@ def get_response_message(response):
     return str(messages[0])
 
     # return list(response.context['messages'])
+
+
+class TestAboutTemplateView(TestCase):
+    """
+    aboutページを表示するビュークラスのテスト
+    """
+
+    def test_get_success(self):
+        """
+        aboutページにGETリクエストを行った際に
+        aboutページに遷移するかテスト
+        """
+
+        response = self.client.get(reverse('book:about'), follow=True)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, 'about.html')
+
+
+class TestTermsOfServiceTemplateView(TestCase):
+    """
+    利用規約ページを表示するビュークラスのテスト
+    """
+
+    def test_get_success(self):
+        """
+        利用規約ページにGETリクエストを行った際に
+        利用規約ページに遷移するかテスト
+        """
+
+        response = self.client.get(reverse('book:terms_of_service'), follow=True)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, 'terms_of_service.html')
+
+
+class TestPrivacyPolicyTemplateView(TestCase):
+    """
+    プライバシーポリシーページを表示するビュークラスのテスト
+    """
+
+    def test_get_success(self):
+        """
+        プライバシーポリシーページにGETリクエストを行った際に
+        プライバシーポリシーページに遷移するかテスト
+        """
+
+        response = self.client.get(reverse('book:privacy_policy'), follow=True)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, 'privacy_policy.html')
 
 
 class TestBookSearchView(TestCase):

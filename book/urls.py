@@ -2,12 +2,14 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from .views import (
-    BookSearchView, BookAddView, BookDetailView, FavoriteAddView, WantedAddView, BookListView, FavoriteDeleteView, WantedDeleteView, CommentUpdateView, CommentDeleteView, FavoriteLankingListView, WantedLankingListView)
+    AboutTemplateView, TermsOfServiceTemplateView, PrivacyPolicyTemplateView, BookSearchView, BookAddView, BookDetailView, FavoriteAddView, WantedAddView, BookListView, FavoriteDeleteView, WantedDeleteView, CommentUpdateView, CommentDeleteView, FavoriteLankingListView, WantedLankingListView)
 
 app_name = 'book'
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='about.html'), name='about'),
+    path('', AboutTemplateView.as_view(), name='about'),
+    path('termsofservice/', TermsOfServiceTemplateView.as_view(), name='terms_of_service'),
+    path('privacypolicy/', PrivacyPolicyTemplateView.as_view(), name='privacy_policy'),
     path('list/', BookListView.as_view(), name='list'),
     path('search/', BookSearchView.as_view(), name='search'),
     path('add/', BookAddView.as_view(), name='add'),

@@ -51,6 +51,18 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
         return super().dispatch(request, *args, **kwargs)
 
 
+class AboutTemplateView(generic.TemplateView):
+    template_name = 'about.html'
+
+
+class TermsOfServiceTemplateView(generic.TemplateView):
+    template_name = 'terms_of_service.html'
+
+
+class PrivacyPolicyTemplateView(generic.TemplateView):
+    template_name = 'privacy_policy.html'
+
+
 class BookSearchView(generic.View):
     """
     書籍検索を行うビュークラス
