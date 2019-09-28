@@ -1,4 +1,4 @@
-
+from enum import Enum
 import uuid
 
 from django.db import models
@@ -55,11 +55,22 @@ class Comment(TimeStampedModel):
     class Meta:
         db_table = 'comment'
 
+    class Score(Enum):
+        one = ('1', '1')
+        one_and_half = ('1.5', '1.5')
+        two = ('2', '2')
+        two_and_half = ('2.5', '2.5')
+        three = ('3', '3')
+        three_and_half = ('3.5', '3.5')
+        four = ('4', '4')
+        four_and_half = ('4.5', '4.5')
+        five = ('5', '5')
+
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     title = models.CharField(verbose_name='タイトル', max_length=50)
-    score = models.FloatField(verbose_name='評価')
+    score = models.CharField(verbose_name='評価', max_length=3, choices=[x.value for x in Score], default=1)
     content = models.TextField(verbose_name='本文')
 
     def __str__(self):
