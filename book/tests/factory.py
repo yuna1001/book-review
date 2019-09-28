@@ -30,7 +30,7 @@ class BookFactory(DjangoModelFactory):
     description = FuzzyText()
     price = 1000
     publisher = FuzzyText()
-    published_date = timezone.now()
+    published_date = timezone.localtime()
     affiliate_url = 'http://example.com'
     fav_count = 0
     wanted_count = 0
