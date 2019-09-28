@@ -58,7 +58,7 @@ AWS_S3_CUSTOM_DOMAIN = 'd1dh5gex9go1bi.cloudfront.net'
 
 # staticファイル設定
 # 静的ファイル配信用ディレクトリで、URLの一部になる
-STATIC_URL = '/static/'
+''' STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 AWS_STORAGE_BUCKET_NAME = 'kyne-book-review.cf-static'
@@ -68,13 +68,13 @@ MEDIA_URL = '/media/'
 # MEDIA_ROOTの代わりとなり、メディアファイルはここにアップロードされる
 DEFAULT_FILE_STORAGE = 'config.storage_backends.S3MediaStorage'
 MEDIA_AWS_STORAGE_BUCKET_NAME = 'kyne-book-review.cf-media'
-MEDIAFILES_LOCATION = 'images/'
+MEDIAFILES_LOCATION = 'images/' '''
 
 
-''' STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 # Media files
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media') '''
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

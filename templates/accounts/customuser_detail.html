@@ -65,15 +65,25 @@
         <nav>
             <div class="nav nav-tabs w-100 nav-justified" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-favorite"
-                    role="tab" aria-controls="nav-favorite" aria-selected="false">お気に入り</a>
+                    role="tab" aria-controls="nav-favorite" aria-selected="false">
+                    お気に入り
+                    <span>{{ favorite_list|length }}</span></a>
                 <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-wanted" role="tab"
-                    aria-controls="nav-wanted" aria-selected="false">読みたい</a>
+                    aria-controls="nav-wanted" aria-selected="false">
+                    読みたい
+                    <span>{{ wanted_list|length }}</span></a>
                 <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-comment" role="tab"
-                    aria-controls="nav-comment" aria-selected="false">コメント</a>
+                    aria-controls="nav-comment" aria-selected="false">
+                    コメント
+                    <span>{{ comment_list|length }}</span></a>
                 <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-follow" role="tab"
-                    aria-controls="nav-follow" aria-selected="false">フォロー</a>
+                    aria-controls="nav-follow" aria-selected="false">
+                    フォロー
+                    <span>{{  following_list|length }}</span></a>
                 <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-follower" role="tab"
-                    aria-controls="nav-follower" aria-selected="false">フォロワー</a>
+                    aria-controls="nav-follower" aria-selected="false">
+                    フォロワー
+                    <span>{{ followed_list|length }}</span></a>
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
