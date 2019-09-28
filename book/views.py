@@ -306,6 +306,11 @@ class BookListView(generic.ListView):
 
         queryset = super().get_queryset()
 
+        if not queryset:
+            message = '登録されている書籍は０件です。'
+            messages.info(self.request, message)
+            return queryset
+
         search_word = self.request.GET.get('search_word')
 
         if search_word:
@@ -326,7 +331,12 @@ class BookListView(generic.ListView):
         """
         context = super(BookListView, self).get_context_data(**kwargs)
 
-        form = BookSearchForm(self.request.GET)
+        # 検索時は検索ワードを検索フォームに保持する
+        if self.request.GET:
+            form = BookSearchForm(self.request.GET)
+        else:
+            form = BookSearchForm()
+
         context['form'] = form
 
         # ログインユーザの場合は、
