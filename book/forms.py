@@ -17,3 +17,7 @@ class CommentCreateForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('title', 'score', 'content',)
+
+    def __init__(self, *args, **kwargs):
+        super(CommentCreateForm, self).__init__(*args, **kwargs)
+        self.fields['score'].required = True

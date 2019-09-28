@@ -10,7 +10,7 @@ class CustomSignupForm(SignupForm):
     """
     allauthの非ソーシャルログイン用のフォームクラス
     """
-    profile_pic = forms.FileField(label=('プロフィール画像'), required=False)
+    profile_pizc = forms.FileField(label=('プロフィール画像'), required=False)
 
     def save(self, request):
         """

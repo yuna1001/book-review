@@ -193,16 +193,18 @@ class BookDetailView(generic.DetailView):
             return redirect(reverse('book:detail', kwargs={'pk': self.kwargs['pk']}))
 
         form = CommentCreateForm(request.POST)
-        comment = form.save(commit=False)
-        user = self.request.user
-        book = get_object_or_404(Book, uuid=self.kwargs['pk'])
 
-        comment.user = user
-        comment.book = book
-        comment.save()
+        if form.is_valid():
+            comment = form.save(commit=False)
+            user = self.request.user
+            book = get_object_or_404(Book, uuid=self.kwargs['pk'])
 
-        message = 'コメントを投稿しました。'
-        messages.info(request, message)
+            comment.user = user
+            comment.book = book
+            comment.save()
+
+            message = 'コメントを投稿しました。'
+            messages.info(request, message)
 
         return self.get_success_url()
 
