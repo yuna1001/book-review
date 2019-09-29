@@ -67,7 +67,7 @@
                     </ul>
             </nav>
         </header>
-        <main class="container" style="padding-bottom: 150px;">
+        <main class="container" style="padding-bottom: 350px;">
             {% for message in messages %}
             <div class=" alert alert alert-primary alert-dismissible fade show" role="alert">
                 {{ message }}
@@ -78,65 +78,52 @@
             {% endfor %}
             {% block content %}{% endblock %}
         </main>
-        <!-- Footer -->
-        <footer id="sticky-footer" class="py-4 bg-dark text-white-50">
-            <!-- Footer Links -->
-            <div class="container text-center">
+        <footer id="footer" class="fixed-bottom">
+            <div class="footer-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-4 col-md-push-3">
+                            <i class="fas fa-book-reader"></i>Bookレビュー</a>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-md-push-3">
+                            <ul class="list-unstyled">
+                                <li>
+                                    <a href="{% url 'book:terms_of_service' %}">利用規約</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'book:privacy_policy' %}">プライバシーポリシー</a>
+                                </li>
+                                <li>
+                                    <a href="#!">お問い合わせ</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-md-push-3">
+                            <ul class="list-unstyled">
+                                <li>
+                                    <a href="{% url 'book:about' %}">トップページ</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'book:list' %}">書籍一覧</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'book:favorite_lanking' %}">お気に入りランキング</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'book:wanted_lanking' %}">読みたいランキング</a>
+                                </li>
+                            </ul>
+                        </div>
 
-                <!-- Grid row -->
-                <div class="row">
-                    <div class="col-xs-4 col-sm-4 col-md-push-3" style="text-align: center">
-                        <i class="fas fa-book-reader"></i>Bookレビュー</a>
+                        <div class="col-md-3 col-sm-12 col-md-pull-9">
+                            <div class="footer-logo"><a href="https://mdbootstrap.com/education/bootstrap/"> Book
+                                    Review</a></div>
+                            <p><small>&copy; 2019. All Rights Reserved.</p>
+                        </div>
                     </div>
-                    <!-- Grid column -->
-                    <div class="col-xs-4 col-sm-4 col-md-push-3" style="text-align: center">
-                        <!-- Links -->
-                        <ul class="list-unstyled">
-                            <li>
-                                <a href="{% url 'book:terms_of_service' %}">利用規約</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'book:privacy_policy' %}">プライバシーポリシー</a>
-                            </li>
-                            <li>
-                                <a href="#!">お問い合わせ</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- Grid column -->
-                    <div class="col-xs-4 col-sm-4 col-md-push-3" style="text-align: center">
-
-                        <!-- Links -->
-                        <ul class="list-unstyled">
-                            <li>
-                                <a href="{% url 'book:about' %}">トップページ</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'book:list' %}">書籍一覧</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'book:favorite_lanking' %}">お気に入りランキング</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'book:wanted_lanking' %}">読みたいランキング</a>
-                            </li>
-                        </ul>
-                    </div>
-
                 </div>
-                <!-- Grid row -->
-
             </div>
-            <!-- Footer Links -->
-
-            <!-- Copyright -->
-            <div class="footer-copyright text-center py-3">© 2019 Copyright:
-                <a href="https://mdbootstrap.com/education/bootstrap/"> Book Review</a>
-            </div>
-            <!-- Copyright -->
         </footer>
-
-        <!-- Footer -->
 
         <!-- js -->
         {% block extra_js %}{% endblock %}

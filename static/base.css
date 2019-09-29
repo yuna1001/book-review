@@ -3,10 +3,11 @@ header a {
     text-decoration: none;
 }
 
-#sticky-footer {
-    flex-shrink: none;
+
+footer {
     color: white;
     background-color: #1C2331;
+    padding-top: 30px;
 }
 
 footer a {
