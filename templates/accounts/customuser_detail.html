@@ -34,11 +34,13 @@
     </div>
 </div>
 <!-- ユーザ情報変更ボタン -->
+{% if user.username != 'test-user' %}
 {% if user == customuser %}
 <div class="button-wrapper">
     <button class="btn btn-primary" type="button"
         onclick="location.href='{% url 'accounts:update' user.uuid %}'">変更する</button>
 </div>
+{% endif %}
 {% endif %}
 
 <!-- フォローボタン -->

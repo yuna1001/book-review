@@ -15,11 +15,19 @@
         <h4 class="my-0 font-weight-normal">ログイン</h4>
       </div>
       <div class="card-body">
-        <form method="post" novalidate action="{% url 'account_login' %}">
+        <form method="POST" novalidate action="{% url 'account_login' %}">
           {% csrf_token %}
           {% bootstrap_form form %}
           {% buttons %}
           <button type="submit" class="btn btn-primary btn-block">ログイン</button>
+          {% endbuttons %}
+        </form>
+        <form method="POST" novalidate action="{% url 'account_login' %}">
+          {% csrf_token %}
+          <input type="hidden" name="login" value="test@example.com">
+          <input type="hidden" name="password" value="test-password1234">
+          {% buttons %}
+          <button type="submit" class="btn btn-success btn-block">テストユーザでログイン</button>
           {% endbuttons %}
         </form>
         {% get_providers as socialaccount_providers %}
