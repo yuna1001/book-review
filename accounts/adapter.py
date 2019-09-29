@@ -30,18 +30,17 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         user_email(user, email)
 
         """
-        プロフィール画像が選択・送信されていれば登録する
+        プロフィール画像が選択されていれば登録する
+        選択されていない場合は「no-image」を登録する
         """
-        try:
+
+        if request.FILES.get('profile_pic'):
             profile_pic_file = request.FILES.get('profile_pic')
             profile_pic_name = username + '_' + profile_pic_file.name
 
             user.profile_pic.save(profile_pic_name, profile_pic_file)
-        except KeyError:  # ファイル取得でキーエラーになった際は登録しない
-            pass
 
         if 'password1' in data:
-            # user.set_password(data["password1"])
             user.set_password(data.get('password1'))
         else:
             user.set_unusable_password()
@@ -72,12 +71,16 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user_field(user, 'username', username)
         user_email(user, email)
 
-        try:
-            profile_pic_file = request.FILES.get('profile_pic')  # アップロードされたファイルの取得
+        """
+        画像が選択されていればそれをそれを登録する
+        選択されていなければSNSのプロフィール画像を登録する
+        """
+        if request.FILES.get('profile_pic'):
+            profile_pic_file = request.FILES.get('profile_pic')
             profile_pic_name = username + '_' + profile_pic_file.name
 
             user.profile_pic.save(profile_pic_name, profile_pic_file)
-        except KeyError:  # プロフィール画像が選択されていない・アップロードファイルの取得に失敗した場合
+        else:
             profile_pic_url = sociallogin.account.extra_data.get(
                 'profile_image_url_https', None)
             response = requests.get(profile_pic_url)
