@@ -1,11 +1,10 @@
-{% extends "account/base.html" %}
+{% extends "base.html" %}
 
-{% load i18n %}
 {% load account socialaccount %}
 {% load bootstrap4 %}
 {% providers_media_js %}
 
-{% block head_title %}ログイン{% endblock %}
+{% block title %}ログイン{% endblock %}
 
 {% block content %}
 <p>{{ login_required_message }}</p>
