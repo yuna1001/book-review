@@ -4,9 +4,9 @@ header a {
 }
 
 footer {
-    height: 120px;
     color: white;
     background-color: #1C2331;
+    padding-top: 30px;
 }
 
 footer a {
