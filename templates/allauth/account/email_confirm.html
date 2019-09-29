@@ -1,35 +1,40 @@
-{% extends "account/base.html" %}
+{% extends "base.html" %}
 
 {% load static %}
 {% load account %}
 {% load bootstrap4 %}
 
-{% block head_title %}Eメール確認{% endblock %}
+{% block title %}Eメール確認{% endblock %}
 {% block content %}
 {% block extrahead %}
 {% endblock %}
-<div class="main">
-    <div class="main-title">
-        <h2>Eメール確認</h2>
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-6">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Eメール確認</h4>
+            </div>
+            <div class="card-body">
+                {% if confirmation %}
+                {% user_display confirmation.email_address.user as user_display %}
+                <p class="text">メール確認ボタンを押すとアカウント登録が完了します。</p>
+                <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+                    {% csrf_token %}
+                    {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+                    <div class="button-wrapper" style="text-align: center">
+                        <button type="submit" class="btn btn-primary active">Eメール確認</button>
+                    </div>
+                </form>
+                {% else %}
+                {% url 'account_email' as email_url %}
+                <p>Eメール確認のリンクが切れています。 <a href="{{ email_url }}">再度認証リクエストを発行してください</a></p>
+                {% endif %}
+            </div>
+            <div class="card-footer text-muted text-center">
+            </div>
+        </div>
     </div>
-
-    {% if confirmation %}
-
-    {% user_display confirmation.email_address.user as user_display %}
-
-    <p class="text">メール確認ボタンを押すとアカウント登録が完了します。</p>
-    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
-        {% csrf_token %}
-        <button class="btn btn-primary" type="submit">Eメール確認</button>
-    </form>
-
-    {% else %}
-
-    {% url 'account_email' as email_url %}
-
-    <p>Eメール確認のリンクが切れています。 <a href="{{ email_url }}">再度認証リクエストを発行してください</a></p>
-
-    {% endif %}
-
 </div>
 {% endblock %}
