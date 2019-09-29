@@ -17,7 +17,6 @@ DEBUG = True
 
 SECRET_KEY = '3g-z%u7v(tsf($o15e8dt2q$(p*uh3hlxs5d_osk74_h@#fmiy'
 
-
 ALLOWED_HOSTS = ['*']
 
 # Database
@@ -70,11 +69,6 @@ DEFAULT_FILE_STORAGE = 'config.storage_backends.S3MediaStorage'
 MEDIA_AWS_STORAGE_BUCKET_NAME = 'kyne-book-review.cf-media'
 MEDIAFILES_LOCATION = 'images/' '''
 
-
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
-
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Eメール設定
+EMAIL_BACKEND = 'django_ses.SESBackend'
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = env('DEFAULT_FROM_EMAIL')
