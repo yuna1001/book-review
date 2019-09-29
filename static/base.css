@@ -3,8 +3,8 @@ header a {
     text-decoration: none;
 }
 
-footer {
-    height: 120px;
+#sticky-footer {
+    flex-shrink: none;
     color: white;
     background-color: #1C2331;
 }
