@@ -106,7 +106,7 @@ jobs:
           name: Restart service
           command: ssh ${USER_NAME}@${HOST_NAME}
             "cd /home/webapp/mysite;
-            pip install -r requirements.txt;
+            pip3 install -r requirements.txt --user;
             python3 manage.py makemigrations;
             python3 manage.py migrate;
             sudo systemctl stop mysite.socket;
