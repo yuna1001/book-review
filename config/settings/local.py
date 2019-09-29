@@ -57,9 +57,9 @@ AWS_S3_CUSTOM_DOMAIN = 'd3ri4bj3n8e0i0.cloudfront.net'
 
 # staticファイル設定
 # 静的ファイル配信用ディレクトリで、URLの一部になる
-STATIC_URL = '/static/'
+""" STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] """
 AWS_STORAGE_BUCKET_NAME = 'kyne-book-review'
 
 # mediaファイル設定
