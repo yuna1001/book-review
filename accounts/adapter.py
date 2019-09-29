@@ -81,13 +81,20 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
             user.profile_pic.save(profile_pic_name, profile_pic_file)
         else:
-            profile_pic_url = sociallogin.account.extra_data.get(
-                'profile_image_url_https', None)
-            response = requests.get(profile_pic_url)
+            # Twitter
+            if sociallogin.account.extra_data.get('profile_image_url_https'):
+                profile_pic_url = sociallogin.account.extra_data.get('profile_image_url_https', None)
 
-            profile_pic_name = username + '.jpg'
+            # Github
+            if sociallogin.account.extra_data.get('avatar_url'):
+                profile_pic_url = sociallogin.account.extra_data.get('avatar_url', None)
 
-            user.profile_pic.save(profile_pic_name, ContentFile(response.content), save=True)
+            # Twitter・Githubどちらかの画像が取得できる場合は登録する
+            if profile_pic_url is not None:
+                response = requests.get(profile_pic_url)
+                profile_pic_name = username + '.jpg'
+
+                user.profile_pic.save(profile_pic_name, ContentFile(response.content), save=True)
 
         user.set_unusable_password()
         get_account_adapter().populate_username(request, user)
