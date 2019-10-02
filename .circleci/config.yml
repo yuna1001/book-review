@@ -105,7 +105,8 @@ jobs:
       - run:
           name: Restart service
           command: ssh ${USER_NAME}@${HOST_NAME}
-            "python3 manage.py makemigrations;
+            "cd /home/mysiteuser/mysite;
+            python3 manage.py makemigrations;
             python3 manage.py migrate;
             sudo systemctl stop mysite.socket;
             sudo systemctl stop mysite;
