@@ -104,14 +104,7 @@ jobs:
             --exclude='.git' --exclude='.circleci' . ${USER_NAME}@${HOST_NAME}:/home/webapp/mysite
       - run:
           name: Restart service
-          command: ssh ${USER_NAME}@${HOST_NAME}
-            "cd /home/mysiteuser/mysite;
-            python3 manage.py makemigrations;
-            python3 manage.py migrate;
-            sudo systemctl stop mysite.socket;
-            sudo systemctl stop mysite;
-            sudo systemctl restart mysite.socket;
-            sudo systemctl restart mysite"
+          command: ssh ${USER_NAME}@${HOST_NAME} "bash deploy.sh"
 workflows:
   version: 2
   build_and_deploy:
