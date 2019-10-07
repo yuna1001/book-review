@@ -1,3 +1,42 @@
 div.container-fluid {
     padding-bottom: 300px;
 }
+
+h2.page-top-title {
+    text-align: center;
+    margin: 20px 20px;
+}
+
+div.search-result {
+    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.card-image {
+    padding: 10px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-color: darkgray;
+    text-align: center;
+}
+
+img.img-thumbnail {
+    width: 180px;
+    height: 250px;
+    object-fit: cover;
+}
+
+div.card-body {
+    padding-bottom: 0%;
+}
+
+li.list-group-item {
+    margin: 0%;
+    padding: 0.5em
+}
+
+li.list-group-item form button {
+    font-size: 0.75em;
+}

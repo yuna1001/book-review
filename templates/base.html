@@ -92,11 +92,11 @@
         <footer id="footer" class="fixed-bottom">
             <div class="footer-content">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-md-3 col-sm-4 col-md-push-3">
+                    <div class="row justify-content-center">
+                        <div class="col-md-3">
                             <i class="fas fa-book-reader"></i>Bookレビュー
                         </div>
-                        <div class="col-md-3 col-sm-4 col-md-push-3">
+                        <div class="col-md-3">
                             <ul class="list-unstyled">
                                 <li>
                                     <a href="{% url 'book:terms_of_service' %}">利用規約</a>
@@ -109,24 +109,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-3 col-sm-4 col-md-push-3">
-                            <ul class="list-unstyled">
-                                <li>
-                                    <a href="{% url 'book:about' %}">トップページ</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'book:list' %}">書籍一覧</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'book:favorite_lanking' %}">お気に入りランキング</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'book:wanted_lanking' %}">読みたいランキング</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="col-md-3 col-sm-12 col-md-pull-9">
+                        <div class="col-md-3">
                             <div class="footer-logo">
                                 <a href="{% url 'book:about' %}"> Bookレビュー</a>
                             </div>

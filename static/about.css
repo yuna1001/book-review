@@ -1,15 +1,14 @@
 div.container-fluid {
-    padding-bottom: 350px;
+    padding-bottom: 150px;
     padding-right: 0px;
     padding-left: 0px;
     overflow: scroll;
-    height: 100vh;
+    height: 80vh;
     background-image: url("book-image.jpg");
     max-width: 100%;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    padding: 0px;
 }
 
 div.content {
@@ -23,10 +22,10 @@ div.info {
 }
 
 div.buttons {
-    margin-top: 40px;
+    margin-top: 20px;
 }
 
 div.buttons p {
     display: inline-block;
-    margin: 20px;
+    margin: 10px;
 }

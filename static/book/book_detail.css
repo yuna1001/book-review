@@ -1,10 +1,9 @@
-div.container-fluid {
-    padding-bottom: 350px;
-    padding-right: 100px;
-    padding-left: 100px;
+#main {
+    padding-bottom: 300px;
+    overflow: scroll;
 }
 
-h1.page-top-title {
+h2.page-top-title {
     text-align: center;
     margin: 20px 20px;
 }
