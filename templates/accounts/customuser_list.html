@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% load custom_template_tag %}
+{% block title %}ユーザ一覧{% endblock %}
+{% block extra_css %}
+<link href="{% static 'accounts/customuser_list.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="page-top-title">ユーザ一覧</h1>
+    <div class="row justify-content-center">
+        <form method="GET" class="form-inline">
+            <div class="col-auto">
+                {% csrf_token %}
+                {% bootstrap_form form layout='inline' size='large' %}
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">検索</button>
+            </div>
+        </form>
+    </div>
+    <div class="row search-result">
+        {% for customuser in customuser_list %}
+        <div class="col-xs-12 col-sm-12 col-md-3 user-list">
+            <div class="profile">
+                {% if customuser.profile_pic.url %}
+                <div class="profile-pic">
+                    <img src="{{ customuser.profile_pic.url }}" class="rounded-circle" alt="...">
+                </div>
+                {% endif %}
+                <div class="profile-name">
+                    <a href="{% url 'accounts:detail' customuser.uuid %}">
+                        <p>{{ customuser.username }}</p>
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                    <ul class="list-group list-group-flush text-center">
+                        <!-- フォロー -->
+                        <li class="list-group-item">
+                            <div class="form-favorite text-center">
+                                {% if customuser in follow_list %}
+                                <form action="{% url 'accounts:unfollow' customuser.uuid %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="template_name" value="accounts:list">
+                                    <button type="submit" class="btn btn-secondary">フォロー解除</button>
+                                </form>
+                                {% else %}
+                                <form action="{% url 'accounts:follow' customuser.uuid %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="template_name" value="accounts:list">
+                                    <button type="submit" class="btn btn-primary">フォロー</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </li>
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

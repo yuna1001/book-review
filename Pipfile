@@ -38,6 +38,7 @@ factory-boy = "*"
 django-extensions = "*"
 werkzeug = "*"
 django-ses = "*"
+django-admin-honeypot = "*"
 
 [requires]
 python_version = "3.7"

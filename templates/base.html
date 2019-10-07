@@ -46,6 +46,11 @@
                                 <i class="far fa-bookmark"></i> 読みたいランキング
                             </a>
                         </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url 'accounts:list' %}">
+                                <i class="fas fa-users"></i>ユーザ一覧
+                            </a>
+                        </li>
                         {% if user.is_authenticated %}
                         <li class="nav-item dropdown active">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
