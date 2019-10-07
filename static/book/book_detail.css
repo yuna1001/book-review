@@ -1,3 +1,9 @@
+div.container-fluid {
+    padding-bottom: 350px;
+    padding-right: 100px;
+    padding-left: 100px;
+}
+
 h1.page-top-title {
     text-align: center;
     margin: 20px 20px;
@@ -27,6 +33,14 @@ img.img-thumbnail {
 
 tbody {
     width: 100%;
+}
+
+tbody tr th {
+    width: 30%;
+}
+
+tbody tr td {
+    width: 70%;
 }
 
 div.user-profile-img-thumbnail img.profile-card-img-top {
@@ -64,10 +78,56 @@ div.comment-post {
     margin-top: 30px;
 }
 
+div.card-user-info {
+    width: 100px;
+    margin: 10px;
+    text-align: center;
+}
+
+div.user-image {
+    padding: 0px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-color: darkgray;
+    text-align: center;
+}
+
+div.user-name {
+    padding: 0px;
+}
+
+div.comment-content {
+    margin-top: 30px;
+}
+
+div.buttons {
+    text-align: right;
+}
+
+button.edit-button {
+    display: inline-block;
+}
+
+button.delete-button {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+
 h3.comment-post-form {
     text-align: center;
     margin-top: 40px;
 }
+
+div.comment-form {
+    margin-top: 30px;
+}
+
+div.button-wrapper {
+    text-align: center
+}
+
 
 div.profile {
     height: 100%;
@@ -75,7 +135,7 @@ div.profile {
 }
 
 img.rounded-circle {
-    width: 100%;
-    height: 100%;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
 }

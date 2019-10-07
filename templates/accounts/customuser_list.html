@@ -24,18 +24,20 @@
     <div class="row search-result">
         {% for customuser in customuser_list %}
         <div class="col-xs-12 col-sm-12 col-md-3 user-list">
-            <div class="profile">
+            <div class="card-user-info mx-auto">
                 {% if customuser.profile_pic.url %}
-                <div class="profile-pic">
-                    <img src="{{ customuser.profile_pic.url }}" class="rounded-circle" alt="...">
-                </div>
-                {% endif %}
-                <div class="profile-name">
+                <div class="user-image">
                     <a href="{% url 'accounts:detail' customuser.uuid %}">
-                        <p>{{ customuser.username }}</p>
+                        <img src="{{ customuser.profile_pic.url }}" class="rounded-circle" alt="...">
                     </a>
                 </div>
-                <div class="card-body">
+                {% endif %}
+                <div class="user-name">
+                    <a href="{% url 'accounts:detail' customuser.uuid %}">
+                        {{ customuser.username }}
+                    </a>
+                </div>
+                <div class="follow-button">
                     {% if user.is_authenticated %}
                     <ul class="list-group list-group-flush text-center">
                         <!-- フォロー -->
@@ -45,13 +47,13 @@
                                 <form action="{% url 'accounts:unfollow' customuser.uuid %}" method="POST">
                                     {% csrf_token %}
                                     <input type="hidden" name="template_name" value="accounts:list">
-                                    <button type="submit" class="btn btn-secondary">フォロー解除</button>
+                                    <button type="submit" class="btn btn-danger">フォロー解除</button>
                                 </form>
                                 {% else %}
                                 <form action="{% url 'accounts:follow' customuser.uuid %}" method="POST">
                                     {% csrf_token %}
                                     <input type="hidden" name="template_name" value="accounts:list">
-                                    <button type="submit" class="btn btn-primary">フォロー</button>
+                                    <button type="submit" class="btn btn-success">フォローする</button>
                                 </form>
                                 {% endif %}
                             </div>
@@ -60,6 +62,7 @@
                     {% endif %}
                 </div>
             </div>
+
         </div>
         {% endfor %}
     </div>
