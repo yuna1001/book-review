@@ -4,12 +4,12 @@
 {% load custom_template_tag %}
 {% block title %}お気に入りランキング{% endblock %}
 {% block extra_css %}
-<link href="{% static 'book/book_list.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'book/book_fav_lanking.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-    <h1 class="page-top-title">お気に入り追加数ランキング</h1>
+    <h2 class="page-top-title">お気に入り追加数ランキング</h2>
     <div class="row search-result">
         {% for book in book_list %}
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
