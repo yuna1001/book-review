@@ -1,50 +1,54 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% load account socialaccount %}
 {% load bootstrap4 %}
 {% providers_media_js %}
 
 {% block title %}ログイン{% endblock %}
-
+{% block extra_css %}
+<link href="{% static 'allauth/account/login.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
 {% block content %}
-<p>{{ login_required_message }}</p>
-<div class="row justify-content-center">
-  <div class="col-lg-6">
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal">ログイン</h4>
-      </div>
-      <div class="card-body">
-        <form method="POST" novalidate action="{% url 'account_login' %}">
-          {% csrf_token %}
-          {% bootstrap_form form %}
-          {% buttons %}
-          <button type="submit" class="btn btn-primary btn-block">ログイン</button>
-          {% endbuttons %}
-        </form>
-        <form method="POST" novalidate action="{% url 'account_login' %}">
-          {% csrf_token %}
-          <input type="hidden" name="login" value="test@example.com">
-          <input type="hidden" name="password" value="test-password1234">
-          {% buttons %}
-          <button type="submit" class="btn btn-success btn-block">テストユーザでログイン</button>
-          {% endbuttons %}
-        </form>
-        {% get_providers as socialaccount_providers %}
-        {% if socialaccount_providers %}
-        <div class="input-group">
-          <a href="{% provider_login_url 'twitter' method='js_sdk' %}"
-            class="btn btn-block btn-social btn-twitter text-center"><i class="fab fa-twitter"></i>Sign in with
-            Twitter</a>
-          <a href="{% provider_login_url 'github' method='js_sdk' %}"
-            class="btn btn-block btn-social btn-twitter text-center"><i class="fab fa-github"></i>Sign in with
-            Github</a>
-          {% endif %}
+<div class="container-fluid">
+  <p>{{ login_required_message }}</p>
+  <div class="row justify-content-center">
+    <div class="col-4">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">ログイン</h4>
         </div>
-      </div>
-      <div class="card-footer text-muted text-center">
-        <a href="{% url 'account_reset_password' %}">パスワードをお忘れですか？</a><br>
-        新規登録は <a href="{{ signup_url }}">こちら</a>
+        <div class="card-body">
+          <form method="POST" novalidate action="{% url 'account_login' %}">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+            <button type="submit" class="btn btn-primary btn-block">ログイン</button>
+            {% endbuttons %}
+          </form>
+          <form method="POST" novalidate action="{% url 'account_login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="login" value="test@example.com">
+            <input type="hidden" name="password" value="test-password1234">
+            {% buttons %}
+            <button type="submit" class="btn btn-success btn-block">テストユーザでログイン</button>
+            {% endbuttons %}
+          </form>
+          {% get_providers as socialaccount_providers %}
+          {% if socialaccount_providers %}
+          <div class="input-group">
+            <a href="{% provider_login_url 'twitter' method='js_sdk' %}"
+              class="btn btn-block btn-social btn-twitter text-center"><i class="fab fa-twitter"></i>Sign in with
+              Twitter</a>
+            <a href="{% provider_login_url 'github' method='js_sdk' %}"
+              class="btn btn-block btn-social btn-twitter text-center"><i class="fab fa-github"></i>Sign in with
+              Github</a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card-footer text-muted text-center">
+          <a href="{% url 'account_reset_password' %}">パスワードをお忘れですか？</a><br>
+          新規登録は <a href="{{ signup_url }}">こちら</a>
+        </div>
       </div>
     </div>
   </div>

@@ -8,99 +8,101 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="page-top-title">読みたい追加数ランキング</h1>
-<div class="row search-result">
-    {% for book in book_list %}
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card" style="margin:10px;">
-            <div class="card-image">
-                <a href="{% url 'book:detail' book.uuid %}">
-                    <img src="{{ book.image_url }}" class="img-thumbnail" alt="...">
-                </a>
-            </div>
-            <div class="card-body">
-                <a href="{% url 'book:detail' book.uuid %}">
-                    <h5 class="card-title text-truncate">{{ book.title }}</h5>
-                </a>
-                <p class="card-text text-truncate">{{ book.author }}</p>
+<div class="container" style="padding-bottom: 300px;">
+    <h1 class="page-top-title">読みたい追加数ランキング</h1>
+    <div class="row search-result">
+        {% for book in book_list %}
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card" style="margin:10px;">
+                <div class="card-image">
+                    <a href="{% url 'book:detail' book.uuid %}">
+                        <img src="{{ book.image_url }}" class="img-thumbnail" alt="...">
+                    </a>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'book:detail' book.uuid %}">
+                        <h5 class="card-title text-truncate">{{ book.title }}</h5>
+                    </a>
+                    <p class="card-text text-truncate">{{ book.author }}</p>
 
-                {% if user.is_authenticated %}
-                <ul class="list-group list-group-flush text-center">
-                    <!-- お気に入り -->
-                    <li class="list-group-item">
-                        <div class="form-favorite text-center">
-                            {% if book in fav_book_list %}
-                            <form action="{% url 'book:delete_favorite' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="favorite_uuid" value="{{ book|get_favorite_id:user }}">
-                                <input type="hidden" name="template_name" value="book_wanted_lanking">
-                                <button type="submit" class="btn btn-secondary">お気に入り追加済み</button>
-                            </form>
-                            {% else %}
-                            <form action="{% url 'book:add_favorite' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="template_name" value="book_wanted_lanking">
-                                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                <button type="submit" class="btn btn-primary">お気に入り追加</button>
-                            </form>
-                            {% endif %}
-                        </div>
-                    </li>
+                    {% if user.is_authenticated %}
+                    <ul class="list-group list-group-flush text-center">
+                        <!-- お気に入り -->
+                        <li class="list-group-item">
+                            <div class="form-favorite text-center">
+                                {% if book in fav_book_list %}
+                                <form action="{% url 'book:delete_favorite' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="favorite_uuid" value="{{ book|get_favorite_id:user }}">
+                                    <input type="hidden" name="template_name" value="book_wanted_lanking">
+                                    <button type="submit" class="btn btn-secondary">お気に入り追加済み</button>
+                                </form>
+                                {% else %}
+                                <form action="{% url 'book:add_favorite' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="template_name" value="book_wanted_lanking">
+                                    <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                                    <button type="submit" class="btn btn-primary">お気に入り追加</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </li>
 
-                    <!-- 読みたい -->
-                    <li class="list-group-item">
-                        <div class="form-favorite text-center">
-                            {% if book in wanted_book_list %}
-                            <form action="{% url 'book:delete_wanted' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="wanted_uuid" value="{{ book|get_wanted_id:user }}">
-                                <input type="hidden" name="template_name" value="book_wanted_lanking">
-                                <button type="submit" class="btn btn-secondary">読みたいに追加済み</button>
-                            </form>
-                            {% else %}
-                            <form action="{% url 'book:add_wanted' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="template_name" value="book_wanted_lanking">
-                                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                <button type="submit" class="btn btn-primary">読みたいに追加</button>
-                            </form>
-                            {% endif %}
-                        </div>
-                    </li>
-                </ul>
+                        <!-- 読みたい -->
+                        <li class="list-group-item">
+                            <div class="form-favorite text-center">
+                                {% if book in wanted_book_list %}
+                                <form action="{% url 'book:delete_wanted' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="wanted_uuid" value="{{ book|get_wanted_id:user }}">
+                                    <input type="hidden" name="template_name" value="book_wanted_lanking">
+                                    <button type="submit" class="btn btn-secondary">読みたいに追加済み</button>
+                                </form>
+                                {% else %}
+                                <form action="{% url 'book:add_wanted' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="template_name" value="book_wanted_lanking">
+                                    <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                                    <button type="submit" class="btn btn-primary">読みたいに追加</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </li>
+                    </ul>
 
-                {% else %}
-                <ul class="list-group list-group-flush text-center">
-                    <!-- お気に入り -->
-                    <li class="list-group-item">
-                        <div class="form-favorite text-center">
-                            <form action="{% url 'book:add_favorite' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="template_name" value="book_wanted_lanking">
-                                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                <button type="submit" class="btn btn-primary">お気に入り追加</button>
-                            </form>
-                        </div>
-                    </li>
-                    <!-- 読みたい -->
-                    <li class="list-group-item">
-                        <div class="form-favorite text-center">
-                            <form action="{% url 'book:add_wanted' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="template_name" value="book_wanted_lanking">
-                                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                <button type="submit" class="btn btn-primary">読みたいに追加</button>
-                            </form>
-                        </div>
-                    </li>
-                </ul>
-                {% endif %}
-            </div>
-            <div class="card-footer" style="text-align: center">
-                {{ forloop.counter }}位 ： <i class="far fa-bookmark"></i> {{ book.wanted_count }}
+                    {% else %}
+                    <ul class="list-group list-group-flush text-center">
+                        <!-- お気に入り -->
+                        <li class="list-group-item">
+                            <div class="form-favorite text-center">
+                                <form action="{% url 'book:add_favorite' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="template_name" value="book_wanted_lanking">
+                                    <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                                    <button type="submit" class="btn btn-primary">お気に入り追加</button>
+                                </form>
+                            </div>
+                        </li>
+                        <!-- 読みたい -->
+                        <li class="list-group-item">
+                            <div class="form-favorite text-center">
+                                <form action="{% url 'book:add_wanted' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="template_name" value="book_wanted_lanking">
+                                    <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
+                                    <button type="submit" class="btn btn-primary">読みたいに追加</button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                    {% endif %}
+                </div>
+                <div class="card-footer" style="text-align: center">
+                    {{ forloop.counter }}位 ： <i class="far fa-bookmark"></i> {{ book.wanted_count }}
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 {% endblock %}

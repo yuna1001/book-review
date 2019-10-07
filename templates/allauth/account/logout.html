@@ -5,25 +5,27 @@
 {% block title %}ログアウト{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-4">
-  <div class="col-lg-6">
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal">ログアウト</h4>
-      </div>
-      <div class="card-body">
-        <p>ログアウトしますか?</p>
-        <form method="post" action="{% url 'account_logout' %}">
-          {% csrf_token %}
-          {% if redirect_field_value %}
-          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-          {% endif %}
-          <div class="button-wrapper" style="text-align: center">
-            <button type="submit" class="btn btn-primary active">ログアウト</button>
-          </div>
-        </form>
-      </div>
-      <div class="card-footer text-muted text-center">
+<div class="container-fluid">
+  <div class="row justify-content-center mt-4">
+    <div class="col-4">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">ログアウト</h4>
+        </div>
+        <div class="card-body">
+          <p>ログアウトしますか?</p>
+          <form method="post" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <div class="button-wrapper" style="text-align: center">
+              <button type="submit" class="btn btn-primary active">ログアウト</button>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer text-muted text-center">
+        </div>
       </div>
     </div>
   </div>

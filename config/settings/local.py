@@ -55,12 +55,16 @@ AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 AWS_DEFAULT_ACL = None
 AWS_S3_CUSTOM_DOMAIN = 'd3ri4bj3n8e0i0.cloudfront.net'
 
-# staticファイル設定
+# staticファイル設定(S3)
 # 静的ファイル配信用ディレクトリで、URLの一部になる
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 AWS_STORAGE_BUCKET_NAME = 'kyne-book-review'
+
+""" # staticファイル設定(ローカル)
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] """
 
 # mediaファイル設定
 MEDIA_URL = '/media/'

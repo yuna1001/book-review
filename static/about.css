@@ -1,3 +1,31 @@
-div.description {
+div.container-fluid {
+    padding-right: 0px;
+    padding-left: 0px;
+    overflow: scroll;
+    height: 100vh;
+    background-image: url("book-image.jpg");
+    max-width: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    padding: 0px;
+}
+
+div.content {
+    margin-top: 200px;
+}
+
+div.info {
+    margin: auto;
     text-align: center;
+    color: white;
+}
+
+div.buttons {
+    margin-top: 40px;
+}
+
+div.buttons p {
+    display: inline-block;
+    margin: 20px;
 }

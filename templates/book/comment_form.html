@@ -5,15 +5,17 @@
 {% block extra_css %}
 {% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-8 justify-content-center mx-auto">
-        <form method="POST" style="margin-top: 40px;">
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            {% buttons %}
-            <button class="btn btn-primary" type="submit">コメント</button>
-            {% endbuttons %}
-        </form>
+<div class="container" style="padding-bottom: 300px;">
+    <div class="row">
+        <div class="col-md-8 justify-content-center mx-auto">
+            <form method="POST" style="margin-top: 40px;">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                <button class="btn btn-primary" type="submit">コメント</button>
+                {% endbuttons %}
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

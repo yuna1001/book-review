@@ -7,12 +7,26 @@
 {% endblock %}
 
 {% block content %}
-<div class="description">
-    <h2>Bookレビューとは</h2>
-    <h5>Bookレビューは書籍レビューサイトです。
-        みんなのレビューを参考に、自分にぴったりの本を探してみませんか？ </h5>
-</div>
-<div class="row">
-
+<div class="container-fluid" style="padding-bottom: 350px;">
+    <div class="row justify-content-center content">
+        <div class="col-6 info">
+            <div class="title">
+                <h1>Bookレビュー</h1>
+                <p>
+                    Bookレビューは書籍レビューサイトです。</p>
+                <p>
+                    みんなのレビューを参考に、自分にぴったりの本を探してみませんか？
+                </p>
+            </div>
+            <div class="buttons">
+                <p class="book-list-button">
+                    <a href="{% url 'book:list' %}" class="btn btn-primary">書籍一覧を見る</a>
+                </p>
+                <p class="book-search-button">
+                    <a href="{% url 'book:search' %}" class="btn btn-primary">書籍を検索する</a>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
