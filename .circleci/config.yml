@@ -100,8 +100,9 @@ jobs:
           name: Start rsync
           command: rsync -av --exclude='Dockerfile' --exclude='process.yml'
             --exclude='nginx' --exclude=''docker-compose.yml
-            --exclude='Pipfile' --exclude='Pipfile.lock' --exclude='.ssh'
-            --exclude='.git' --exclude='.circleci' . ${USER_NAME}@${HOST_NAME}:/home/webapp/mysite
+            --exclude='static' --exclude='media' --exclude='Pipfile'
+            --exclude='Pipfile.lock' --exclude='.ssh' --exclude='.git'
+            --exclude='.circleci' . ${USER_NAME}@${HOST_NAME}:/home/webapp/mysite
       - run:
           name: Restart service
           command: ssh ${USER_NAME}@${HOST_NAME} "bash deploy.sh"
