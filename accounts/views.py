@@ -5,7 +5,7 @@ from django.shortcuts import redirect, reverse
 from django.views import generic
 
 
-from .forms import CustomUserUpdateForm
+from .forms import CustomUserUpdateForm, CustomUserSearchForm
 from book.models import Comment, Favorite, Wanted
 from .models import CustomUser, Relation
 
@@ -105,6 +105,10 @@ class CustomUserFollowView(CustomLoginRequiredMixin, generic.View):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
+        template_name = self.request.POST.get('template_name')
+
+        if template_name:
+            return reverse(template_name)
         return reverse('accounts:detail', kwargs={'pk': self.kwargs['pk']})
 
 
@@ -127,4 +131,59 @@ class CustomUserUnfollowView(CustomLoginRequiredMixin, generic.View):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
+        template_name = self.request.POST.get('template_name')
+
+        if template_name:
+            return reverse(template_name)
         return reverse('accounts:detail', kwargs={'pk': self.kwargs['pk']})
+
+
+class CustomUserListView(generic.ListView):
+    """
+    ユーザの一覧表示を行うビュークラス
+    """
+    model = CustomUser
+    template_name = 'accounts/customuser_list.html'
+
+    def get_queryset(self):
+        """
+        一覧表示するユーザ情報を取得する
+        """
+
+        queryset = super().get_queryset()
+
+        search_word = self.request.GET.get('username')
+
+        if search_word:
+            queryset = queryset.filter(username__icontains=search_word)
+
+        if not queryset:
+            message = '検索結果は０件です。'
+            messages.info(self.request, message)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        """
+        ユーザのフォロー・フォロワーのデータをcontextに追加
+        """
+        context = super(CustomUserListView, self).get_context_data(**kwargs)
+
+        # 検索時は検索ワードを検索フォームに保持する
+        if self.request.GET:
+            form = CustomUserSearchForm(self.request.GET)
+        else:
+            form = CustomUserSearchForm()
+
+        context['form'] = form
+
+        if self.request.user.is_authenticated:
+            follow_relation = Relation.objects.filter(user=self.request.user)
+            follow_list = [follow.followed for follow in follow_relation]
+            context['follow_list'] = follow_list
+
+            follower_relation = Relation.objects.filter(followed=self.request.user)
+            follower_list = [follower.user for follower in follower_relation]
+            context['follower_list'] = follower_list
+
+        return context

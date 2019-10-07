@@ -1,0 +1,39 @@
+div.container-fluid {
+    padding-bottom: 350px;
+}
+
+h1.page-top-title {
+    padding-top: 20px;
+    text-align: center;
+}
+
+form {
+    padding-top: 10px;
+}
+
+div.search-result {
+    padding-top: 30px;
+}
+
+div.user-list {
+    padding-top: 20px;
+}
+
+div.profile {
+    height: 50%;
+    text-align: center;
+}
+
+div.profile-name {
+    padding-top: 10px;
+}
+
+div.card-body {
+    padding: 0px;
+}
+
+img.rounded-circle {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}

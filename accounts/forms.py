@@ -53,3 +53,13 @@ class CustomUserUpdateForm(forms.ModelForm):
 
         super(CustomUserUpdateForm, self).__init__(*args, **kwargs)
         self.fields['profile_pic'].widget = FileInput()
+
+
+class CustomUserSearchForm(forms.ModelForm):
+    """
+    CustomUserの検索を行うフォームクラス
+    """
+
+    class Meta:
+        model = get_user_model()
+        fields = ('username',)
