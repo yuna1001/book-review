@@ -4,11 +4,12 @@
 {% load custom_template_tag %}
 {% block title %}プライバシーポリシー{% endblock %}
 {% block extra_css %}
+<link href="{% static 'privacy_policy.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-    <h3 style="text-align: center; padding:30px">プライバシーポリシー</h3>
+    <h3 class="page-top-title">プライバシーポリシー</h3>
     <div>
         Bookレビューを運営およびユーザに提供する者（以下，「運営者」といいます。）は，本ウェブサイト上で提供するサービス（以下,「本サービス」といいます。）における，ユーザーの個人情報の取扱いについて，以下のとおりプライバシーポリシー（以下，「本ポリシー」といいます。）を定めます。
     </div>

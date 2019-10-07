@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% load static %}
-{% block title %}コメントフォーム{% endblock %}
+{% block title %}コメント編集{% endblock %}
 {% block extra_css %}
+<link href="{% static 'book/comment_form.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block content %}
-<div class="container" style="padding-bottom: 300px;">
+<div class="container-fluid">
+    <h1 class="page-top-title">コメント編集</h1>
     <div class="row">
-        <div class="col-md-8 justify-content-center mx-auto">
-            <form method="POST" style="margin-top: 40px;">
+        <div class="col-md-6 justify-content-center mx-auto">
+            <form method="POST">
                 {% csrf_token %}
                 {% bootstrap_form form %}
                 {% buttons %}
-                <button class="btn btn-primary" type="submit">コメント</button>
+                <div class="row justify-content-center">
+                    <div class="col-md-10 col-lg-10 button-wrapper">
+                        <button class="btn btn-primary" type="submit">保存する</button>
+                    </div>
+                </div>
                 {% endbuttons %}
             </form>
         </div>

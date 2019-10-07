@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="padding-bottom: 300px;">
+<div class="container-fluid">
     <h1 class="page-top-title">書籍詳細</h1>
     <div class="row justify-content-center">
         <div class="col-xs-8 col-sm-8 col-md-3">
@@ -77,8 +77,8 @@
             <table class="table table-hover">
                 <tbody>
                     <tr>
-                        <th style="width:30%">タイトル</th>
-                        <td style="width:70%">{{ book.title }}</td>
+                        <th>タイトル</th>
+                        <td>{{ book.title }}</td>
                     </tr>
                     <tr>
                         <th scope="row">著者</th>
@@ -109,20 +109,23 @@
         {% for comment in comment_list %}
         <div class="row border border-light rounded bg-light mt-3 justify-content-center">
             <div class="col-xs-8 col-sm-8 col-md-2 align-self-center">
-                <div class="profile">
+                <div class="card-user-info mx-auto">
                     {% if comment.user.profile_pic.url %}
-                    <div class="profile-pic">
-                        <img src="{{ comment.user.profile_pic.url }}" class="rounded-circle" alt="...">
+                    <div class="user-image">
+                        <a href="{% url 'accounts:detail' comment.user.uuid %}">
+                            <img src="{{ comment.user.profile_pic.url }}" class="rounded-circle" alt="...">
+                        </a>
                     </div>
                     {% endif %}
-                    <div class="profile-name">
+                    <div class="user-name">
                         <a href="{% url 'accounts:detail' comment.user.uuid %}">
-                            <p>{{ comment.user.username }}</p>
+                            {{ comment.user.username }}
                         </a>
                     </div>
                 </div>
+
             </div>
-            <div class="col-xs-8 col-sm-8 col-md-10" style="margin-top: 30px;">
+            <div class="col-xs-8 col-sm-8 col-md-10 comment-content">
                 <table class="table">
                     <tbody>
                         <tr>
@@ -140,12 +143,12 @@
                     </tbody>
                 </table>
                 {% if user == comment.user %}
-                <div class="buttons" style="text-align:right;">
+                <div class="buttons">
                     <button type="button" onclick="location.href='{% url 'book:update_comment' book.pk comment.pk %}'"
-                        class="btn btn-outline-primary" style="display: inline-block;"><i class="far fa-edit">
+                        class="btn btn-outline-primary edit-button"><i class="far fa-edit">
                             編集</i></button>
-                    <button type="button" class="btn btn-outline-danger float-right" data-toggle="modal"
-                        data-target="#exampleModal" style="display: inline-block; margin-left: 10px;">
+                    <button type="button" class="btn btn-outline-danger float-right delete-button" data-toggle="modal"
+                        data-target="#exampleModal">
                         <i class="far fa-trash-alt"> 削除</i>
                     </button>
                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
@@ -179,13 +182,19 @@
     </div>
     {% if user.is_authenticated %}
     <div class="row justify-content-center">
-        <div class="col-10">
+        <div class="col-6">
             <h3 class="comment-post-form">口コミを投稿する</h3>
-            <div class="comment-form" style="margin-top: 30px;">
+            <div class="comment-form">
                 <form action="" method="POST">
                     {% csrf_token %}
                     {% bootstrap_form form layout='inline' %}
-                    <button type="submit" class="btn btn-primary">コメントする</button>
+                    {% buttons %}
+                    <div class="row justify-content-center">
+                        <div class="col-md-10 col-lg-10 button-wrapper">
+                            <button type="submit" class="btn btn-primary">投稿する</button>
+                        </div>
+                    </div>
+                    {% endbuttons %}
                 </form>
             </div>
         </div>

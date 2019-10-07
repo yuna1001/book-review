@@ -7,23 +7,30 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="padding-bottom: 300px;">
+<div class="container-fluid">
     <h1 class="page-top-title">ユーザ情報変更</h1>
     <div class="row mt-4 justify-content-center mx-auto">
-        <div class="col-xs-12 col-sm-12 com-md-8">
+        <div class="col-md-6">
             <form action="" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% bootstrap_form form layout='horizontal' size='large' %}
-                <div class="button-wrapper">
-                    <button type="submit" class="btn btn-primary">更新する</button>
+                {% buttons %}
+                <div class="row justify-content-center">
+                    <div class="col-md-4 col-lg-2 button-wrapper">
+                        <button type="submit" class="btn btn-primary">更新する</button>
+                    </div>
                 </div>
+                {% endbuttons %}
             </form>
         </div>
     </div>
-
     <!-- パスワード変更リンク  -->
-    <div class="change-password">
-        <a href="{% url 'account_change_password' %}">パスワードの変更はこちら</a>
+    <div class="row justify-content-center mx-auto">
+        <div class="col-md-6">
+            <div class="change-password">
+                <a href="{% url 'account_change_password' %}">パスワードの変更はこちら</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

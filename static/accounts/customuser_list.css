@@ -19,16 +19,22 @@ div.user-list {
     padding-top: 20px;
 }
 
-div.profile {
-    height: 50%;
+div.card-user-info {
+    width: 200px;
+    margin: 10px;
     text-align: center;
 }
 
-div.profile-name {
-    padding-top: 10px;
+div.user-image {
+    padding: 10px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-color: darkgray;
+    text-align: center;
 }
 
-div.card-body {
+div.follow-button {
     padding: 0px;
 }
 
