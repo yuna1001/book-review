@@ -94,7 +94,12 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-3">
-                            <i class="fas fa-book-reader"></i>Bookレビュー
+                            <div class="footer-logo">
+                                <a href="{% url 'book:about' %}">
+                                    <i class="fas fa-book-reader"></i>Bookレビュー
+                                </a>
+                            </div>
+                            <p><small>&copy; 2019. All Rights Reserved.</small></p>
                         </div>
                         <div class="col-md-3">
                             <ul class="list-unstyled">
@@ -108,12 +113,6 @@
                                     <a href="#!">お問い合わせ</a>
                                 </li>
                             </ul>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="footer-logo">
-                                <a href="{% url 'book:about' %}"> Bookレビュー</a>
-                            </div>
-                            <p><small>&copy; 2019. All Rights Reserved.</p>
                         </div>
                     </div>
                 </div>
