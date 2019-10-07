@@ -3,6 +3,23 @@ header a {
     text-decoration: none;
 }
 
+div.dropdown-menu.show {
+    width: 25%;
+    margin: auto;
+    text-align: center;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}
+
+main {
+    height: 100%;
+    width: 100%;
+}
+
 footer {
     color: white;
     background-color: #1C2331;
