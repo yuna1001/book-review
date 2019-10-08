@@ -22,7 +22,8 @@ https://book-review.ml/
   - Python3.7.3
   - Django2.2.1
 - 開発環境
-  - Docker, Docker-Compose
+  - Docker
+  - Docker-Compose
     - Webアプリケーション(Django)・Webサーバ(Nginx)・Database(PostgreSQL)
 - CI/CD
   - CircleCI
