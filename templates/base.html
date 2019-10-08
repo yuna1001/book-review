@@ -73,6 +73,7 @@
             </nav>
         </header>
         <main>
+            {% if messages %}
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-10">
@@ -87,13 +88,14 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
             {% block content %}{% endblock %}
         </main>
         <footer id="footer" class="fixed-bottom">
             <div class="footer-content">
                 <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-md-3">
+                        <div class="col-6">
                             <div class="footer-logo">
                                 <a href="{% url 'book:about' %}">
                                     <i class="fas fa-book-reader"></i>Bookレビュー
@@ -101,18 +103,16 @@
                             </div>
                             <p><small>&copy; 2019. All Rights Reserved.</small></p>
                         </div>
-                        <div class="col-md-3">
-                            <ul class="list-unstyled">
-                                <li>
-                                    <a href="{% url 'book:terms_of_service' %}">利用規約</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'book:privacy_policy' %}">プライバシーポリシー</a>
-                                </li>
-                                <li>
-                                    <a href="#!">お問い合わせ</a>
-                                </li>
-                            </ul>
+                        <div class="col-6 sub-info">
+                            <a href="{% url 'book:terms_of_service' %}">
+                                <p>利用規約</p>
+                            </a>
+                            <a href="{% url 'book:privacy_policy' %}">
+                                <p>プライバシーポリシー</p>
+                            </a>
+                            <a href="#!">
+                                <p>お問い合わせ</p>
+                            </a>
                         </div>
                     </div>
                 </div>

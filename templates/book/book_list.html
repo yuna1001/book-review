@@ -16,9 +16,11 @@
                 {% csrf_token %}
                 {% bootstrap_form form layout='inline' size='large' %}
             </div>
+            {% buttons %}
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary">検索</button>
             </div>
+            {% endbuttons %}
         </form>
     </div>
     <div class="row search-result">

@@ -1,9 +1,8 @@
 div.container-fluid {
-    padding-bottom: 150px;
     padding-right: 0px;
     padding-left: 0px;
     overflow: scroll;
-    height: 80vh;
+    height: 100vh;
     background-image: url("book-image.jpg");
     max-width: 100%;
     background-size: cover;
