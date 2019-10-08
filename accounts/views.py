@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.shortcuts import redirect, reverse
 from django.views import generic
 
-
 from .forms import CustomUserUpdateForm, CustomUserSearchForm
 from book.models import Comment, Favorite, Wanted
 from .models import CustomUser, Relation
@@ -13,9 +12,11 @@ from .models import CustomUser, Relation
 class CustomLoginRequiredMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
-        '''LoginRequiredMixinの関数を上書き
-            ログインしてない場合はフラッシュメッセージを表示させる
-        '''
+        """
+        LoginRequiredMixinの関数を上書き
+        ログインしてない場合はフラッシュメッセージを表示させる
+        """
+
         if not request.user.is_authenticated:
             message = 'ログインしてください。'
             messages.info(request, message)
@@ -27,6 +28,7 @@ class CustomUserDetailView(generic.DetailView):
     """
     CustomUserの詳細表示を行うビュークラス
     """
+
     model = get_user_model()
     template_name = 'accounts/customuser_detail.html'
 
@@ -34,6 +36,7 @@ class CustomUserDetailView(generic.DetailView):
         """
         ユーザ詳細ページに表示する情報をcontextに追加する
         """
+
         context = super(CustomUserDetailView, self).get_context_data(**kwargs)
 
         user = self.get_object()
@@ -62,6 +65,7 @@ class CustomUserDetailView(generic.DetailView):
         """
         ログインユーザの場合のみcontext用のフォローリストを作成する
         """
+
         if not self.request.user.is_authenticated:
             return []
 
@@ -75,6 +79,7 @@ class CustomUserUpdateView(generic.UpdateView):
     """
     CustomUserの更新を行うビュークラス
     """
+
     model = get_user_model()
     form_class = CustomUserUpdateForm
     template_name = 'accounts/customuser_form.html'
@@ -83,6 +88,7 @@ class CustomUserUpdateView(generic.UpdateView):
         """
         処理成功後は対象のユーザ詳細ページに遷移させる
         """
+
         return reverse('accounts:detail', kwargs={'pk': self.request.user.uuid})
 
 
@@ -99,12 +105,24 @@ class CustomUserFollowView(CustomLoginRequiredMixin, generic.View):
         user = self.request.user
         followed_user = CustomUser.objects.get(uuid=self.kwargs['pk'])
 
+        if user == followed_user:
+            message = '自分をフォローすることはできません。'
+            messages.info(self.request, message)
+            return redirect(self.get_success_url())
+
         relation = Relation(user=user, followed=followed_user)
         relation.save()
+
+        message = followed_user.username + 'をフォローしました。'
+        messages.info(self.request, message)
 
         return redirect(self.get_success_url())
 
     def get_success_url(self):
+        """
+        処理成功後は処理を行ったページに遷移させる
+        """
+
         template_name = self.request.POST.get('template_name')
 
         if template_name:
@@ -123,14 +141,21 @@ class CustomUserUnfollowView(CustomLoginRequiredMixin, generic.View):
         """
 
         user = self.request.user
-        unfollowd_user = CustomUser.objects.get(uuid=self.kwargs['pk'])
+        unfollowed_user = CustomUser.objects.get(uuid=self.kwargs['pk'])
 
-        relation = Relation.objects.get(user=user, followed=unfollowd_user)
+        relation = Relation.objects.get(user=user, followed=unfollowed_user)
         relation.delete()
+
+        message = unfollowed_user.username + 'のフォローを解除しました。'
+        messages.info(self.request, message)
 
         return redirect(self.get_success_url())
 
     def get_success_url(self):
+        """
+        処理成功後は処理を行ったページに遷移させる
+        """
+
         template_name = self.request.POST.get('template_name')
 
         if template_name:
@@ -142,6 +167,7 @@ class CustomUserListView(generic.ListView):
     """
     ユーザの一覧表示を行うビュークラス
     """
+
     model = CustomUser
     template_name = 'accounts/customuser_list.html'
 
@@ -151,6 +177,9 @@ class CustomUserListView(generic.ListView):
         """
 
         queryset = super().get_queryset()
+
+        if self.request.user.is_authenticated:
+            queryset = queryset.exclude(uuid=self.request.user.uuid)
 
         search_word = self.request.GET.get('username')
 
@@ -167,6 +196,7 @@ class CustomUserListView(generic.ListView):
         """
         ユーザのフォロー・フォロワーのデータをcontextに追加
         """
+
         context = super(CustomUserListView, self).get_context_data(**kwargs)
 
         # 検索時は検索ワードを検索フォームに保持する

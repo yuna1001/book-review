@@ -96,16 +96,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
         usernameのgetter
         """
+
         return self.username
 
     def email_user(self, subject, message, from_email=None, **kwargs):
-        """メール送信関数"""
+        """
+        メール送信関数
+        """
+
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def get_followers(self):
-        '''
+        """
         Userインスタンスがフォローしているuserを返す関数
-        '''
+        """
+
         relations = Relation.objects.filter(user=self)
         return [relation.follow for relation in relations]
 

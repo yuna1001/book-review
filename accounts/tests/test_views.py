@@ -12,6 +12,16 @@ from book.tests.factory import BookFactory, CommentFactory, FavoriteFactory, Wan
 from book.models import Book, Comment, Favorite, Wanted
 
 
+def get_response_message(response):
+    """
+    Responseのフラッシュメッセージ取得関数
+    """
+
+    messages = list(response.context.get('messages'))
+
+    return str(messages[0])
+
+
 class TestCustomUserDetailView(TestCase):
     def setUp(self):
         """
@@ -43,7 +53,7 @@ class TestCustomUserDetailView(TestCase):
 
     def test_get_customuser_detail_by_non_owner(self):
         """
-        別ユーザでもGETリクエストを行うと
+        ログイン済みの別ユーザでもGETリクエストを行うと
         対象ユーザの詳細ページに遷移することをテスト
         """
 
@@ -145,7 +155,11 @@ class TestCustomUserFollowView(TestCase):
         response = self.client.post(reverse('accounts:follow', kwargs={'pk': self.followed_user.uuid}), follow=True)
         is_relation_created = Relation.objects.filter(user=self.user).exists()
 
+        expected_message = self.followed_user.username + 'をフォローしました。'
+        message = get_response_message(response)
+
         self.assertTrue(is_relation_created)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('accounts:detail', kwargs={'pk': self.followed_user.uuid}))
 
     def test_follow_by_non_login_user(self):
@@ -154,10 +168,50 @@ class TestCustomUserFollowView(TestCase):
         ログインページに遷移させられるかテスト
         """
 
-        response = self.client.post(reverse('accounts:follow', kwargs={'pk': self.followed_user.uuid}))
+        response = self.client.post(reverse('accounts:follow', kwargs={'pk': self.followed_user.uuid}), follow=True)
+
+        message = get_response_message(response)
+        expected_message = 'ログインしてください。'
 
         self.assertTrue(response.status_code, HTTPStatus.FOUND)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, '/accounts/login/?next=/accounts/follow/{}/'.format(self.followed_user.uuid))
+
+    def test_user_cannot_follow_myself(self):
+        """
+        自分自身をフォローできないこと
+        フラッシュメッセージが表示されることをテスト
+        """
+
+        self.client.login(username=self.user.username, password='defaultpassword')
+
+        response = self.client.post(reverse('accounts:follow', kwargs={'pk': self.user.uuid}), follow=True)
+        is_relation_created = Relation.objects.filter(user=self.user).exists()
+
+        message = get_response_message(response)
+        expected_message = '自分をフォローすることはできません。'
+
+        self.assertFalse(is_relation_created)
+        self.assertEqual(message, expected_message)
+        self.assertRedirects(response, reverse('accounts:detail', kwargs={'pk': self.user.uuid}))
+
+    def test_success_url(self):
+        """
+        処理成功後のページ遷移が正しく行われることをテスト
+        """
+
+        self.client.login(username=self.user.username, password='defaultpassword')
+
+        template_name = 'accounts:list'
+
+        data = {
+            'template_name': template_name
+        }
+
+        response = self.client.post(reverse('accounts:follow', kwargs={
+                                    'pk': self.followed_user.uuid}), data, follow=True)
+
+        self.assertRedirects(response, reverse(template_name))
 
 
 class TestCustomUserUnfollowView(TestCase):
@@ -178,12 +232,16 @@ class TestCustomUserUnfollowView(TestCase):
         """
         self.client.login(username=self.user.username, password='defaultpassword')
 
-        response = self.client.post(reverse('accounts:unfollow', kwargs={'pk': self.unfollowed_user.uuid}))
+        response = self.client.post(reverse('accounts:unfollow', kwargs={'pk': self.unfollowed_user.uuid}), follow=True)
 
         is_relation_deleted = Relation.objects.filter(user=self.user, followed=self.unfollowed_user).exists()
 
+        message = get_response_message(response)
+        expected_message = self.unfollowed_user.username + 'のフォローを解除しました。'
+
         self.assertTrue(response.status_code, HTTPStatus.NO_CONTENT)
         self.assertFalse(is_relation_deleted)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('accounts:detail', kwargs={'pk': self.unfollowed_user.uuid}))
 
     def test_unfollow_by_non_login_user(self):
@@ -192,10 +250,117 @@ class TestCustomUserUnfollowView(TestCase):
         ログインページに遷移させられるかテスト
         """
 
-        response = self.client.post(reverse('accounts:unfollow', kwargs={'pk': self.unfollowed_user.uuid}))
+        response = self.client.post(reverse('accounts:unfollow', kwargs={'pk': self.unfollowed_user.uuid}), follow=True)
+
+        message = get_response_message(response)
+        expected_message = 'ログインしてください。'
 
         self.assertTrue(response.status_code, HTTPStatus.FOUND)
+        self.assertEqual(message, expected_message)
         self.assertRedirects(response, '/accounts/login/?next=/accounts/unfollow/{}/'.format(self.unfollowed_user.uuid))
+
+    def test_success_url(self):
+        """
+        処理成功後のページ遷移が正しく行われることをテスト
+        """
+
+        self.client.login(username=self.user.username, password='defaultpassword')
+
+        template_name = 'accounts:list'
+
+        data = {
+            'template_name': template_name
+        }
+
+        response = self.client.post(reverse('accounts:unfollow', kwargs={
+                                    'pk': self.unfollowed_user.uuid}), data, follow=True)
+
+        self.assertRedirects(response, reverse(template_name))
+
+
+class TestCustomUserListView(TestCase):
+
+    def setUp(self):
+        """
+        テストセットアップ
+        """
+
+        self.user = CustomUserFactory()
+        self.user_count = 5
+        self.username = 'テストユーザ'
+
+        for num in range(self.user_count):
+            username = self.username + str(num)
+            email = 'unfollowed_user' + str(num) + '@example.com'
+            CustomUserFactory(username=username, email=email)
+
+    def test_get(self):
+        """
+        自分以外のユーザが一覧表示されることをテスト
+        """
+
+        self.client.login(username=self.user.username, password='defaultpassword')
+
+        response = self.client.get(reverse('accounts:list'), follow=True)
+
+        self.assertEqual(len(response.context.get('customuser_list')), self.user_count)
+
+    def test_get_by_non_login_user(self):
+        """
+        非ログインユーザでも一覧表示されることをテスト
+        """
+
+        response = self.client.get(reverse('accounts:list'), follow=True)
+
+        self.assertEqual(len(response.context.get('customuser_list')), self.user_count + 1)
+
+    def test_get_search(self):
+        """
+        ユーザ名に検索ワードが含まれるユーザが表示されることをテスト
+        """
+
+        self.client.login(username=self.user.username, password='defaultpassword')
+
+        data = {
+            'search_word': self.username}
+
+        response = self.client.get(reverse('accounts:list'), data, follow=True)
+
+        self.assertEqual(len(response.context.get('customuser_list')), self.user_count)
+
+    def test_get_search_by_non_login_user(self):
+        """
+        非ログインユーザもユーザ検索ができること
+        ユーザ名に検索ワードが含まれるユーザが表示されることをテスト
+        """
+
+        data = {
+            'search_word': self.username}
+
+        response = self.client.get(reverse('accounts:list'), data, follow=True)
+
+        self.assertEqual(len(response.context.get('customuser_list')), self.user_count + 1)
+
+    def test_context_data(self):
+        """
+        テンプレートに渡されるcontextの内容が正しいことをテスト
+        """
+
+        self.client.login(username=self.user.username, password='defaultpassword')
+
+        other = CustomUserFactory(email='followed_user@example.com')
+
+        follow_relation = Relation(user=self.user, followed=other)
+        follow_relation.save()
+
+        followed_relation = Relation(user=other, followed=self.user)
+        followed_relation.save()
+
+        response = self.client.get(reverse('accounts:list'), follow=True)
+
+        self.assertTrue(response.context.get('form'))
+        self.assertTrue(response.context.get('follow_list'))
+        self.assertTrue(response.context.get('follower_list'))
 
 
 class TestRegisterView(TestCase):
