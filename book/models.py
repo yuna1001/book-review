@@ -26,6 +26,7 @@ class Book(TimeStampedModel):
     """
     class Meta:
         db_table = 'book'
+        ordering = ['-modified']
 
     uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
     isbn = models.CharField(verbose_name='ISBN', max_length=255, unique=True)
