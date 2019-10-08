@@ -310,6 +310,7 @@ class BookListView(generic.ListView):
     書籍の一覧表示を行うビュークラス
     """
     model = Book
+    paginate_by = 12
 
     def get_queryset(self):
         """
@@ -344,7 +345,7 @@ class BookListView(generic.ListView):
         context = super(BookListView, self).get_context_data(**kwargs)
 
         # 検索時は検索ワードを検索フォームに保持する
-        if self.request.GET:
+        if self.request.GET.get('search_word'):
             form = BookSearchForm(self.request.GET)
         else:
             form = BookSearchForm()

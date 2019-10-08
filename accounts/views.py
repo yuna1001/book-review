@@ -170,6 +170,7 @@ class CustomUserListView(generic.ListView):
 
     model = CustomUser
     template_name = 'accounts/customuser_list.html'
+    paginate_by = 12
 
     def get_queryset(self):
         """
