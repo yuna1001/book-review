@@ -30,3 +30,8 @@ footer a {
     color: white;
     text-decoration: none;
 }
+
+div.sub-info a p {
+    margin-bottom: 0px;
+    font-size: 90%;
+}
