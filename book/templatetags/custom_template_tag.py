@@ -23,3 +23,15 @@ def get_wanted_id(book, user):
     """
     wanted = Wanted.objects.get(user=user, book=book)
     return wanted.uuid
+
+
+@register.simple_tag
+def url_replace(request, field, value):
+    """
+    GETパラメータを一部置き換える
+    """
+
+    url_dict = request.GET.copy()
+    url_dict[field] = value
+
+    return url_dict.urlencode() 
