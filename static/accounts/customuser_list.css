@@ -2,6 +2,18 @@ div.container-fluid {
     padding-bottom: 120px;
 }
 
+nav.breadcrumb {
+    background-color: white;
+    padding-bottom: 0px;
+    margin: 0px;
+}
+
+nav.breadcrumb ol {
+    background-color: white;
+    padding: 0px;
+    margin: 0px;
+}
+
 h2.page-top-title {
     padding-top: 20px;
     text-align: center;

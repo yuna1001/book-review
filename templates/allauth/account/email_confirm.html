@@ -5,12 +5,27 @@
 {% load bootstrap4 %}
 
 {% block title %}Eメール確認{% endblock %}
+{% block extra_css %}
+<link href="{% static 'allauth/account/email_confirm.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block content %}
 {% block extrahead %}
 {% endblock %}
 <div class="container-fluid">
+    <div class="row mx-auto justify-content-center">
+        <div class="col-12 col-md-10">
+            <nav class="breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'book:about' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'account_signup' %}">新規登録</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Eメール確認</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="row justify-content-center mt-4">
-        <div class="col-4">
+        <div class="col-10 col-md-6 col-lg-4">
             <div class="card mb-4 shadow-sm">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Eメール確認</h4>
@@ -24,7 +39,7 @@
                         {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                         {% endif %}
-                        <div class="button-wrapper" style="text-align: center">
+                        <div class="button-wrapper">
                             <button type="submit" class="btn btn-primary active">Eメール確認</button>
                         </div>
                     </form>
