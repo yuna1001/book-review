@@ -11,10 +11,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'book.apps.BookConfig',
+    'admin_honeypot',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

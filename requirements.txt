@@ -5,11 +5,12 @@ botocore==1.12.217
 certifi==2019.6.16
 chardet==3.0.4
 defusedxml==0.6.0
+django-admin-honeypot==1.1.0
 django-allauth==0.39.1
 django-bootstrap4==0.0.8
 django-debug-toolbar==2.0
 django-environ==0.4.5
-django-extensions==2.2.1
+django-extensions==2.2.3
 django-ses==0.8.12
 django-storages==1.7.1
 django==2.2.4
