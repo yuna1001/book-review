@@ -9,6 +9,16 @@
 
 {% block content %}
 <div class="container-fluid">
+    <div class="row mx-auto justify-content-center">
+        <div class="col-12 col-md-10">
+            <nav class="breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'book:about' %}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">書籍一覧</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <h2 class="page-top-title">書籍一覧</h2>
     <div class="row justify-content-center">
         <form method="GET" class="form-inline">

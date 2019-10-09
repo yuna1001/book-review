@@ -7,6 +7,18 @@
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
+    <div class="row mx-auto justify-content-center">
+        <div class="col-12 col-md-10">
+            <nav class="breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'book:about' %}">Home</a></li>
+                    <li class="breadcrumb-item active"><a href="{% url 'book:list' %}"> 書籍一覧</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'book:detail' view.kwargs.book_pk %}">書籍詳細</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">コメント編集</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <h2 class="page-top-title">コメント編集</h2>
     <div class="row">
         <div class="col-md-6 justify-content-center mx-auto">

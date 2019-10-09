@@ -2,12 +2,25 @@
 {% load static %}
 
 {% block title %}メールアドレス認証{% endblock %}
+{% block extra_css %}
+<link href="{% static 'allauth/account/verification_sent.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
+    <div class="row mx-auto justify-content-center">
+        <div class="col-12 col-md-10">
+            <nav class="breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'book:about' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'account_signup' %}">新規登録</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">メールアドレス認証</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 mx-auto" style="text-align: center;">
-            <h1 style="margin: 20px;">メールアドレス認証</h1>
+        <div class="col-12 col-md-8 mx-auto" style="text-align: center;">
             <div class="content">
                 <p class="main-text">ご登録いただきましたメールアドレスに登録メールをお送りいたしました。<br>
                     お手数となりますが、ご確認いただけますようお願い申し上げます。</p>

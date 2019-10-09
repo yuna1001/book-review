@@ -1,5 +1,5 @@
 div.container-fluid {
-    padding-bottom: 100px;
+    padding-top: 30px;
 }
 
 nav.breadcrumb {
@@ -12,17 +12,4 @@ nav.breadcrumb ol {
     background-color: white;
     padding: 0px;
     margin: 0px;
-}
-
-h2.page-top-title {
-    margin-top: 30px;
-    text-align: center;
-}
-
-form {
-    margin-top: 40px;
-}
-
-div.button-wrapper {
-    text-align: center;
 }
