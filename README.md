@@ -6,32 +6,27 @@ https://book-review.ml/
 書籍専用のレビュー共有サイトです。
 読んだ書籍の感想を残したり、他のユーザのレビューを元に新しい１冊を見つけましょう！
 
-# 機能一覧
-- ユーザ機能
-  - 新規登録
-  - 編集
-  - 検索
-  - ソーシャルログイン
-  - フォロー機能
-- 書籍検索機能
-  - APIでの書籍検索
-  - 書籍データの保存
-  - コメント投稿
-  - 書籍データの検索
-# 使用している技術
-- 言語/フレームワーク
-  - Python3.7.3
-  - Django2.2.1
+# 機能・使用技術一覧
+- 技術一覧
+  - 言語/フレームワーク
+    - Python3.7.3
+    - Django2.2.4
+  - インフラ(AWS)
+    - EC2(サービス稼働基盤)
+    - EIP・Route53(独自ドメイン)
+    - S3・CloudFront(静的ファイル配信)
+    - SES(メール配信)
+  - データベース
+    - PostgreSQL10.10
+- 機能一覧
+  - ソーシャルログイン(django-allauth)
+  - 画像アップロード(django-storages)
+  - 書籍検索(楽天API)
+  - 単体テスト(factory_boy)
 - 開発環境
   - Docker
   - Docker-Compose
     - Webアプリケーション(Django)・Webサーバ(Nginx)・Database(PostgreSQL)
 - CI/CD
   - CircleCI
-- 本番環境
-  - AWS
-    - EC2
-    - Route53
-    - S3・CloudFront
-    - SES
 
