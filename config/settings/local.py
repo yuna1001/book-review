@@ -19,6 +19,8 @@ SECRET_KEY = '3g-z%u7v(tsf($o15e8dt2q$(p*uh3hlxs5d_osk74_h@#fmiy'
 
 ALLOWED_HOSTS = ['*']
 
+ADMINS = [env.list('ADMINS')]
+
 # Database
 DATABASES = {
     'default': {
