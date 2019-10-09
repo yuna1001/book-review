@@ -13,8 +13,9 @@ https://book-review.ml/
     - Django2.2.4
   - インフラ(AWS)
     - EC2(サービス稼働基盤)
-    - EIP・Route53(独自ドメイン)
-    - S3・CloudFront(静的ファイル配信)
+    - Route53・EIP(独自ドメイン)
+    - S3(ファイル保存)
+    - CloudFront(静的ファイル配信)
     - SES(メール配信)
   - データベース
     - PostgreSQL10.10
@@ -22,6 +23,9 @@ https://book-review.ml/
   - ソーシャルログイン(django-allauth)
   - 画像アップロード(django-storages)
   - 書籍検索(楽天API)
+  - ページネーション
+  - フォロー機能
+  - お気に入り機能
   - 単体テスト(factory_boy)
 - 開発環境
   - Docker
