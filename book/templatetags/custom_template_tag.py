@@ -34,4 +34,4 @@ def url_replace(request, field, value):
     url_dict = request.GET.copy()
     url_dict[field] = value
 
-    return url_dict.urlencode() 
+    return url_dict.urlencode()

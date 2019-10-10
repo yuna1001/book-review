@@ -179,13 +179,14 @@ class CustomUserListView(generic.ListView):
 
         queryset = super().get_queryset()
 
+        # ログイン済みであればユーザ一覧に表示しない
         if self.request.user.is_authenticated:
             queryset = queryset.exclude(uuid=self.request.user.uuid)
 
         search_word = self.request.GET.get('username')
 
         if search_word:
-            queryset = queryset.filter(username__icontains=search_word)
+            queryset = CustomUser.filter_by_username(search_word)
 
         if not queryset:
             message = '検索結果は０件です。'

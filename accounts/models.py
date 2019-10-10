@@ -92,12 +92,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('CusomUsers')
         db_table = 'custom_user'
 
-    def get_username(self):
-        """
-        usernameのgetter
-        """
-
-        return self.username
+    @classmethod
+    def filter_by_username(cls, username):
+        return cls.objects.filter(username__icontains=username)
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """
@@ -112,7 +109,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
 
         relations = Relation.objects.filter(user=self)
-        return [relation.follow for relation in relations]
+        return [relation.followed for relation in relations]
 
 
 class Relation(models.Model):

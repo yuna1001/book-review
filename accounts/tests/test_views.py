@@ -23,6 +23,10 @@ def get_response_message(response):
 
 
 class TestCustomUserDetailView(TestCase):
+    """
+    ユーザの詳細表示を行うビュークラスのテスト
+    """
+
     def setUp(self):
         """
         テストセットアップ
@@ -107,6 +111,9 @@ class TestCustomUserDetailView(TestCase):
 
 
 class TestCustomUserUpdateView(TestCase):
+    """
+    ユーザの更新を行うビュークラスのテスト
+    """
 
     def setUp(self):
         """
@@ -136,6 +143,9 @@ class TestCustomUserUpdateView(TestCase):
 
 
 class TestCustomUserFollowView(TestCase):
+    """
+    ユーザのフォローを行うビュークラスのテスト
+    """
 
     def setUp(self):
         """
@@ -215,6 +225,9 @@ class TestCustomUserFollowView(TestCase):
 
 
 class TestCustomUserUnfollowView(TestCase):
+    """
+    ユーザのフォロー解除を行うビュークラスのテスト
+    """
 
     def setUp(self):
         """
@@ -279,6 +292,9 @@ class TestCustomUserUnfollowView(TestCase):
 
 
 class TestCustomUserListView(TestCase):
+    """
+    ユーザの一覧表示を行うビュークラスのテスト
+    """
 
     def setUp(self):
         """
@@ -363,7 +379,10 @@ class TestCustomUserListView(TestCase):
         self.assertTrue(response.context.get('follower_list'))
 
 
-class TestRegisterView(TestCase):
+class TestCustomUserRegisterView(TestCase):
+    """
+    ユーザの新規登録を行うビュークラスのテスト
+    """
 
     def setUp(self):
         """
@@ -383,7 +402,7 @@ class TestRegisterView(TestCase):
 
     def test_get_register_page_by_login_user(self):
         """
-        ログインユーザがユーザ登録画面へGETリクエストを行うと
+        ログイン済みユーザがユーザ登録画面へGETリクエストを行うと
         書籍検索画面にリダイレクトされることをテスト
         """
 
@@ -392,3 +411,24 @@ class TestRegisterView(TestCase):
         response = self.client.get(reverse('account_signup'), follow=True)
 
         self.assertRedirects(response, reverse('book:search'))
+
+    def test_signup(self):
+        """
+        ユーザの新規登録ができることをテスト
+        登録ボタン押下後にメール送信画面に遷移することをテスト
+        """
+
+        data = {
+            'email': 'test2@example.com',
+            'username': 'test2-user',
+            'profile_pic': '',
+            'password1': 'test-password',
+            'password2': 'test-password'
+        }
+
+        response = self.client.post(reverse('account_signup'), data, follow=True)
+
+        is_user_created = CustomUser.objects.filter(username='test2-user').exists()
+
+        self.assertTrue(is_user_created)
+        self.assertRedirects(response, reverse('account_email_verification_sent'))
