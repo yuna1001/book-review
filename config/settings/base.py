@@ -108,11 +108,9 @@ SITE_ID = 1
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-
 # メディアファイル
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 # django-allauth設定
 AUTHENTICATION_BACKENDS = (
@@ -128,6 +126,10 @@ ACCOUNT_EMAIL_REQUIRED = True  # ユーザ登録時の必須項目とする
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_USERNAME_REQUIRED = True  # ユーザ登録時の必須項目とする
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+ACCOUNT_FORMS = {
+    'signup': 'accounts.forms.CustomSignupForm',
+}
+ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
 
 # SocialAccountモデル設定
 SOCIALACCOUNT_EMAIL_VERIFICATION = ACCOUNT_EMAIL_VERIFICATION
@@ -143,14 +145,5 @@ SOCIALACCOUNT_QUERY_EMAIL = False
 LOGIN_REDIRECT_URL = 'book:search'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
-# Account Email設定
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_FORMS = {
-    'signup': 'accounts.forms.CustomSignupForm',
-}
-ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
-
+# Email設定
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
