@@ -70,7 +70,7 @@ class TestCustomUserUpdateForm(TestCase):
         self.assertIn('有効なメールアドレスを入力してください。', form.errors.get('email'))
 
 
-class CustomUserSearchForm(TestCase):
+class TestCustomUserSearchForm(TestCase):
     """
     カスタムユーザの検索フォームのテストクラス
     """
@@ -85,15 +85,15 @@ class CustomUserSearchForm(TestCase):
 
         self.user = CustomUserFactory(username='テストユーザ')
 
-    """
     def test_form_is_valid(self):
+        """
+        フォームの値チェック(正常系)
+        """
 
         data = {
             'username': 'テストユーザ',
         }
 
         form = self.form(data)
-        print(form.errors)
 
         self.assertTrue(form.is_valid())
-    """
