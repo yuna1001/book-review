@@ -133,7 +133,7 @@ class TestBookAddView(TestCase):
         """
 
         self.user = CustomUserFactory()
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         self.book_title = 'Django'
         self.book_info = {
@@ -190,8 +190,8 @@ class TestBookDetailView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory(username='テストユーザ')
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.user = CustomUserFactory()
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.expected_book_title = 'テストタイトル'
         self.book = BookFactory(title=self.expected_book_title)
 
@@ -264,7 +264,7 @@ class TestFavoriteAddView(TestCase):
         """
 
         self.user = CustomUserFactory()
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.book = BookFactory()
 
     def test_add_favorite_on_book_list(self):
@@ -341,7 +341,7 @@ class TestWantedAddView(TestCase):
         """
 
         self.user = CustomUserFactory()
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.book = BookFactory()
 
     def test_add_wanted_on_book_list(self):
@@ -418,7 +418,7 @@ class TestBookListView(TestCase):
         """
 
         self.user = CustomUserFactory()
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.book_count = 5
 
     def test_list_view(self):
@@ -526,7 +526,7 @@ class TestFavoriteDeleteView(TestCase):
         """
 
         self.user = CustomUserFactory()
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.book = BookFactory()
 
     def test_only_owner_can_delete(self):
@@ -557,8 +557,8 @@ class TestFavoriteDeleteView(TestCase):
 
         self.client.logout()
 
-        non_owner = CustomUserFactory()
-        self.client.login(username=non_owner.username, password='defaultpassword')
+        non_owner = CustomUserFactory(email='hoge@example.com')
+        self.client.login(email=non_owner.email, password='defaultpassword')
 
         data = {
             'favorite_uuid': favorite.uuid,
@@ -632,7 +632,7 @@ class TestWantedDeleteView(TestCase):
         """
 
         self.user = CustomUserFactory()
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.book = BookFactory()
 
     def test_only_owner_can_delete(self):
@@ -663,8 +663,8 @@ class TestWantedDeleteView(TestCase):
 
         self.client.logout()
 
-        non_owner = CustomUserFactory()
-        self.client.login(username=non_owner.username, password='defaultpassword')
+        non_owner = CustomUserFactory(email='hoge@example.com')
+        self.client.login(email=non_owner.email, password='defaultpassword')
 
         data = {
             'wanted_uuid': wanted.uuid,
@@ -737,8 +737,8 @@ class TestCommentUpdateView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory(username='テストユーザ')
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.user = CustomUserFactory()
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.expected_book_title = 'テストタイトル'
         self.book = BookFactory(title=self.expected_book_title)
 
@@ -806,8 +806,8 @@ class TestCommentDeleteView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory(username='テストユーザ')
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.user = CustomUserFactory()
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.expected_book_title = 'テストタイトル'
         self.book = BookFactory(title=self.expected_book_title)
 
@@ -880,8 +880,8 @@ class TestFavoriteLankingListView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory(username='テストユーザ')
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.user = CustomUserFactory()
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.book = BookFactory(fav_count=5)
 
     def test_book_order(self):
@@ -911,8 +911,8 @@ class TestWantedLankingListView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory(username='テストユーザ')
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.user = CustomUserFactory()
+        self.client.login(email='test@example.com', password='defaultpassword')
         self.book = BookFactory(wanted_count=5)
 
     def test_book_order(self):

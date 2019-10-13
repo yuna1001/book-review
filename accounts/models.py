@@ -49,13 +49,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                             default=uuid.uuid4, editable=False)
     username = models.CharField(
         _('username'),
-        max_length=150,
+        max_length=25,
         unique=True,
         help_text=_(
-            'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+            'ユーザ名は必須となります。25文字以内でご設定ください。'),
         validators=[username_validator],
         error_messages={
-            'unique': _("A user with that username already exists."),
+            'unique': _('ユーザ名は既に登録されています。お手数となりますが別のユーザ名をご検討ください。'),
         },
     )
 
@@ -63,7 +63,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True, blank=True)
 
     profile_pic = models.ImageField(
-        _('プロフィール画像'), blank=True, null=True, default='noimage.jpg')
+        _('profile_pic'), blank=True, null=True, default='noimage.jpg')
 
     is_staff = models.BooleanField(
         _('staff status'),
@@ -84,8 +84,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'username'  # ログイン時にusernameではなくemailを使用する
-    REQUIRED_FIELDS = ['email']  # createsuperuserコマンドでユーザーを作成する際に聞かれるフィールド
+
+    USERNAME_FIELD = 'email'  # CustomUserの一意となるフィールドを指定
 
     class Meta:
         verbose_name = _('CusomUser')
@@ -94,11 +94,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     @classmethod
     def filter_by_username(cls, username):
+        """
+        usernameでユーザを絞り込む関数
+        """
+
         return cls.objects.filter(username__icontains=username)
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """
-        メール送信関数
+        このユーザにメールを送信する
         """
 
         send_mail(subject, message, from_email, [self.email], **kwargs)

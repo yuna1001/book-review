@@ -16,7 +16,58 @@ class TestCustomUser(TestCase):
         """
         self.model = get_user_model()
         self.test_username = 'テストユーザ'
-        self.user = CustomUserFactory(username=self.test_username)
+        self.test_email = 'test@example.com'
+        self.user = CustomUserFactory(username=self.test_username, email=self.test_email)
+
+    def test_create_user(self):
+        """
+        create_user()でユーザを作成できることをテスト
+        """
+
+        user = get_user_model().objects.create_user(username='テストユーザ2', email='test2@example.com', password='pass')
+
+        self.assertTrue(user)
+
+    def test_create_user_with_same_username(self):
+        """
+        create_user()でユーザを作成する際に同一ユーザ名で作成できないことをテスト
+        """
+
+        self.assertRaises(Exception, get_user_model().objects.create_user,
+                          username=self.test_username, email='test2@example.com', password='pass')
+
+    def test_create_user_with_same_email(self):
+        """
+        create_user()でユーザを作成する際に同一Eメールで作成できないことをテスト
+        """
+
+        self.assertRaises(Exception, get_user_model().objects.create_user,
+                          username='テストユーザ2', email=self.test_email, password='pass')
+
+    def test_create_superuser(self):
+        """
+        create_superuser()でユーザを作成できることをテスト
+        """
+
+        user = get_user_model().objects.create_superuser(username='テストユーザ2', email='test2@example.com', password='pass')
+
+        self.assertTrue(user)
+
+    def test_create_superuser_with_same_username(self):
+        """
+        create_superuser()でユーザを作成する際に同一ユーザ名で作成できないことをテスト
+        """
+
+        self.assertRaises(Exception, get_user_model().objects.create_superuser,
+                          username=self.test_username, email='test2@example.com', password='pass')
+
+    def test_create_superuser_with_same_email(self):
+        """
+        create_superuser()でユーザを作成する際に同一Eメールで作成できないことをテスト
+        """
+
+        self.assertRaises(Exception, get_user_model().objects.create_superuser,
+                          username='テストユーザ2', email=self.test_email, password='pass')
 
     def test_filter_by_username(self):
         """
