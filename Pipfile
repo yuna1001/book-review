@@ -39,6 +39,7 @@ django-extensions = "*"
 werkzeug = "*"
 django-ses = "*"
 django-admin-honeypot = "*"
+pil = "*"
 
 [requires]
 python_version = "3.7"

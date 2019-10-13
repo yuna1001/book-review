@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.urls import reverse
 
-from .factory import BookFactory, CommentFactory, CustomUserFactory, FavoriteFactory, WantedFactory
+from base.tests.factory import BookFactory, CommentFactory, CustomUserFactory, FavoriteFactory, WantedFactory
 from ..models import Book, Comment, Favorite, Wanted
 
 

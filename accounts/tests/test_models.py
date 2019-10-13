@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from ..models import Relation
-from book.tests.factory import CustomUserFactory
+from base.tests.factory import CustomUserFactory
 
 
 class TestCustomUser(TestCase):
