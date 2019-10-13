@@ -39,7 +39,7 @@ class TestCustomUserDetailView(TestCase):
         対象ユーザの詳細ページに遷移することをテスト
         """
 
-        self.client.login(username=self.user.username, passwoer='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         response = self.client.get(reverse('accounts:detail', kwargs={'pk': self.user.uuid}), follow=True)
 
@@ -98,7 +98,7 @@ class TestCustomUserDetailView(TestCase):
         ユーザのリストがcontextに追加されるかテスト
         """
 
-        self.client.login(username=self.user, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         another = CustomUserFactory(email='hoge@example.com')
         following_relation = Relation(user=self.user, followed=another)
@@ -126,7 +126,7 @@ class TestCustomUserUpdateView(TestCase):
         対象ユーザの更新のテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         response = self.client.post(reverse('accounts:update', kwargs={'pk': self.user.uuid}), {
             'username': 'test',
@@ -159,7 +159,7 @@ class TestCustomUserFollowView(TestCase):
         ユーザをフォローできるかテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         response = self.client.post(reverse('accounts:follow', kwargs={'pk': self.followed_user.uuid}), follow=True)
         is_relation_created = Relation.objects.filter(user=self.user).exists()
@@ -192,7 +192,7 @@ class TestCustomUserFollowView(TestCase):
         フラッシュメッセージが表示されることをテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         response = self.client.post(reverse('accounts:follow', kwargs={'pk': self.user.uuid}), follow=True)
         is_relation_created = Relation.objects.filter(user=self.user).exists()
@@ -209,7 +209,7 @@ class TestCustomUserFollowView(TestCase):
         処理成功後のページ遷移が正しく行われることをテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         template_name = 'accounts:list'
 
@@ -242,7 +242,8 @@ class TestCustomUserUnfollowView(TestCase):
         """
         ユーザのフォロー解除できるかテスト
         """
-        self.client.login(username=self.user.username, password='defaultpassword')
+
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         response = self.client.post(reverse('accounts:unfollow', kwargs={'pk': self.unfollowed_user.uuid}), follow=True)
 
@@ -276,7 +277,7 @@ class TestCustomUserUnfollowView(TestCase):
         処理成功後のページ遷移が正しく行われることをテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         template_name = 'accounts:list'
 
@@ -314,7 +315,7 @@ class TestCustomUserListView(TestCase):
         自分以外のユーザが一覧表示されることをテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         response = self.client.get(reverse('accounts:list'), follow=True)
 
@@ -334,7 +335,7 @@ class TestCustomUserListView(TestCase):
         ユーザ名に検索ワードが含まれるユーザが表示されることをテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         data = {
             'search_word': self.username}
@@ -361,7 +362,7 @@ class TestCustomUserListView(TestCase):
         テンプレートに渡されるcontextの内容が正しいことをテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         other = CustomUserFactory(email='followed_user@example.com')
 
@@ -405,7 +406,7 @@ class TestCustomUserRegisterView(TestCase):
         書籍検索画面にリダイレクトされることをテスト
         """
 
-        self.client.login(username=self.user.username, password='defaultpassword')
+        self.client.login(email='test@example.com', password='defaultpassword')
 
         response = self.client.get(reverse('account_signup'), follow=True)
 
