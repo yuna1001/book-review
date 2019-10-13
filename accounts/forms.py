@@ -55,11 +55,9 @@ class CustomUserUpdateForm(forms.ModelForm):
         self.fields['profile_pic'].widget = FileInput()
 
 
-class CustomUserSearchForm(forms.ModelForm):
+class CustomUserSearchForm(forms.Form):
     """
     CustomUserの検索を行うフォームクラス
     """
 
-    class Meta:
-        model = get_user_model()
-        fields = ('username',)
+    username = forms.CharField(label='ユーザ名', max_length=150)
