@@ -47,6 +47,7 @@ class TestCustomUserUpdateForm(TestCase):
             'username': 'テストユーザ2',
             'email': 'test2@example.com',
         }
+
         img = self.create_dummy_image()
         file_data = {'profile_pic': SimpleUploadedFile(img.name, img.read(), content_type='image/png',)}
         form = self.form(data, file_data, instance=self.user)
@@ -68,6 +69,15 @@ class TestCustomUserUpdateForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('このフィールドは必須です。', form.errors.get('username'))
         self.assertIn('有効なメールアドレスを入力してください。', form.errors.get('email'))
+
+    def test_profile_pic_field_is_FileInput(self):
+        """
+        profile_picフィールドがFileInputとなっているかテスト
+        """
+
+        form = self.form()
+
+        self.assertNotIn('accept="image/*"', form)
 
 
 class TestCustomUserSearchForm(TestCase):
@@ -97,3 +107,17 @@ class TestCustomUserSearchForm(TestCase):
         form = self.form(data)
 
         self.assertTrue(form.is_valid())
+
+    def test_form_is_invalid(self):
+        """
+        フォームの値チェック(異常系)
+        """
+
+        data = {
+            'username': ''
+        }
+
+        form = self.form(data)
+
+        self.assertFalse(form.is_valid())
+        self.assertIn('このフィールドは必須です。', form.errors.get('username'))
