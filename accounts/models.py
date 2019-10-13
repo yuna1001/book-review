@@ -84,8 +84,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'email'  # CustomUserモデルの一意のキーとなるフィールドを指定
-    # REQUIRED_FIELDS = ['email']  # createsuperuserコマンドでユーザーを作成する際に聞かれるフィールド
+
+    USERNAME_FIELD = 'email'  # CustomUserの一意となるフィールドを指定
 
     class Meta:
         verbose_name = _('CusomUser')
@@ -94,11 +94,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     @classmethod
     def filter_by_username(cls, username):
+        """
+        usernameでユーザを絞り込む関数
+        """
+
         return cls.objects.filter(username__icontains=username)
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """
-        メール送信関数
+        このユーザにメールを送信する
         """
 
         send_mail(subject, message, from_email, [self.email], **kwargs)
