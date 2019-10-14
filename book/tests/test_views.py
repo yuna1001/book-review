@@ -252,6 +252,62 @@ class TestBookDetailView(TestCase):
         self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
+    def test_non_login_user_cannnot_add_comment(self):
+        """
+        非ログインユーザはコメントできないこと
+        フラッシュメッセージが表示されることをテスト
+        """
+
+        comment_title = 'comment_title'
+        comment_info = {
+            'user': self.user,
+            'title': comment_title,
+            'score': '5',
+            'content': 'content',
+        }
+
+        comment_info['book'] = self.book
+
+        self.client.logout()
+
+        response = self.client.post(reverse('book:detail', kwargs={'pk': self.book.uuid}),
+                                    comment_info, follow=True)
+
+        is_comment_created = Comment.objects.filter(title=comment_title).exists()
+
+        message = get_response_message(response)
+        expected_message = 'ログインしてください。'
+
+        self.assertFalse(is_comment_created)
+        self.assertEqual(message, expected_message)
+
+    def test_comment_is_invalid(self):
+        """
+        コメントフォームのバリデーションエラーの際にコメントが投稿されないこと
+        フラッシュメッセージが表示されることをテスト
+        """
+
+        comment_title = 'comment_title'
+        comment_info = {
+            'user': self.user,
+            'title': '',
+            'score': '5',
+            'content': 'content',
+        }
+
+        comment_info['book'] = self.book
+
+        response = self.client.post(reverse('book:detail', kwargs={'pk': self.book.uuid}),
+                                    comment_info, follow=True)
+
+        is_comment_created = Comment.objects.filter(title=comment_title).exists()
+
+        message = get_response_message(response)
+        expected_message = 'コメントの投稿に失敗しました。'
+
+        self.assertFalse(is_comment_created)
+        self.assertEqual(message, expected_message)
+
 
 class TestFavoriteAddView(TestCase):
     """
@@ -526,7 +582,7 @@ class TestFavoriteDeleteView(TestCase):
         """
 
         self.user = CustomUserFactory()
-        self.client.login(email='test@example.com', password='defaultpassword')
+        self.client.login(email=self.user.email, password='defaultpassword')
         self.book = BookFactory()
 
     def test_only_owner_can_delete(self):
@@ -548,7 +604,7 @@ class TestFavoriteDeleteView(TestCase):
         self.assertFalse(is_favorite_exist)
         self.assertRedirects(response, reverse('book:list'))
 
-    def non_owner_cannot_delete(self):
+    def test_non_owner_cannot_delete(self):
         """
         非所有者はお気に入りの削除ができないことをテスト
         """
@@ -620,6 +676,28 @@ class TestFavoriteDeleteView(TestCase):
 
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
+    def test_delete_fav_count(self):
+        """
+        お気に入り削除すると書籍のfav_countが-1されることをテスト
+        """
+
+        data = {
+            'book_uuid': self.book.uuid,
+        }
+
+        self.client.post(reverse('book:add_favorite'), data)
+
+        favorite = Favorite.objects.get(book=self.book)
+
+        data = {
+            'favorite_uuid': favorite.uuid,
+            'template_name': 'book_fav_lanking',
+        }
+
+        self.client.post(reverse('book:delete_favorite'), data)
+
+        self.assertEqual(self.book.fav_count, 0)
+
 
 class TestWantedDeleteView(TestCase):
     """
@@ -654,7 +732,7 @@ class TestWantedDeleteView(TestCase):
         self.assertFalse(is_wanted_exist)
         self.assertRedirects(response, reverse('book:list'))
 
-    def non_owner_cannot_delete(self):
+    def test_non_owner_cannot_delete(self):
         """
         非所有者は読みたいの削除ができないことをテスト
         """
@@ -725,6 +803,28 @@ class TestWantedDeleteView(TestCase):
         response = self.client.post(reverse('book:delete_wanted'), data, follow=True)
 
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
+
+    def test_delete_wanted_count(self):
+        """
+        お気に入り削除すると書籍のwanted_countが-1されることをテスト
+        """
+
+        data = {
+            'book_uuid': self.book.uuid,
+        }
+
+        self.client.post(reverse('book:add_wanted'), data)
+
+        wanted = Wanted.objects.get(book=self.book)
+
+        data = {
+            'wanted_uuid': wanted.uuid,
+            'template_name': 'book_wanted_lanking',
+        }
+
+        self.client.post(reverse('book:delete_wanted'), data)
+
+        self.assertEqual(self.book.wanted_count, 0)
 
 
 class TestCommentUpdateView(TestCase):

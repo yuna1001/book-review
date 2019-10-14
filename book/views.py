@@ -381,10 +381,11 @@ class FavoriteDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delet
         """
         対象のFavoriteを削除する
         """
+
         favorite = self.get_object()
         book = favorite.book
 
-        if book.fav_count:
+        if book.fav_count > 0:
             book.fav_count -= 1
             book.save()
 
@@ -433,7 +434,7 @@ class WantedDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteV
         wanted = self.get_object()
         book = wanted.book
 
-        if book.wanted_count:
+        if book.wanted_count > 0:
             book.wanted_count -= 1
             book.save()
 
