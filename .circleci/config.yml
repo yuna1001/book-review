@@ -1,7 +1,7 @@
 version: 2.1
 
 executors:
-  test_default:
+  test:
     working_directory: ~/book-review
     docker:
     - image: circleci/python:3.7
@@ -9,12 +9,12 @@ executors:
         PYTHONDONTWRITEBYTECODE: 1
         PYTHONUNBUFFERED: 1
         TZ: Asia/Tokyo
-    - image: circleci/postgres:11.2
+    - image: circleci/postgres:10.10
       environment:
         POSTGRES_USER: postgres
         POSTGRES_DB: postgres
         TZ: Asia/Tokyo
-  deploy_default:
+  deploy:
     working_directory: ~/book-review
     docker:
     - image: circleci/python:3.7
@@ -74,7 +74,7 @@ commands:
 
 jobs:
   build:
-    executor: test_default
+    executor: test
     steps:
       - checkout
       - chown_python_package
@@ -84,7 +84,7 @@ jobs:
       - db_migrations
       - run_test
   deploy:
-    executor: deploy_default
+    executor: deploy
     steps:
       - checkout
       - add_ssh_keys:
@@ -110,10 +110,7 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-    - build
     - deploy:
         filters:
           branches:
             only: master
-        requires:
-        - build
