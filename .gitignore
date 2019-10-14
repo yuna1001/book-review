@@ -1,6 +1,9 @@
+.DS_Store
 .env
 .venv
 process.yml
 .vscode/*
 config/settings/production.py
 media/*
+/.coverage
+htmlcov

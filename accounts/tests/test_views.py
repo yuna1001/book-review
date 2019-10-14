@@ -338,11 +338,30 @@ class TestCustomUserListView(TestCase):
         self.client.login(email='test@example.com', password='defaultpassword')
 
         data = {
-            'search_word': self.username}
+            'username': self.username}
 
         response = self.client.get(reverse('accounts:list'), data, follow=True)
 
         self.assertEqual(len(response.context.get('customuser_list')), self.user_count)
+
+    def test_get_search_with_no_result(self):
+        """
+        検索ワードが含まれるユーザがいない場合にユーザが表示されないこと
+        フラッシュメッセージが表示されることをテスト
+        """
+
+        self.client.login(email='test@example.com', password='defaultpassword')
+
+        data = {
+            'username': 'hogehoge'}
+
+        response = self.client.get(reverse('accounts:list'), data, follow=True)
+
+        message = get_response_message(response)
+        expected_message = '検索結果は０件です。'
+
+        self.assertEqual(len(response.context.get('customuser_list')), 0)
+        self.assertEqual(message, expected_message)
 
     def test_get_search_by_non_login_user(self):
         """
@@ -351,11 +370,11 @@ class TestCustomUserListView(TestCase):
         """
 
         data = {
-            'search_word': self.username}
+            'username': self.username}
 
         response = self.client.get(reverse('accounts:list'), data, follow=True)
 
-        self.assertEqual(len(response.context.get('customuser_list')), self.user_count + 1)
+        self.assertEqual(len(response.context.get('customuser_list')), self.user_count)
 
     def test_context_data(self):
         """

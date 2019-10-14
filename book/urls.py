@@ -1,5 +1,4 @@
 from django.urls import path
-from django.views.generic import TemplateView
 
 from .views import (
     AboutTemplateView, TermsOfServiceTemplateView, PrivacyPolicyTemplateView, BookSearchView, BookAddView, BookDetailView, FavoriteAddView, WantedAddView, BookListView, FavoriteDeleteView, WantedDeleteView, CommentUpdateView, CommentDeleteView, FavoriteLankingListView, WantedLankingListView)

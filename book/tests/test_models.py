@@ -46,7 +46,7 @@ class TestComment(TestCase):
         expected_title = 'テストタイトル'
         comment = factory.CommentFactory(title=expected_title)
 
-        self.assertEqual(comment.title, expected_title)
+        self.assertEqual(str(comment), expected_title)
 
 
 class TestFavorite(TestCase):

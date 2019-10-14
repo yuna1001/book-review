@@ -44,6 +44,14 @@ class TestCustomUser(TestCase):
         self.assertRaises(Exception, get_user_model().objects.create_user,
                           username='テストユーザ2', email=self.test_email, password='pass')
 
+    def test_create_user_with_non_email(self):
+        """
+        create_user()でユーザを作成する際にEメール無しだとエラーが発生することをテスト
+        """
+
+        self.assertRaises(Exception, get_user_model().objects.create_user,
+                          username='テストユーザ2', email='', password='pass', msg='Emailを入力してください')
+
     def test_create_superuser(self):
         """
         create_superuser()でユーザを作成できることをテスト
@@ -68,6 +76,24 @@ class TestCustomUser(TestCase):
 
         self.assertRaises(Exception, get_user_model().objects.create_superuser,
                           username='テストユーザ2', email=self.test_email, password='pass')
+
+    def test_create_superuser_with_is_staff_false(self):
+        """
+        create_superuser()でユーザを作成する際に
+        is_staffがFalseの場合にエラーが発生することをテスト
+        """
+
+        self.assertRaises(Exception, get_user_model().objects.create_superuser,
+                          username='テストユーザ2', email=self.test_email, password='pass', is_staff=False, msg='Superuser must have is_staff=True.')
+
+    def test_create_superuser_with_is_superuser_false(self):
+        """
+        create_superuser()でユーザを作成する際に
+        is_superuserがFalseの場合にエラーが発生することをテスト
+        """
+
+        self.assertRaises(Exception, get_user_model().objects.create_superuser,
+                          username='テストユーザ2', email=self.test_email, password='pass', is_superuser=False, msg='Superuser must have is_superuser=True.')
 
     def test_filter_by_username(self):
         """
