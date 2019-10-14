@@ -71,7 +71,6 @@ commands:
           name: Start running test
           command: python3 manage.py test --settings=config.settings.circleci_test
 
-
 jobs:
   build:
     executor: test
@@ -83,6 +82,7 @@ jobs:
       - save_python_package
       - db_migrations
       - run_test
+
   deploy:
     executor: deploy
     steps:
@@ -106,11 +106,15 @@ jobs:
       - run:
           name: Restart service
           command: ssh ${USER_NAME}@${HOST_NAME} "bash deploy.sh"
+
 workflows:
   version: 2
   build_and_deploy:
     jobs:
+    - build
     - deploy:
         filters:
           branches:
             only: master
+        requires:
+        - build
