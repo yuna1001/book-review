@@ -70,16 +70,18 @@ commands:
       - run:
           name: Start running test
           command: python3 manage.py test --settings=config.settings.circleci_test
-  store_test_result:
+  store_test:
     description: "テスト結果を保存する"
     steps:
-      - store_test_result:
-        path: test-results
-  store_artifacts:
+      - store_test_results:
+          name: Start storing test result
+          path: test-results
+  store_arti:
     description: "アーティファクトを保存する"
     steps:
       - store_artifacts:
-        path: tr1
+          name: Start storing artifacts
+          path: tr1
 
 jobs:
   build:
@@ -92,8 +94,8 @@ jobs:
       - save_python_package
       - db_migrations
       - run_test
-      - store_test_result
-      - store_artifacts
+      - store_test
+      - store_arti
   deploy:
     executor: deploy
     steps:
@@ -121,10 +123,10 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-    - build:
+    - build
     - deploy:
-        requires:
-          - build
         filters:
           branches:
             only: master
+        requires:
+        - build
