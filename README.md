@@ -1,5 +1,4 @@
-# ブックレビュー
-書籍レビューサイト<br>
+# ポートフォリオURL
 <a href="https://book-review.ml" target="_blank">ブックレビュー</a>
 
 # 概要
