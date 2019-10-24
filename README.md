@@ -1,6 +1,6 @@
 # ブックレビュー
 書籍レビューサイト
-https://book-review.ml/
+[ブックレビュー](https://book-review.ml/){:target="_blank"} 
 
 # 概要
 書籍専用のレビュー共有サイトです。
