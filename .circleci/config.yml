@@ -29,7 +29,7 @@ commands:
     steps:
       - save_cache:
           name: Save Python Package
-          key: book-review-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          key: book-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
           - /usr/local/bin
           - /usr/local/lib/python3.7/site-packages
@@ -39,7 +39,7 @@ commands:
       - restore_cache:
           name: Restore Python Package
           keys:
-          - book-review-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          - book-{{ .Branch }}-{{ checksum "requirements.txt" }}
           - book-review
   chown_python_package:
     description: "pip install したpackage群の権限をcircleciユーザに変更する"
