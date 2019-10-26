@@ -1,6 +1,5 @@
-# ブックレビュー
-書籍レビューサイト
-https://book-review.ml/
+# ポートフォリオURL
+<a href="https://book-review.ml" target="_blank">ブックレビュー</a>
 
 # 概要
 書籍専用のレビュー共有サイトです。
