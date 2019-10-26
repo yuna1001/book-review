@@ -40,7 +40,6 @@ commands:
           name: Restore Python Package
           keys:
           - book-{{ .Branch }}-{{ checksum "requirements.txt" }}
-          - book-review
   chown_python_package:
     description: "pip install したpackage群の権限をcircleciユーザに変更する"
     steps:
