@@ -30,13 +30,13 @@ commands:
       - restore_cache:
           name: Restore Python Package
           keys:
-          - book-review-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          - book-review-v1-{{ checksum "requirements.txt" }}
   save_python_package:
     description: "pip install したpackageをキャッシュする"
     steps:
       - save_cache:
           name: Save Python Package
-          key: book-review-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          key: book-review-v1-{{ checksum "requirements.txt" }}
           paths:
           - /usr/local/bin
           - /usr/local/lib/python3.7/site-packages
