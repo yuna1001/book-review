@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import (Book, Comment, Favorite, Wanted)
+from .models import Book, Comment, Favorite
 
 
 class CommentInline(admin.TabularInline):
@@ -32,14 +32,6 @@ class FavoriteAdmin(admin.ModelAdmin):
     list_editable = ('user', 'book')
 
 
-class WantedAdmin(admin.ModelAdmin):
-    list_display = ('uuid', 'user', 'book', 'created', 'modified')
-    list_display_links = ('uuid',)
-    list_filter = ('created', 'user__username', 'book__title')
-    list_editable = ('user', 'book')
-
-
 admin.site.register(Book, BookAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
-admin.site.register(Wanted, WantedAdmin)

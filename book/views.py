@@ -14,7 +14,7 @@ import environ
 import requests
 
 from .forms import BookSearchForm, CommentCreateForm
-from .models import Book, Favorite, Wanted, Comment
+from .models import Book, Favorite, Comment
 
 
 env = environ.Env()
@@ -172,7 +172,7 @@ class BookDetailView(generic.DetailView):
         """
         次の内容をcontextに含める
         書籍に紐づくコメント・コメント用フォーム
-        ログインユーザが書籍をお気に入り・読みたいに追加しているか(bool)
+        ログインユーザが書籍をお気に入りに追加しているか(bool)
         """
         context = super(BookDetailView, self).get_context_data(**kwargs)
 
@@ -186,11 +186,6 @@ class BookDetailView(generic.DetailView):
             if added_favorite:
                 favorite = Favorite.objects.get(user=self.request.user, book=book)
                 context['favorite'] = favorite
-
-            added_wanted = Wanted.objects.filter(user=self.request.user, book=book).exists()
-            if added_wanted:
-                wanted = Wanted.objects.get(user=self.request.user, book=book)
-                context['wanted'] = wanted
 
         return context
 
@@ -261,45 +256,6 @@ class FavoriteAddView(CustomLoginRequiredMixin, generic.View):
             return redirect(reverse('book:list'))
         if template_name == 'book_fav_lanking':
             return redirect(reverse('book:favorite_lanking'))
-        if template_name == 'book_wanted_lanking':
-            return redirect(reverse('book:wanted_lanking'))
-
-        return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
-
-
-class WantedAddView(CustomLoginRequiredMixin, generic.View):
-    """
-    読みたいの追加を行うビュークラス
-    """
-
-    def post(self, request, *args, **kwargs):
-        """
-        読みたいをDBに追加する
-        """
-
-        user = request.user
-        book_uuid = request.POST.get('book_uuid')
-        book = get_object_or_404(Book, uuid=book_uuid)
-
-        wanted = Wanted(user=user, book=book)
-        wanted.save()
-
-        book.wanted_count += 1
-        book.save()
-
-        message = book.title + 'を読みたいに追加しました。'
-        messages.info(request, message)
-
-        """
-        処理成功後は読みたいの追加を行ったページに遷移させる
-        """
-        template_name = request.POST.get('template_name')
-        if template_name == 'book_list':
-            return redirect(reverse('book:list'))
-        if template_name == 'book_fav_lanking':
-            return redirect(reverse('book:favorite_lanking'))
-        if template_name == 'book_wanted_lanking':
-            return redirect(reverse('book:wanted_lanking'))
 
         return redirect(reverse('book:detail', kwargs={'pk': book_uuid}))
 
@@ -339,7 +295,7 @@ class BookListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         """
-        ユーザのお気に入り・読みたいのデータをcontextに追加
+        ユーザのお気に入り書籍のデータをcontextに追加
         """
         context = super(BookListView, self).get_context_data(**kwargs)
 
@@ -352,15 +308,11 @@ class BookListView(generic.ListView):
         context['form'] = form
 
         # ログインユーザの場合は、
-        # お気に入り登録済み書籍・読みたい登録済み書籍の変数をcontextに追加
+        # お気に入り登録済み書籍の変数をcontextに追加
         if self.request.user.is_authenticated:
             favorite_list = Favorite.objects.filter(user=self.request.user)
             fav_book_list = [fav.book for fav in favorite_list]
             context['fav_book_list'] = fav_book_list
-
-            wanted_list = Wanted.objects.filter(user=self.request.user)
-            wanted_book_list = [wanted.book for wanted in wanted_list]
-            context['wanted_book_list'] = wanted_book_list
 
         return context
 
@@ -409,56 +361,6 @@ class FavoriteDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delet
             return reverse('accounts:detail', kwargs={'pk': str(self.request.POST['user_uuid'])})
         if template_name == 'book_fav_lanking':
             return reverse('book:favorite_lanking')
-        if template_name == 'book_wanted_lanking':
-            return reverse('book:wanted_lanking')
-
-        return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
-
-
-class WantedDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.DeleteView):
-    """
-    読みたいの削除を行うビュークラス
-    """
-    model = Wanted
-
-    def get_object(self):
-        wanted_uuid = self.request.POST.get('wanted_uuid')
-        wanted = Wanted.objects.get(uuid=wanted_uuid)
-        return wanted
-
-    def delete(self, request, *args, **kwargs):
-        """
-        対象のWantedを削除する
-        """
-        wanted = self.get_object()
-        book = wanted.book
-
-        if book.wanted_count > 0:
-            book.wanted_count -= 1
-            book.save()
-
-        wanted.delete()
-
-        message = wanted.book.title + 'を読みたいから削除しました。'
-        messages.info(request, message)
-
-        success_url = self.get_success_url()
-
-        return HttpResponseRedirect(success_url)
-
-    def get_success_url(self):
-        """
-        処理成功後は読みたいの削除を行ったページに遷移させる
-        """
-        template_name = self.request.POST.get('template_name')
-        if template_name == 'book_list':
-            return reverse('book:list')
-        if template_name == 'customuser_detail':
-            return reverse('accounts:detail', kwargs={'pk': str(self.request.POST['user_uuid'])})
-        if template_name == 'book_fav_lanking':
-            return reverse('book:favorite_lanking')
-        if template_name == 'book_wanted_lanking':
-            return reverse('book:wanted_lanking')
 
         return reverse('book:detail', kwargs={'pk': str(self.request.POST['book_uuid'])})
 
@@ -565,51 +467,15 @@ class FavoriteLankingListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         """
-        ユーザのお気に入り・読みたいのデータをcontextに追加
+        ユーザのお気に入り書籍のデータをcontextに追加
         """
         context = super(FavoriteLankingListView, self).get_context_data(**kwargs)
 
         # ログインユーザの場合は、
-        # お気に入り登録済み書籍・読みたい登録済み書籍の変数をcontextに追加
+        # お気に入り登録済み書籍の変数をcontextに追加
         if self.request.user.is_authenticated:
             favorite_list = Favorite.objects.filter(user=self.request.user)
             fav_book_list = [fav.book for fav in favorite_list]
             context['fav_book_list'] = fav_book_list
-
-            wanted_list = Wanted.objects.filter(user=self.request.user)
-            wanted_book_list = [wanted.book for wanted in wanted_list]
-            context['wanted_book_list'] = wanted_book_list
-
-        return context
-
-
-class WantedLankingListView(generic.ListView):
-    model = Book
-    template_name = 'book/book_wanted_lanking.html'
-
-    def get_queryset(self):
-        """
-        読みたい追加数で書籍を取得
-        """
-
-        queryset = Book.objects.filter(wanted_count__gt=0).order_by('-wanted_count')
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        """
-        ユーザのお気に入り・読みたいのデータをcontextに追加
-        """
-        context = super(WantedLankingListView, self).get_context_data(**kwargs)
-
-        # ログインユーザの場合は、
-        # お気に入り登録済み書籍・読みたい登録済み書籍の変数をcontextに追加
-        if self.request.user.is_authenticated:
-            favorite_list = Favorite.objects.filter(user=self.request.user)
-            fav_book_list = [fav.book for fav in favorite_list]
-            context['fav_book_list'] = fav_book_list
-
-            wanted_list = Wanted.objects.filter(user=self.request.user)
-            wanted_book_list = [wanted.book for wanted in wanted_list]
-            context['wanted_book_list'] = wanted_book_list
 
         return context

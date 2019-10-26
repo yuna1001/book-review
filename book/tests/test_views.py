@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.urls import reverse
 
-from base.tests.factory import BookFactory, CommentFactory, CustomUserFactory, FavoriteFactory, WantedFactory
-from ..models import Book, Comment, Favorite, Wanted
+from base.tests import factory
+from ..models import Book, Comment, Favorite
 
 
 def get_response_message(response):
@@ -18,8 +18,6 @@ def get_response_message(response):
     messages = list(response.context.get('messages'))
 
     return str(messages[0])
-
-    # return list(response.context['messages'])
 
 
 class TestAboutTemplateView(TestCase):
@@ -132,7 +130,7 @@ class TestBookAddView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.client.login(email='test@example.com', password='defaultpassword')
 
         self.book_title = 'Django'
@@ -190,10 +188,10 @@ class TestBookDetailView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.client.login(email='test@example.com', password='defaultpassword')
         self.expected_book_title = 'テストタイトル'
-        self.book = BookFactory(title=self.expected_book_title)
+        self.book = factory.BookFactory(title=self.expected_book_title)
 
     def test_get_book_detail(self):
         """
@@ -211,9 +209,8 @@ class TestBookDetailView(TestCase):
         context_dataの中身のテスト
         """
 
-        comment = CommentFactory(user=self.user, book=self.book)
-        favorite = FavoriteFactory(user=self.user, book=self.book)
-        wanted = WantedFactory(user=self.user, book=self.book)
+        comment = factory.CommentFactory(user=self.user, book=self.book)
+        favorite = factory.FavoriteFactory(user=self.user, book=self.book)
 
         response = self.client.get(reverse('book:detail', args=[self.book.uuid]))
 
@@ -223,7 +220,6 @@ class TestBookDetailView(TestCase):
         self.assertIn(comment, context_data.get('comment_list'))
         self.assertTrue(context_data.get('form'))
         self.assertEqual(favorite, context_data.get('favorite'))
-        self.assertEqual(wanted, context_data.get('wanted'))
 
     def test_add_comment(self):
         """
@@ -319,9 +315,9 @@ class TestFavoriteAddView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.client.login(email='test@example.com', password='defaultpassword')
-        self.book = BookFactory()
+        self.book = factory.BookFactory()
 
     def test_add_favorite_on_book_list(self):
         """
@@ -364,104 +360,6 @@ class TestFavoriteAddView(TestCase):
         self.assertEqual(message, expected_message)
         self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
 
-    def test_add_favorite_on_wanted_lanking(self):
-        """
-        読みたいランキングページからお気に入り追加するテスト
-        """
-
-        data = {
-            'book_uuid': self.book.uuid,
-            'template_name': 'book_wanted_lanking'
-        }
-
-        response = self.client.post(reverse('book:add_favorite'), data, follow=True)
-
-        favorite = get_object_or_404(Favorite, user=self.user, book=self.book)
-
-        expected_message = self.book.title + 'をお気に入りに追加しました。'
-        message = get_response_message(response)
-
-        self.assertTrue(favorite)
-        self.assertEqual(message, expected_message)
-        self.assertRedirects(response, reverse('book:wanted_lanking'))
-
-
-class TestWantedAddView(TestCase):
-    """
-    読みたいに追加するビュークラスのテスト
-    """
-
-    def setUp(self):
-        """
-        テストセットアップ
-        """
-
-        self.user = CustomUserFactory()
-        self.client.login(email='test@example.com', password='defaultpassword')
-        self.book = BookFactory()
-
-    def test_add_wanted_on_book_list(self):
-        """
-        書籍一覧画面から読みたいに追加するテスト
-        """
-
-        data = {
-            'book_uuid': self.book.uuid,
-            'template_name': 'book_list'
-        }
-
-        response = self.client.post(reverse('book:add_wanted'), data, follow=True)
-
-        wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
-
-        expected_message = self.book.title + 'を読みたいに追加しました。'
-        message = get_response_message(response)
-
-        self.assertTrue(wanted)
-        self.assertEqual(message, expected_message)
-        self.assertRedirects(response, reverse('book:list'))
-
-    def test_add_wanted_on_book_detail(self):
-        """
-        書籍詳細画面から読みたいに追加するテスト
-        """
-
-        data = {
-            'book_uuid': self.book.uuid
-        }
-
-        response = self.client.post(reverse('book:add_wanted'), data, follow=True)
-
-        wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
-
-        expected_message = self.book.title + 'を読みたいに追加しました。'
-        message = get_response_message(response)
-
-        self.assertTrue(wanted)
-        self.assertEqual(message, expected_message)
-        self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
-
-    def test_add_wanted_on_fav_lanking(self):
-        """
-        お気に入りランキングページから読みたいを追加するテスト
-        """
-
-        data = {
-            'book_uuid': self.book.uuid,
-            'template_name': 'book_fav_lanking'
-        }
-
-        response = self.client.post(reverse('book:add_wanted'), data, follow=True)
-
-        wanted = get_object_or_404(Wanted, user=self.user, book=self.book)
-
-        expected_message = self.book.title + 'を読みたいに追加しました。'
-        message = get_response_message(response)
-
-        self.assertTrue(wanted)
-        self.assertEqual(message, expected_message)
-        self.assertRedirects(response, reverse('book:favorite_lanking'))
-
 
 class TestBookListView(TestCase):
     """
@@ -473,7 +371,7 @@ class TestBookListView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.client.login(email='test@example.com', password='defaultpassword')
         self.book_count = 5
 
@@ -482,7 +380,7 @@ class TestBookListView(TestCase):
         登録した10件の書籍が一覧表示されるかテスト
         """
 
-        BookFactory.create_batch(self.book_count)
+        factory.BookFactory.create_batch(self.book_count)
 
         response = self.client.get(reverse('book:list'), follow=True)
 
@@ -508,7 +406,7 @@ class TestBookListView(TestCase):
         書籍のタイトルが検索範囲となっているかテスト
         """
 
-        BookFactory.create_batch(self.book_count, title='Python')
+        factory.BookFactory.create_batch(self.book_count, title='Python')
 
         data = {
             'search_word': 'Python'
@@ -524,7 +422,7 @@ class TestBookListView(TestCase):
         書籍の説明が検索範囲となっているかテスト
         """
 
-        BookFactory.create_batch(self.book_count, description='Python')
+        factory.BookFactory.create_batch(self.book_count, description='Python')
 
         data = {
             'search_word': 'Python'
@@ -540,7 +438,7 @@ class TestBookListView(TestCase):
         表示される書籍が0件かテスト
         """
 
-        BookFactory(title='Python')
+        factory.BookFactory(title='Python')
 
         data = {
             'search_word': 'Java'
@@ -559,15 +457,13 @@ class TestBookListView(TestCase):
         context_dataの中身のテスト
         """
 
-        book = BookFactory()
-        FavoriteFactory(user=self.user, book=book)
-        WantedFactory(user=self.user, book=book)
+        book = factory.BookFactory()
+        factory.FavoriteFactory(user=self.user, book=book)
 
         response = self.client.get(reverse('book:list'), follow=True)
 
         self.assertIn(book, response.context.get('book_list'))
         self.assertIn(book, response.context.get('fav_book_list'))
-        self.assertIn(book, response.context.get('wanted_book_list'))
         self.assertTrue(response.context.get('form'))
 
 
@@ -581,16 +477,16 @@ class TestFavoriteDeleteView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.client.login(email=self.user.email, password='defaultpassword')
-        self.book = BookFactory()
+        self.book = factory.BookFactory()
 
     def test_only_owner_can_delete(self):
         """
         所有者はお気に入りの削除ができることをテスト
         """
 
-        favorite = FavoriteFactory(user=self.user, book=self.book)
+        favorite = factory.FavoriteFactory(user=self.user, book=self.book)
 
         data = {
             'favorite_uuid': favorite.uuid,
@@ -609,11 +505,11 @@ class TestFavoriteDeleteView(TestCase):
         非所有者はお気に入りの削除ができないことをテスト
         """
 
-        favorite = FavoriteFactory(user=self.user, book=self.book)
+        favorite = factory.FavoriteFactory(user=self.user, book=self.book)
 
         self.client.logout()
 
-        non_owner = CustomUserFactory(email='hoge@example.com')
+        non_owner = factory.CustomUserFactory(email='hoge@example.com')
         self.client.login(email=non_owner.email, password='defaultpassword')
 
         data = {
@@ -630,7 +526,7 @@ class TestFavoriteDeleteView(TestCase):
         非ログインユーザはお気に入りの削除ができないことをテスト
         """
 
-        favorite = FavoriteFactory(user=self.user, book=self.book)
+        favorite = factory.FavoriteFactory(user=self.user, book=self.book)
 
         self.client.logout()
 
@@ -648,7 +544,7 @@ class TestFavoriteDeleteView(TestCase):
         ユーザ詳細ページでの削除実行後のページ遷移のテスト
         """
 
-        favorite = FavoriteFactory(user=self.user, book=self.book)
+        favorite = factory.FavoriteFactory(user=self.user, book=self.book)
 
         data = {
             'favorite_uuid': favorite.uuid,
@@ -665,7 +561,7 @@ class TestFavoriteDeleteView(TestCase):
         書籍詳細ページでの削除実行後のページ遷移のテスト
         """
 
-        favorite = FavoriteFactory(user=self.user, book=self.book)
+        favorite = factory.FavoriteFactory(user=self.user, book=self.book)
 
         data = {
             'favorite_uuid': favorite.uuid,
@@ -699,134 +595,6 @@ class TestFavoriteDeleteView(TestCase):
         self.assertEqual(self.book.fav_count, 0)
 
 
-class TestWantedDeleteView(TestCase):
-    """
-    読みたい削除を行うビュークラスのテスト
-    """
-
-    def setUp(self):
-        """
-        テストセットアップ
-        """
-
-        self.user = CustomUserFactory()
-        self.client.login(email='test@example.com', password='defaultpassword')
-        self.book = BookFactory()
-
-    def test_only_owner_can_delete(self):
-        """
-        所有者は読みたいの削除ができることをテスト
-        """
-
-        wanted = WantedFactory(user=self.user, book=self.book)
-
-        data = {
-            'wanted_uuid': wanted.uuid,
-            'template_name': 'book_list'
-        }
-
-        response = self.client.post(reverse('book:delete_wanted'), data)
-
-        is_wanted_exist = Wanted.objects.filter(book=self.book, user=self.user).exists()
-
-        self.assertFalse(is_wanted_exist)
-        self.assertRedirects(response, reverse('book:list'))
-
-    def test_non_owner_cannot_delete(self):
-        """
-        非所有者は読みたいの削除ができないことをテスト
-        """
-
-        wanted = WantedFactory(user=self.user, book=self.book)
-
-        self.client.logout()
-
-        non_owner = CustomUserFactory(email='hoge@example.com')
-        self.client.login(email=non_owner.email, password='defaultpassword')
-
-        data = {
-            'wanted_uuid': wanted.uuid,
-            'template_name': 'book_list'
-        }
-
-        response = self.client.post(reverse('book:delete_wanted'), data)
-
-        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
-
-    def test_non_login_user_cannnot_delete(self):
-        """
-        非ログインユーザは読みたいの削除ができないことをテスト
-        """
-
-        wanted = WantedFactory(user=self.user, book=self.book)
-
-        self.client.logout()
-
-        data = {
-            'wanted_uuid': wanted.uuid,
-            'template_name': 'book_list'
-        }
-
-        response = self.client.post(reverse('book:delete_wanted'), data, follow=True)
-
-        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
-
-    def test_delete_on_customuser_detail(self):
-        """
-        ユーザ詳細ページでの削除実行後のページ遷移のテスト
-        """
-
-        wanted = WantedFactory(user=self.user, book=self.book)
-
-        data = {
-            'wanted_uuid': wanted.uuid,
-            'template_name': 'customuser_detail',
-            'user_uuid': self.user.uuid
-        }
-
-        response = self.client.post(reverse('book:delete_wanted'), data, follow=True)
-
-        self.assertRedirects(response, reverse('accounts:detail', kwargs={'pk': self.user.uuid}))
-
-    def test_delete_on_book_detail(self):
-        """
-        書籍詳細ページでの削除実行後のページ遷移のテスト
-        """
-
-        wanted = WantedFactory(user=self.user, book=self.book)
-
-        data = {
-            'wanted_uuid': wanted.uuid,
-            'book_uuid': self.book.uuid
-        }
-
-        response = self.client.post(reverse('book:delete_wanted'), data, follow=True)
-
-        self.assertRedirects(response, reverse('book:detail', kwargs={'pk': self.book.uuid}))
-
-    def test_delete_wanted_count(self):
-        """
-        お気に入り削除すると書籍のwanted_countが-1されることをテスト
-        """
-
-        data = {
-            'book_uuid': self.book.uuid,
-        }
-
-        self.client.post(reverse('book:add_wanted'), data)
-
-        wanted = Wanted.objects.get(book=self.book)
-
-        data = {
-            'wanted_uuid': wanted.uuid,
-            'template_name': 'book_wanted_lanking',
-        }
-
-        self.client.post(reverse('book:delete_wanted'), data)
-
-        self.assertEqual(self.book.wanted_count, 0)
-
-
 class TestCommentUpdateView(TestCase):
     """
     コメントの編集を行うビュークラスのテスト
@@ -837,17 +605,17 @@ class TestCommentUpdateView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.client.login(email='test@example.com', password='defaultpassword')
         self.expected_book_title = 'テストタイトル'
-        self.book = BookFactory(title=self.expected_book_title)
+        self.book = factory.BookFactory(title=self.expected_book_title)
 
     def test_update_comment_get(self):
         """
         コメント編集ページにGETリクエストを送信時のテスト
         """
 
-        comment = CommentFactory(user=self.user, book=self.book)
+        comment = factory.CommentFactory(user=self.user, book=self.book)
 
         kwargs = {
             'book_pk': self.book.uuid,
@@ -864,8 +632,8 @@ class TestCommentUpdateView(TestCase):
         コメント編集ページにPOSTリクエストを送信時のテスト
         """
 
-        book = BookFactory()
-        comment = CommentFactory(book=book, user=self.user)
+        book = factory.BookFactory()
+        comment = factory.CommentFactory(book=book, user=self.user)
         comment = get_object_or_404(Comment, uuid=comment.uuid)
 
         expected_comment_title = 'テストタイトル'
@@ -906,17 +674,17 @@ class TestCommentDeleteView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.client.login(email='test@example.com', password='defaultpassword')
         self.expected_book_title = 'テストタイトル'
-        self.book = BookFactory(title=self.expected_book_title)
+        self.book = factory.BookFactory(title=self.expected_book_title)
 
     def test_delete_comment_on_customuser_detail(self):
         """
         ユーザ詳細画面から書籍に紐付いたコメントを削除するテスト
         """
 
-        comment = CommentFactory(book=self.book, user=self.user)
+        comment = factory.CommentFactory(book=self.book, user=self.user)
 
         comment = get_object_or_404(Comment, uuid=comment.uuid)
 
@@ -947,8 +715,8 @@ class TestCommentDeleteView(TestCase):
         書籍詳細画面から書籍に紐付いたコメントを削除するテスト
         """
 
-        book = BookFactory()
-        comment = CommentFactory(book=book, user=self.user)
+        book = factory.BookFactory()
+        comment = factory.CommentFactory(book=book, user=self.user)
 
         comment = get_object_or_404(Comment, uuid=comment.uuid)
 
@@ -980,17 +748,17 @@ class TestFavoriteLankingListView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.client.login(email='test@example.com', password='defaultpassword')
-        self.book = BookFactory(fav_count=5)
+        self.book = factory.BookFactory(fav_count=5)
 
     def test_book_order(self):
         """
         お気に入り追加数順にbook_listが生成されるかテスト
         """
 
-        no_fav_book = BookFactory(fav_count=0)
-        one_fav_book = BookFactory(fav_count=1)
+        no_fav_book = factory.BookFactory(fav_count=0)
+        one_fav_book = factory.BookFactory(fav_count=1)
 
         response = self.client.get(reverse('book:favorite_lanking'))
 
@@ -999,34 +767,3 @@ class TestFavoriteLankingListView(TestCase):
         self.assertEqual(response.context.get('book_list')[1], one_fav_book)
         self.assertNotIn(no_fav_book, response.context.get('book_list'))
         self.assertTemplateUsed(response, 'book/book_fav_lanking.html')
-
-
-class TestWantedLankingListView(TestCase):
-    """
-    読みたい数の降順で一覧表示を行うビュークラスのテスト
-    """
-
-    def setUp(self):
-        """
-        テストセットアップ
-        """
-
-        self.user = CustomUserFactory()
-        self.client.login(email='test@example.com', password='defaultpassword')
-        self.book = BookFactory(wanted_count=5)
-
-    def test_book_order(self):
-        """
-        読みたい追加数順にbook_listが生成されるかテスト
-        """
-
-        no_wanted_book = BookFactory(wanted_count=0)
-        one_wanted_book = BookFactory(wanted_count=1)
-
-        response = self.client.get(reverse('book:wanted_lanking'))
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context.get('book_list')[0], self.book)
-        self.assertEqual(response.context.get('book_list')[1], one_wanted_book)
-        self.assertNotIn(no_wanted_book, response.context.get('book_list'))
-        self.assertTemplateUsed(response, 'book/book_wanted_lanking.html')

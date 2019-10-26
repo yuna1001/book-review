@@ -79,10 +79,6 @@
                         role="tab" aria-controls="nav-favorite" aria-selected="false">
                         お気に入り
                         <span>{{ favorite_list|length }}</span></a>
-                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-wanted" role="tab"
-                        aria-controls="nav-wanted" aria-selected="false">
-                        読みたい
-                        <span>{{ wanted_list|length }}</span></a>
                     <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-comment" role="tab"
                         aria-controls="nav-comment" aria-selected="false">
                         コメント
@@ -138,48 +134,6 @@
                         <div class="col-12">
                             <div class="empty-block mx-auto">
                                 <h4>お気に入りに追加済みの書籍はありません。</h4>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="nav-wanted" role="tabpanel" aria-labelledby="nav-contact-tab">
-                    <div class="row">
-                        {% for wanted in wanted_list %}
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                            <div class="card card-fav-wanted mx-auto">
-                                <div class="book-card-image">
-                                    <a href="{% url 'book:detail' wanted.book.uuid %}">
-                                        <img src="{{ wanted.book.image_url }}" class="book-img-thumbnail" alt="...">
-                                    </a>
-                                </div>
-                                <div class="book-card-body">
-                                    <a href="{% url 'book:detail' wanted.book.uuid %}">
-                                        <h5 class="card-title text-truncate">{{ wanted.book.title }}</h5>
-                                    </a>
-                                    <p class="card-text text-truncate">{{ wanted.book.author }}</p>
-
-                                    {% if user == customuser %}
-                                    <!-- 読みたい -->
-                                    <li class="list-group-item">
-                                        <div class="book-form text-center">
-                                            <form action="{% url 'book:delete_wanted' %}" method="POST">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="wanted_uuid" value="{{ wanted.uuid }}">
-                                                <input type="hidden" name="user_uuid" value="{{ user.uuid }}">
-                                                <input type="hidden" name="template_name" value="customuser_detail">
-                                                <button type="submit" class="btn btn-secondary">読みたいに追加済み</button>
-                                            </form>
-                                        </div>
-                                    </li>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div class="col-12">
-                            <div class="empty-block mx-auto">
-                                <h4>読みたいに追加済みの書籍はありません。</h4>
                             </div>
                         </div>
                         {% endfor %}

@@ -62,18 +62,3 @@ class TestFavorite(TestCase):
         favorite = factory.FavoriteFactory()
 
         self.assertEqual(str(favorite), str(favorite.uuid))
-
-
-class TestWanted(TestCase):
-    """
-    Wantedモデルのテストクラス
-    """
-
-    def test_str(self):
-        """
-        __str__のテスト
-        """
-
-        wanted = factory.WantedFactory()
-
-        self.assertEqual(str(wanted), str(wanted.uuid))
