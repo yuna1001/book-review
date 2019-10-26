@@ -5,8 +5,9 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserM
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.mail import send_mail
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from base.model.models import TimeStampedModel
 
 
 class CustomUserManager(UserManager):
@@ -42,7 +43,7 @@ class CustomUserManager(UserManager):
         return self._create_user(username, email, password, **extra_fields)
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractBaseUser, TimeStampedModel, PermissionsMixin):
     username_validator = UnicodeUsernameValidator()
 
     uuid = models.UUIDField(_('uuid'), primary_key=True,
@@ -79,7 +80,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    # date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
     objects = CustomUserManager()
 
@@ -116,7 +117,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return [relation.followed for relation in relations]
 
 
-class Relation(models.Model):
+class Relation(TimeStampedModel):
     """
     フォロー・フォロワーのモデル
     """
