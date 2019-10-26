@@ -4,7 +4,7 @@ executors:
   test:
     working_directory: ~/book-review
     docker:
-    - image: circleci/python:3.7
+    - image: circleci/python:3.7.4
       environment:
         PYTHONDONTWRITEBYTECODE: 1
         PYTHONUNBUFFERED: 1
@@ -29,7 +29,7 @@ commands:
     steps:
       - save_cache:
           name: Save Python Package
-          key: book-review-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          key: book-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
           - /usr/local/bin
           - /usr/local/lib/python3.7/site-packages
@@ -39,8 +39,7 @@ commands:
       - restore_cache:
           name: Restore Python Package
           keys:
-          - book-review-{{ .Branch }}-{{ checksum "requirements.txt" }}
-          - book-review
+          - book-{{ .Branch }}-{{ checksum "requirements.txt" }}
   chown_python_package:
     description: "pip install したpackage群の権限をcircleciユーザに変更する"
     steps:
