@@ -4,7 +4,7 @@ executors:
   test:
     working_directory: ~/book-review
     docker:
-    - image: circleci/python:3.7
+    - image: circleci/python:3.7.4
       environment:
         PYTHONDONTWRITEBYTECODE: 1
         PYTHONUNBUFFERED: 1
