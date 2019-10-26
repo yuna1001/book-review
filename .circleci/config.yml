@@ -29,8 +29,7 @@ commands:
     steps:
       - restore_cache:
           name: Restore Python Package
-          keys:
-          - book-review-v1-{{ checksum "requirements.txt" }}
+          key: book-review-v1-{{ checksum "requirements.txt" }}
   save_python_package:
     description: "pip install したpackageをキャッシュする"
     steps:
