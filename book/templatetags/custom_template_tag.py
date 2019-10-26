@@ -1,6 +1,6 @@
 from django import template
 
-from ..models import Favorite, Wanted
+from ..models import Favorite
 
 register = template.Library()
 
@@ -13,16 +13,6 @@ def get_favorite_id(book, user):
     """
     favorite = Favorite.objects.get(user=user, book=book)
     return favorite.uuid
-
-
-@register.filter
-def get_wanted_id(book, user):
-    """
-    書籍が読みたいに含まれている場合に
-    読みたいのuuidを取得する。
-    """
-    wanted = Wanted.objects.get(user=user, book=book)
-    return wanted.uuid
 
 
 @register.simple_tag

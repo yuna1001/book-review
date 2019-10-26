@@ -16,8 +16,5 @@ urlpatterns = [
     path('detail/<uuid:book_pk>/delete/<uuid:comment_pk>/', views. CommentDeleteView.as_view(), name='delete_comment'),
     path('favorite/add', views.FavoriteAddView.as_view(), name='add_favorite'),
     path('favorite/delete/', views.FavoriteDeleteView.as_view(), name='delete_favorite'),
-    path('wanted/add', views.WantedAddView.as_view(), name='add_wanted'),
-    path('wanted/delete/', views.WantedDeleteView.as_view(), name='delete_wanted'),
     path('lanking/favorite/', views.FavoriteLankingListView.as_view(), name='favorite_lanking'),
-    path('lanking/wanted/', views.WantedLankingListView.as_view(), name='wanted_lanking'),
 ]

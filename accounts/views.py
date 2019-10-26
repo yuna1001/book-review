@@ -5,7 +5,7 @@ from django.shortcuts import redirect, reverse
 from django.views import generic
 
 from .forms import CustomUserUpdateForm, CustomUserSearchForm
-from book.models import Comment, Favorite, Wanted
+from book.models import Comment, Favorite
 from .models import CustomUser, Relation
 
 
@@ -43,9 +43,6 @@ class CustomUserDetailView(generic.DetailView):
 
         favorite_list = Favorite.objects.filter(user=user)
         context['favorite_list'] = favorite_list
-
-        wanted_list = Wanted.objects.filter(user=user)
-        context['wanted_list'] = wanted_list
 
         comment_list = Comment.objects.filter(user=user)
         context['comment_list'] = comment_list

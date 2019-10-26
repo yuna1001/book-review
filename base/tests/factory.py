@@ -5,7 +5,7 @@ from factory.fuzzy import FuzzyText
 from django.utils import timezone
 
 from accounts.models import CustomUser
-from book.models import Book, Comment, Favorite, Wanted
+from book.models import Book, Comment, Favorite
 
 
 class CustomUserFactory(DjangoModelFactory):
@@ -50,14 +50,6 @@ class CommentFactory(DjangoModelFactory):
 class FavoriteFactory(DjangoModelFactory):
     class Meta:
         model = Favorite
-
-    user = factory.SubFactory(CustomUserFactory)
-    book = factory.SubFactory(BookFactory)
-
-
-class WantedFactory(DjangoModelFactory):
-    class Meta:
-        model = Wanted
 
     user = factory.SubFactory(CustomUserFactory)
     book = factory.SubFactory(BookFactory)

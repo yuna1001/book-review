@@ -57,27 +57,6 @@
                                 {% endif %}
                             </div>
                         </li>
-
-                        <!-- 読みたい -->
-                        <li class="list-group-item">
-                            <div class="form-favorite text-center">
-                                {% if book in wanted_book_list %}
-                                <form action="{% url 'book:delete_wanted' %}" method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="wanted_uuid" value="{{ book|get_wanted_id:user }}">
-                                    <input type="hidden" name="template_name" value="book_fav_lanking">
-                                    <button type="submit" class="btn btn-secondary">読みたいに追加済み</button>
-                                </form>
-                                {% else %}
-                                <form action="{% url 'book:add_wanted' %}" method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="template_name" value="book_fav_lanking">
-                                    <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                    <button type="submit" class="btn btn-primary">読みたいに追加</button>
-                                </form>
-                                {% endif %}
-                            </div>
-                        </li>
                     </ul>
 
                     {% else %}
@@ -90,17 +69,6 @@
                                     <input type="hidden" name="template_name" value="book_fav_lanking">
                                     <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
                                     <button type="submit" class="btn btn-primary">お気に入り追加</button>
-                                </form>
-                            </div>
-                        </li>
-                        <!-- 読みたい -->
-                        <li class="list-group-item">
-                            <div class="form-favorite text-center">
-                                <form action="{% url 'book:add_wanted' %}" method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="template_name" value="book_fav_lanking">
-                                    <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                    <button type="submit" class="btn btn-primary">読みたいに追加</button>
                                 </form>
                             </div>
                         </li>

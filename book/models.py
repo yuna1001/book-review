@@ -93,20 +93,3 @@ class Favorite(TimeStampedModel):
 
     def __str__(self):
         return str(self.uuid)
-
-
-class Wanted(TimeStampedModel):
-    """
-    読みたいモデル
-    """
-
-    class Meta:
-        db_table = 'wanted'
-        unique_together = ('user', 'book')
-
-    uuid = models.UUIDField(verbose_name='uuid', primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.uuid)

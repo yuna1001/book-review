@@ -1,14 +1,10 @@
 from http import HTTPStatus
-import random
-import string
 
-from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.urls import reverse
 
-from base.tests.factory import CustomUserFactory, BookFactory, CommentFactory, FavoriteFactory, WantedFactory
+from base.tests import factory
 from ..models import CustomUser, Relation
-from book.models import Book, Comment, Favorite, Wanted
 
 
 def get_response_message(response):
@@ -31,7 +27,7 @@ class TestCustomUserDetailView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
 
     def test_get_customuser_detail_by_owner(self):
         """
@@ -60,7 +56,7 @@ class TestCustomUserDetailView(TestCase):
         対象ユーザの詳細ページに遷移することをテスト
         """
 
-        another = CustomUserFactory(email='hoge@examle.com')
+        another = factory.CustomUserFactory(email='hoge@examle.com')
         self.client.login(username=another.username, password='defaultpassword')
 
         response = self.client.get(reverse('accounts:detail', kwargs={'pk': self.user.uuid}), follow=True)
@@ -72,12 +68,11 @@ class TestCustomUserDetailView(TestCase):
         渡されるcontextの内容のテスト
         """
 
-        book = BookFactory()
-        favorite = FavoriteFactory(user=self.user, book=book)
-        wanted = WantedFactory(user=self.user, book=book)
-        comment = CommentFactory(user=self.user, book=book)
+        book = factory.BookFactory()
+        favorite = factory.FavoriteFactory(user=self.user, book=book)
+        comment = factory.CommentFactory(user=self.user, book=book)
 
-        another = CustomUserFactory(email='hoge@example.com')
+        another = factory.CustomUserFactory(email='hoge@example.com')
         following_relation = Relation(user=self.user, followed=another)
         following_relation.save()
         followed_relation = Relation(user=another, followed=self.user)
@@ -87,7 +82,6 @@ class TestCustomUserDetailView(TestCase):
 
         self.assertEqual(response.context.get('customuser'), self.user)
         self.assertIn(favorite, response.context.get('favorite_list'))
-        self.assertIn(wanted, response.context.get('wanted_list'))
         self.assertIn(comment, response.context.get('comment_list'))
         self.assertIn(following_relation, response.context.get('following_list'))
         self.assertIn(followed_relation, response.context.get('followed_list'))
@@ -100,7 +94,7 @@ class TestCustomUserDetailView(TestCase):
 
         self.client.login(email='test@example.com', password='defaultpassword')
 
-        another = CustomUserFactory(email='hoge@example.com')
+        another = factory.CustomUserFactory(email='hoge@example.com')
         following_relation = Relation(user=self.user, followed=another)
         following_relation.save()
 
@@ -119,7 +113,7 @@ class TestCustomUserUpdateView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
 
     def test_update(self):
         """
@@ -151,8 +145,8 @@ class TestCustomUserFollowView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
-        self.followed_user = CustomUserFactory(email='followed_user@example.com')
+        self.user = factory.CustomUserFactory()
+        self.followed_user = factory.CustomUserFactory(email='followed_user@example.com')
 
     def test_follow(self):
         """
@@ -233,8 +227,8 @@ class TestCustomUserUnfollowView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
-        self.unfollowed_user = CustomUserFactory(email='unfollowed_user@example.com')
+        self.user = factory.CustomUserFactory()
+        self.unfollowed_user = factory.CustomUserFactory(email='unfollowed_user@example.com')
         self.relation = Relation(user=self.user, followed=self.unfollowed_user)
         self.relation.save()
 
@@ -301,14 +295,14 @@ class TestCustomUserListView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
         self.user_count = 5
         self.username = 'テストユーザ'
 
         for num in range(self.user_count):
             username = self.username + str(num)
             email = 'unfollowed_user' + str(num) + '@example.com'
-            CustomUserFactory(username=username, email=email)
+            factory.CustomUserFactory(username=username, email=email)
 
     def test_get(self):
         """
@@ -383,7 +377,7 @@ class TestCustomUserListView(TestCase):
 
         self.client.login(email='test@example.com', password='defaultpassword')
 
-        other = CustomUserFactory(email='followed_user@example.com')
+        other = factory.CustomUserFactory(email='followed_user@example.com')
 
         follow_relation = Relation(user=self.user, followed=other)
         follow_relation.save()
@@ -408,7 +402,7 @@ class TestCustomUserRegisterView(TestCase):
         テストセットアップ
         """
 
-        self.user = CustomUserFactory()
+        self.user = factory.CustomUserFactory()
 
     def test_get_register_page(self):
         """
