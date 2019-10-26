@@ -24,22 +24,21 @@ executors:
         TZ: Asia/Tokyo
 
 commands:
-  save_python_package:
-    description: "pip install したpackageをキャッシュする"
-    steps:
-      - save_cache:
-          name: Save Python Package
-          key: book-{{ .Branch }}-{{ checksum "requirements.txt" }}
-          paths:
-          - /usr/local/bin
-          - /usr/local/lib/python3.7/site-packages
   restore_python_package:
     description: "pip install したpackageのキャッシュを読み込む"
     steps:
       - restore_cache:
           name: Restore Python Package
-          keys:
-          - book-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          key: book-review-v2-{{ checksum "requirements.txt" }}
+  save_python_package:
+    description: "pip install したpackageをキャッシュする"
+    steps:
+      - save_cache:
+          name: Save Python Package
+          key: book-review-v2-{{ checksum "requirements.txt" }}
+          paths:
+          - /usr/local/bin
+          - /usr/local/lib/python3.7/site-packages
   chown_python_package:
     description: "pip install したpackage群の権限をcircleciユーザに変更する"
     steps:
@@ -54,7 +53,7 @@ commands:
       - run:
           name: Start pip install
           command: |
-            pip install -r requirements.txt --user
+            pip install -r requirements.txt
   db_migrations:
     description: "テスト実行用DBのマイグレーションを行う"
     steps:
@@ -81,7 +80,6 @@ jobs:
       - save_python_package
       - db_migrations
       - run_test
-
   deploy:
     executor: deploy
     steps:
