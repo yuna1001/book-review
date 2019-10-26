@@ -10,12 +10,11 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, reverse
 from django.views import generic
 
-
 import environ
 import requests
 
-from .forms import (BookSearchForm, CommentCreateForm)
-from .models import (Book, Favorite, Wanted, Comment)
+from .forms import BookSearchForm, CommentCreateForm
+from .models import Book, Favorite, Wanted, Comment
 
 
 env = environ.Env()
