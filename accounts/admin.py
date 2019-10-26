@@ -8,7 +8,7 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         ('User Infomation', {
             'fields': (
-                'username', 'email', 'profile_pic'
+                'username', 'email', 'profile_pic', 'created', 'modified'
             ),
         },),
         ('Authorization', {
@@ -18,17 +18,17 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
-    list_display = ('uuid', 'username', 'email', 'is_staff')
+    list_display = ('uuid', 'username', 'email', 'created', 'is_staff')
     list_display_links = ('uuid',)
-    list_filter = ('date_joined',)
+    list_filter = ('created',)
     search_fields = ('username', 'email')
     list_editable = ('username', 'email', 'is_staff')
 
 
 class RelationAdmin(admin.ModelAdmin):
-    list_display = ('pk',)
+    list_display = ('pk', 'created', 'modified')
     list_display_links = ('pk',)
-    list_filter = ('user', 'followed')
+    list_filter = ('user', 'followed', 'created')
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
