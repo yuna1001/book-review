@@ -49,20 +49,9 @@
                         </li>
                         <!-- 読みたい -->
                         <li class="list-group-item">
-                            {% if wanted %}
-                            <form action="{% url 'book:delete_wanted' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="wanted_uuid" value="{{ book|get_wanted_id:user }}">
-                                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                <button type="submit" class="btn btn-secondary">読みたいに追加済み</button>
-                            </form>
-                            {% else %}
-                            <form action="{% url 'book:add_wanted' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                <button type="submit" class="btn btn-primary">読みたいに追加</button>
-                            </form>
-                            {% endif %}
+                            <button class="btn btn-primary" onclick="window.open('{{ book.affiliate_url }}')">
+                                商品を見る
+                            </button>
                         </li>
                         {% else %}
                         <li class="list-group-item">
@@ -73,11 +62,9 @@
                             </form>
                         </li>
                         <li class="list-group-item">
-                            <form action="{% url 'book:add_wanted' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="book_uuid" value="{{ book.uuid }}">
-                                <button type="submit" class="btn btn-primary">読みたいに追加</button>
-                            </form>
+                            <button class="btn btn-primary" onclick="window.open('{{ book.affiliate_url }}')">
+                                商品を見る
+                            </button>
                         </li>
                         {% endif %}
                     </ul>
@@ -108,7 +95,7 @@
                         <td>{{ book.publisher }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">販売日</th>
+                        <th scope="row">発売日</th>
                         <td>{{ book.published_date }}</td>
                     </tr>
                 </tbody>
