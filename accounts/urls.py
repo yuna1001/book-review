@@ -1,13 +1,13 @@
 from django.urls import path
 
-from .views import CustomUserUpdateView, CustomUserDetailView, CustomUserFollowView, CustomUserUnfollowView, CustomUserListView
+from . import views
 
 app_name = 'accounts'
 
 urlpatterns = [
-    path('detail/<uuid:pk>/', CustomUserDetailView.as_view(), name='detail'),
-    path('update/<uuid:pk>/', CustomUserUpdateView.as_view(), name='update'),
-    path('follow/<uuid:pk>/', CustomUserFollowView.as_view(), name='follow'),
-    path('unfollow/<uuid:pk>/', CustomUserUnfollowView.as_view(), name='unfollow'),
-    path('list/', CustomUserListView.as_view(), name='list'),
+    path('detail/<uuid:pk>/', views.CustomUserDetailView.as_view(), name='detail'),
+    path('update/<uuid:pk>/', views.CustomUserUpdateView.as_view(), name='update'),
+    path('follow/<uuid:pk>/', views.CustomUserFollowView.as_view(), name='follow'),
+    path('unfollow/<uuid:pk>/', views.CustomUserUnfollowView.as_view(), name='unfollow'),
+    path('list/', views.CustomUserListView.as_view(), name='list'),
 ]
