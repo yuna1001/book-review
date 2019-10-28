@@ -17,4 +17,5 @@ urlpatterns = [
     path('favorite/add', views.FavoriteAddView.as_view(), name='add_favorite'),
     path('favorite/delete/', views.FavoriteDeleteView.as_view(), name='delete_favorite'),
     path('lanking/favorite/', views.FavoriteLankingListView.as_view(), name='favorite_lanking'),
+    path('lanking/comment-rating/', views.CommentRatingLankingListView.as_view(), name='comment_rating_lanking'),
 ]

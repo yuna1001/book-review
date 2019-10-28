@@ -413,6 +413,7 @@ class CommentDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delete
     """
     コメントの削除を行うビュークラス
     """
+
     model = Comment
 
     def get_object(self, queryset=None):
@@ -454,6 +455,10 @@ class CommentDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delete
 
 
 class FavoriteLankingListView(generic.ListView):
+    """
+    お気に入り数順のランキング表示を行うビュークラス
+    """
+
     model = Book
     template_name = 'book/book_fav_lanking.html'
 
@@ -469,6 +474,7 @@ class FavoriteLankingListView(generic.ListView):
         """
         ユーザのお気に入り書籍のデータをcontextに追加
         """
+
         context = super(FavoriteLankingListView, self).get_context_data(**kwargs)
 
         # ログインユーザの場合は、
@@ -479,3 +485,59 @@ class FavoriteLankingListView(generic.ListView):
             context['fav_book_list'] = fav_book_list
 
         return context
+
+
+class CommentRatingLankingListView(generic.View):
+    """
+    コメントの評価点のランキング表示を行うビュークラス
+    """
+
+    template_name = 'book/comment_rating_lanking.html'
+
+    def get_queryset(self):
+        """
+        コメントのscoreの平均点を降順にソートした辞書を取得する
+        """
+
+        # {book: [score, count]}の辞書を作る
+        book_average_count_dict = dict()
+        for comment in Comment.objects.all().select_related('book'):
+
+            if comment.book in book_average_count_dict:
+                comment_rate_list = book_average_count_dict.get(comment.book)
+                comment_rate_list[0] = comment_rate_list[0] + float(comment.score)
+                comment_rate_list[1] = comment_rate_list[1] + 1
+            else:
+                comment_rate_list = [float(comment.score), 1]
+                book_average_count_dict[comment.book] = comment_rate_list
+
+        # score/countで平均点を求め,{book: average}の辞書を作る
+        book_average_dict = dict()
+        for key, value in book_average_count_dict.items():
+            book = Book.objects.filter(title=key)
+            score = value[0]
+            count = value[1]
+            average = score / count
+
+            if average.is_integer():
+                average = round(average)
+
+            book_average_dict[book] = average
+
+        # {book: average}の辞書をaverageでソートする
+        sorted_book_average_dict = dict()
+        for key, value in sorted(book_average_dict.items(), key=lambda x: -x[1]):
+            sorted_book_average_dict[key] = value
+
+        return sorted_book_average_dict
+
+    def get(self, request, *args, **kwargs):
+        """
+        GETリクエスト時にはコメントのscoreの平均点を降順ソートした辞書を返す
+        """
+
+        context = dict()
+        sorted_book_average_dict = self.get_queryset()
+        context['sorted_book_average_dict'] = sorted_book_average_dict
+
+        return render(request, self.template_name, context)

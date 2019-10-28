@@ -767,3 +767,37 @@ class TestFavoriteLankingListView(TestCase):
         self.assertEqual(response.context.get('book_list')[1], one_fav_book)
         self.assertNotIn(no_fav_book, response.context.get('book_list'))
         self.assertTemplateUsed(response, 'book/book_fav_lanking.html')
+
+
+class TestCommentRatingLankingListView(TestCase):
+    """
+    コメントのscore平均点の降順に表示を行うビュークラスのテスト
+    """
+
+    def setUp(self):
+        """
+        テストセットアップ
+        """
+
+        self.user = factory.CustomUserFactory()
+        self.client.login(email='test@example.com', password='defaultpassword')
+
+    def test_book_order(self):
+        """
+        コメントのscoreの平均点の降順で辞書が生成されるかテスト
+        """
+
+        for i in range(5):
+            book_name = 'book' + str(i)
+            book = factory.BookFactory(title=book_name)
+            score = 5 - i
+            factory.CommentFactory(book=book, score=score, user=self.user)
+
+        response = self.client.get(reverse('book:comment_rating_lanking'))
+
+        sorted_book_average_dict = response.context['sorted_book_average_dict']
+
+        for i in range(5):
+            score = 5 - i
+            averages = list(sorted_book_average_dict.values())
+            self.assertTrue(averages[i], score)
