@@ -637,7 +637,7 @@ class TestCommentUpdateView(TestCase):
         comment = get_object_or_404(Comment, uuid=comment.uuid)
 
         expected_comment_title = 'テストタイトル'
-        expected_comment_score = '5'
+        expected_comment_score = 5.0
         expected_comment_content = 'テストコンテンツ'
 
         kwargs = {

@@ -8,6 +8,13 @@
 {% endblock %}
 
 {% block content %}
+<!-- js -->
+<!-- コメント一覧およびコメントフォームで使用するjsファイル-->
+<script src="{% static 'jquery_raty/js/jquery.raty.js' %}"></script>
+<script type="text/javascript">
+    $.fn.raty.defaults.path = "{% static '/jquery_raty/images' %}";
+</script>
+
 <div class="container" id="main">
     <div class="row mx-auto justify-content-center">
         <div class="col-12 col-md-10">
@@ -130,8 +137,22 @@
                             <td>タイトル ： {{ comment.title }}</td>
                         </tr>
                         <tr>
-                            <td>評価 ： {{ comment.score }}</td>
+                            <td>
+                                <div id="score-star-{{ comment.uuid }}"></div>
+                            </td>
                         </tr>
+
+                        <!-- js -->
+                        <script>
+                            $('#score-star-{{ comment.uuid }}').raty({
+                                score: '{{ comment.score }}',
+                                half: true,
+                                targetKeep: true,
+                                precision: true,
+                                readOnly: true,
+                            });
+                        </script>
+
                         <tr>
                             <td colspan="2">投稿日 : {{ comment.modified }}</td>
                         </tr>
@@ -140,6 +161,7 @@
                         </tr>
                     </tbody>
                 </table>
+
                 {% if user == comment.user %}
                 <div class="buttons">
                     <button type="button" onclick="location.href='{% url 'book:update_comment' book.pk comment.pk %}'"
@@ -185,7 +207,20 @@
             <div class="comment-form">
                 <form action="" method="POST">
                     {% csrf_token %}
-                    {% bootstrap_form form layout='inline' %}
+                    {% for field in form %}
+                    {% if field.name == 'score' %}
+                    <div class="form-group" id="star">
+                        {{ field.label }}
+                        {{ field }}
+                    </div>
+                    {% else %}
+                    <div class="form-group">
+                        {{ field.label }}
+                        {{ field }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
                     {% buttons %}
                     <div class="row justify-content-center">
                         <div class="col-md-10 col-lg-10 button-wrapper">
@@ -199,4 +234,20 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+    $('#star').raty({
+        score: 5,
+        half: true,
+        targetKeep: true,
+        precision: true,
+        scoreName: 'star-score',
+        click: function (score, evt) {
+            const rounded_score = Math.round(score * 2) / 2;
+            $('#id_score').val(rounded_score)
+        }
+    });
+</script>
 {% endblock %}
