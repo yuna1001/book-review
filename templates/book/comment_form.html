@@ -6,6 +6,13 @@
 <link href="{% static 'book/comment_form.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block content %}
+<!-- js -->
+<!-- コメント一覧およびコメントフォームで使用するjsファイル-->
+<script src="{% static 'jquery_raty/js/jquery.raty.js' %}"></script>
+<script type="text/javascript">
+    $.fn.raty.defaults.path = "{% static '/jquery_raty/images' %}";
+</script>
+
 <div class="container-fluid">
     <div class="row mx-auto justify-content-center">
         <div class="col-12 col-md-10">
@@ -22,13 +29,43 @@
     <h2 class="page-top-title">コメント編集</h2>
     <div class="row">
         <div class="col-md-6 justify-content-center mx-auto">
-            <form method="POST">
+            <form action="" method="POST">
                 {% csrf_token %}
-                {% bootstrap_form form %}
+                {% for field in form %}
+                {% if field.name == 'score' %}
+                <div class="form-group" id="star">
+                    {{ field.label }}
+                    {{ field }}
+                </div>
+
+                <!-- js -->
+                <script type="text/javascript">
+                    $('#star').raty({
+                        score: '{{ field.value }}',
+                        half: true,
+                        targetKeep: true,
+                        precision: true,
+                        scoreName: 'star-score',
+                        click: function (score, evt) {
+                            const rounded_score = Math.round(score * 2) / 2;
+                            console.log(rounded_score)
+                            $('#id_score').val(rounded_score)
+                        }
+                    });
+                </script>
+
+                {% else %}
+                <div class="form-group">
+                    {{ field.label }}
+                    {{ field }}
+                </div>
+                {% endif %}
+                {% endfor %}
+
                 {% buttons %}
                 <div class="row justify-content-center">
                     <div class="col-md-10 col-lg-10 button-wrapper">
-                        <button class="btn btn-primary" type="submit">保存する</button>
+                        <button type="submit" class="btn btn-primary">投稿する</button>
                     </div>
                 </div>
                 {% endbuttons %}
