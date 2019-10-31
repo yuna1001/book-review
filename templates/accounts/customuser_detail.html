@@ -7,6 +7,13 @@
 {% endblock %}
 
 {% block content %}
+<!-- js -->
+<!-- コメント一覧およびコメントフォームで使用するjsファイル-->
+<script src="{% static 'jquery_raty/js/jquery.raty.js' %}"></script>
+<script type="text/javascript">
+    $.fn.raty.defaults.path = "{% static '/jquery_raty/images' %}";
+</script>
+
 <div class="container-fluid">
     <div class="row mx-auto justify-content-center">
         <div class="col-12 col-md-10">
@@ -153,8 +160,20 @@
                                         <td>タイトル ： {{ comment.title }}</td>
                                     </tr>
                                     <tr>
-                                        <td>評価 ： {{ comment.score }}</td>
+                                        <td>スコア ： <span id="score-star-{{ comment.uuid }}"></span></td>
                                     </tr>
+
+                                    <!-- js -->
+                                    <script>
+                                        $('#score-star-{{ comment.uuid }}').raty({
+                                            score: '{{ comment.score }}',
+                                            half: true,
+                                            targetKeep: true,
+                                            precision: true,
+                                            readOnly: true,
+                                        });
+                                    </script>
+
                                     <tr>
                                         <td colspan="2">投稿日 : {{ comment.modified }}</td>
                                     </tr>
