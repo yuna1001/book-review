@@ -521,8 +521,11 @@ class CommentRatingLankingListView(generic.View):
             count = value[1]
             average = score / count
 
+            # 1.0のような場合は1に丸め、それ以外の場合は小数点第一位に四捨五入
             if average.is_integer():
                 average = round(average)
+            else:
+                average = round(average, 1)
 
             book_average_dict[book] = average
 
