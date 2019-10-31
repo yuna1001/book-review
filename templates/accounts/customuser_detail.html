@@ -93,6 +93,8 @@
                         <span>{{ followed_list|length }}</span></a>
                 </div>
             </nav>
+
+            <!-- お気に入り済みの書籍一覧 -->
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane active" id="nav-favorite" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <div class="row">
@@ -110,8 +112,8 @@
                                     </a>
                                     <p class="card-text text-truncate">{{ favorite.book.author }}</p>
 
+                                    <!-- お気に入り追加ボタン -->
                                     {% if user == customuser %}
-                                    <!-- お気に入り -->
                                     <ul class="list-group list-group-flush text-center">
                                         <li class="list-group-item">
                                             <div class="book-form text-center">
@@ -139,6 +141,8 @@
                         {% endfor %}
                     </div>
                 </div>
+
+                <!-- コメント一覧 -->
                 <div class="tab-pane fade" id="nav-comment" role="tabpanel" aria-labelledby="nav-home-tab">
                     {% for comment in comment_list %}
                     <div class="row border border-light rounded bg-light mt-4">
@@ -176,19 +180,23 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- 編集/削除ボタン -->
                         {% if user == comment.user %}
                         <div class="col-12">
                             <div class="comment-buttons">
                                 <button type="button"
-                                    onclick="location.href='{% url 'book:update_comment' comment.book.pk comment.pk %}'"
+                                    onclick="location.href='{% url 'book:update_comment' comment.book.uuid comment.uuid %}'"
                                     class="btn btn-outline-primary edit-button">
                                     <i class="far fa-edit">編集</i>
                                 </button>
                                 <button type="button" class="btn btn-outline-danger float-right delete-button"
-                                    data-toggle="modal" data-target="#exampleModal">
+                                    data-toggle="modal" data-target="#exampleModal-{{ comment.uuid }}">
                                     <i class="far fa-trash-alt">削除</i>
                                 </button>
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+
+                                <!-- 削除ボタンモーダル -->
+                                <div class="modal fade" id="exampleModal-{{ comment.uuid }}" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -229,6 +237,8 @@
                     </div>
                     {% endfor %}
                 </div>
+
+                <!-- フォロー -->
                 <div class="tab-pane fade" id="nav-follow" role="tabpanel" aria-labelledby="nav-contact-tab">
                     <div class="row">
                         {% for follow in following_list %}
@@ -258,6 +268,8 @@
                         {% endfor %}
                     </div>
                 </div>
+
+                <!-- フォロワー -->
                 <div class="tab-pane fade" id="nav-follower" role="tabpanel" aria-labelledby="nav-contact-tab">
                     <div class="row">
                         {% for followed in followed_list %}

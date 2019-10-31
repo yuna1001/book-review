@@ -420,6 +420,7 @@ class CommentDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delete
         """
         削除対象のコメントを習得する
         """
+
         if queryset is None:
             queryset = self.get_queryset()
 
@@ -432,6 +433,7 @@ class CommentDeleteView(OnlyOwnerMixin, CustomLoginRequiredMixin, generic.Delete
         """
         コメントの削除とフラッシュメッセージを表示する
         """
+
         self.object = self.get_object()
         success_url = self.get_success_url()
         self.object.delete()
