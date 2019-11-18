@@ -18,6 +18,12 @@
     - SES(メール配信)
   - データベース
     - PostgreSQL10.10
+  - 開発環境
+    - Docker
+    - Docker-Compose
+      - Webアプリケーション(Django)・Webサーバ(Nginx)・Database(PostgreSQL) 
+  - CI/CD
+    - CircleCI
 - 機能一覧
   - ソーシャルログイン(django-allauth)
   - 画像アップロード(django-storages)
@@ -26,10 +32,45 @@
   - フォロー機能
   - お気に入り機能
   - 単体テスト(factory_boy)
-- 開発環境
-  - Docker
-  - Docker-Compose
-    - Webアプリケーション(Django)・Webサーバ(Nginx)・Database(PostgreSQL)
-- CI/CD
-  - CircleCI
 
+
+# 使用技術について
+### AWS
+EC2上(Ubuntu18.04)でDjango・Gunicorn・Nginxで動いています。静的ファイルへのアクセスはNginx→CloudFrontで配信しています。
+AWS上に環境を構築する際に並行してTCP/IPの書籍を学習することでネットワークの知識を深めることができました。
+また、EC2上で各種サービスを動作させることで、Linuxに関する知識を手を動かすことで習得できました。
+
+### データベース
+Djangoでは基本的には、ORMマッパーを用いてデータベースを操作しているため直接SQLを記述している箇所はありません。
+また、これまでデータベースの知識に不足を感じていたため「わかりみSQL」を学習し、実際にPostGreSQLでのデータベースを作成し、生のSQLを記述することで
+データベースおよびSQLへの理解を深めました。
+
+### テスト
+これまでDjangodeテストを記述したことがなかったため、この機会にテストコードをしっかり書いてみました。
+テスト環境/CI環境用に設定ファイルを分けたりと、色々ためになりました。
+
+### Python
+ポートフォリオ作成にあたりPythonの基礎的な文法を学習しました。
+
+### Docker
+Dockerを使用開発環境として
+
+### CircleCI
+
+# 工夫点
+特に工夫したところを紹介します。
+
+- ユーザ登録機能
+django-allauthのソースコードを読み、プロフィール画像の登録などユーザ登録機能をカスタムしました。
+ソーシャルログイン時には、ソーシャルアカウントのユーザ名・プロフィール画像を自動で登録するようにしました。
+- CI/CD
+GitHub・CircleCIを連携させCI/CDを実現しました。
+packageのキャッシュ等を利用しテスト実行時間を短縮しました。
+- テスト
+FactoryBoyを使用し、効率的にテストを記述しました。
+
+反省点
+- Django-RestFrameworkを使いたい
+- フロントはJSフレームワークで記述したい
+- Pythonicなコードを書きたい
+- ECSへのデプロイ
